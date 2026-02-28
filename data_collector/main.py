@@ -20,7 +20,7 @@ def main():
         return
 
     if needs_attempt_input:
-        attempt_text = input(f"Enter attempt number for {exam_type_clean}: ").strip()
+        attempt_text = input(f"Enter backlog attempt number : ").strip()
         if not attempt_text.isdigit() or int(attempt_text) < 1:
             print("Attempt number must be a positive integer.")
             return
