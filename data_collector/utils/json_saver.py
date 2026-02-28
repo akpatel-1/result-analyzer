@@ -3,7 +3,7 @@ import json
 
 
 def save_json(data, batch, attempt, review):
-    folder = f"data/output/{batch}_a{attempt}_r{review}"
+    folder = f"data/{batch}_a{attempt}_r{review}"
     os.makedirs(folder, exist_ok=True)
 
     roll_no = data.get("roll_no")
