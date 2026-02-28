@@ -53,7 +53,7 @@ def parse_result_page(html, semester, session, exam_type, attempt_no, review_typ
             continue
 
         letter_grade = cols[11].strip() if len(cols) > 11 else ""
-        subject_result = "Fail" if letter_grade.upper() == "FF" else "Pass"
+        subject_result = "Fail" if letter_grade.upper() in ["F", "FF"] else "Pass"
 
         subject = {
             "code": cols[1].split("(")[0].strip(),
@@ -84,8 +84,8 @@ def parse_result_page(html, semester, session, exam_type, attempt_no, review_typ
         "attempt_no": attempt_no,
         "review_type": review_type,
         "spi": safe_float(safe_text(soup, "spi", default="")),
-        "total_max_marks": safe_int(safe_text(soup, "mxmarks", default="")),
-        "total_obt_marks": safe_int(safe_text(soup, "obtmarks", default="")),
+        "max_total_marks": safe_int(safe_text(soup, "mxmarks", default="")),
+        "obt_total_marks": safe_int(safe_text(soup, "obtmarks", default="")),
         "overall_result": safe_text(soup, "Result"),
         "subjects": subjects
     }
