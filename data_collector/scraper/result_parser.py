@@ -1,11 +1,21 @@
 from bs4 import BeautifulSoup
+import re
 
 
 def safe_int(value):
     value = value.strip()
     if not value or value == "\xa0":
         return None
-    return int(value)
+
+    upper_value = value.upper()
+    if upper_value in {"ABS"}:
+        return None
+
+    match = re.search(r"\d+", value)
+    if not match:
+        return None
+
+    return int(match.group(0))
 
 
 def safe_float(value):

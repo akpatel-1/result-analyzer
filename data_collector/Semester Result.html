@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<!-- saved from url=(0123)https://csvtu.digivarsity.online/WebApp/Result/SemesterResult.aspx?S=1%20SEMESTER&E=NOV-DEC%202023&R=303302223024&T=Regular -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>
+	Semester Result
+</title><link rel="stylesheet" href="./Semester Result_files/bootstrap.min.css">
+    <!-- <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script> -->
+    <script src="./Semester Result_files/jquery.min.js" type="text/javascript"></script>
+	<script src="./Semester Result_files/qrcode.min.js"></script>
+    
+	<style>
+        @media (max-width: 1000px) {
+            .chngemob {
+                margin-right: 35px !important;
+                font-size: 18px !important;
+                margin-top: 10px;
+                width: 90% !important;
+            }
+
+            .chngemob1 {
+                font-size: 18px !important;
+            }
+
+            .hdr {
+                float: none !important;
+                margin-right: 0px !important;
+                font-size: 20px !important;
+            }
+        }
+
+
+        @media (max-width: 1000px) {
+            .mrg {
+                margin-left: 300px !important;
+            }
+
+            .imght {
+                height: 45px !important;
+            }
+
+            .chngemob11 {
+                font-size: 11px !important;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .mrg1 {
+                margin-left: 50px !important;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .wid1 {
+                width: 105% !important;
+            }
+        }
+
+        @media print {
+            .no-print {
+                visibility: hidden;
+            }
+        }
+
+        .list-group-item-danger {
+            color: #060505 !important;
+            background-color: transparent;
+        }
+
+        hr {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 0;
+            border-top: 4px solid black;
+        }
+
+        .Resulttable {
+            border-spacing: 0;
+            border-collapse: collapse;
+            opacity: 0.8;
+        }
+
+            .Resulttable > th > td {
+                border: 1px solid black;
+                text-align: center;
+                background: white;
+            }
+
+        .list-group-item-danger {
+            color: #a94442;
+            background-color: transparent;
+        }
+    </style>
+	<script type="text/javascript">
+        function GenerateQRCode(qrText) {
+
+            document.getElementById("qrResult").innerHTML = "";
+
+            new QRCode(document.getElementById("qrResult"), {
+                text: qrText,
+                width: 145,
+                height: 145,
+                correctLevel: QRCode.CorrectLevel.M,
+                version: 10
+            });
+
+        }
+    </script>
+	
+    <script>
+        $(window).on('popstate', function (e) {
+            var lastEntry = customHistory.pop();
+            history.pushState(lastEntry.data, lastEntry.title, lastEntry.location);
+            // load the last entry
+        });
+    </script>
+</head>
+<body>
+    <form method="post" action="https://csvtu.digivarsity.online/WebApp/Result/SemesterResult.aspx?S=1+SEMESTER&amp;E=NOV-DEC+2023&amp;R=303302223024&amp;T=Regular" id="form1">
+<div class="aspNetHidden">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="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">
+</div>
+
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="D0E4EB65">
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAASB156KVRjBPrVOCI8qOrdEZl678pefj9IpBUSwsJSMnuil9tpu4ETvI4kZswakCGYHWvmGuVw914GpsoQKyMCPV7MXKbI8RGlPLcWNvF/7WHv/0Vg=">
+</div>
+        <div>
+            <div id="divResult" class="row">
+                <div class="col-md-12 box-container">
+                    <div class="box-heading">
+                        <h4 class="box-title"></h4>
+                    </div>
+                    <div style="width: 1000px; margin: 20px auto;">
+                        <div>
+                            <input type="submit" name="btnbk" value="Back" id="btnbk" class="btn btn-warning no-print" style="float: right; margin-right: 16px; margin-top: 20px; display: none">
+                        </div>
+                        <div>
+                            <table cellpadding="0" cellspacing="0" class="nav-justified">
+                                <tbody><tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+
+                                    <td style="width: 100px; text-align: center">
+                                        <img src="./Semester Result_files/sambalpur-university-logo.png"></td>
+                                    <td style="white-space: nowrap; text-align: center; font-size: 25px; font-weight: bold">CHHATTISGARH SWAMI VIVEKANAND TECHNICAL UNIVERSITY, BHILAI</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center" colspan="2">
+                                        <div class="mrg" style="margin: 0 auto; font-weight: 700; border: 1px solid black; width: 362px; text-align: center; }">TABULATION OF RESULT(TR SHEET)</div>
+                                    </td>
+                                </tr>
+                            </tbody></table>
+
+
+                        </div>
+                        <hr>
+                        <div class="heading" style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; text-align: right;">
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-2 col-sm-4 col-xs-2 chngemob11">
+                                <label style="line-height: 23px;">STUDENT NAME:</label>
+                                
+                                <br>
+                                <label style="line-height: 23px;">COURSE&nbsp;/&nbsp;BRANCH:</label>
+                                
+                                <br>
+                                <label style="line-height: 23px;">SEM&nbsp;/&nbsp;LEVEL&nbsp;/&nbsp;YEAR:</label>
+                                
+                                <br>
+                                <label style="line-height: 23px;">ROLL NUMBER:</label>
+                                
+                                <br>
+                                <label style="margin-right: 26px;">INSTITUTE NAME:</label>
+                                
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-5 chngemob11">
+                                <span id="NOC" style="line-height: 28px;">AKASH PATEL</span>
+                                <br>
+                                <span id="NOEx" style="line-height: 27px;">B Tech Computer Science and Engineering</span>
+                                <br>
+                                <span id="sem" style="line-height: 23px;">1 SEMESTER</span>
+                                <br>
+                                <span id="roll_no" style="line-height: 34px;">303302223024</span>
+                                <br>
+                                <span id="NOI" style="line-height: 30px;">SHRI SHANKARACHARYA INSTITUTE OF PROFESSIONAL MANAGEMENT &amp; TECHNOLOGY,RAIPUR</span>
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-xs-2 chngemob11">
+                                <label style="line-height: 23px;">FATHER'S NAME:</label>
+                                <br>
+                                <label style="line-height: 23px;">EXAM SESSION:</label>
+                                <br>
+                                <label style="line-height: 23px;">EXAM TYPE:</label>
+                                <br>
+                                <label style="line-height: 23px;">ENROLLMENT No:</label>
+								<span id="lblABC"><br>
+                                <label style="line-height: 23px;">ABC User ID:</label></span>
+                            </div>
+                            <div class="col-md-4 col-sm-2 col-xs-3 chngemob11">
+                                <span id="Fname" style="line-height: 26px;">RAVI SHANKER PATEL</span>
+                                <br>
+                                <span id="ext" style="line-height: 23px;">NOV-DEC 2023</span>
+                                <br>
+                                <span id="lblstat" style="line-height: 34px;">Regular</span>
+                                <br>
+                                <span id="enroll" style="line-height: 25px;">CD3394</span>
+								<span id="lblUserId"><br>
+                                <span id="abcid" style="line-height: 25px;">686025640851</span></span>
+                            </div>
+                            <div class="text-center">
+                            </div>
+                        </div>
+                        <div>
+	</div><table class="table table-bordered table-striped Resulttable">
+                            
+                            </table><table class="table table-striped table-hover" cellspacing="0" rules="all" border="1" id="GdUnReport" style="border-collapse:collapse;">
+		<tbody><tr>
+			<th colspan="3"></th><th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ESE</th><th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CT</th><th colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TA</th><th colspan="2">TOTAL MARK</th><th colspan="4"></th>
+		</tr><tr>
+			<th class="table_04" align="left" scope="col" style="width:5%;">S.No.</th><th scope="col">Code</th><th scope="col">Subject</th><th scope="col">MAX</th><th scope="col">OBT</th><th scope="col">MAX</th><th scope="col">OBT</th><th scope="col">MAX</th><th scope="col">OBT</th><th scope="col">MAX</th><th scope="col">OBT</th><th scope="col">Letter Grade</th><th scope="col">Grade Point</th><th scope="col">Credit Point</th>
+		</tr><tr>
+			<td class="table_02" align="left">
+                                            1
+                                        </td><td>A000211(011)</td><td>Chemistry-I</td><td>100</td><td>43</td><td>20</td><td>10</td><td>30</td><td>24</td><td>150</td><td>77</td><td>C+</td><td>6</td><td>4</td>
+		</tr><tr>
+			<td class="table_02" align="left">
+                                            2
+                                        </td><td>A000112(014)</td><td>Mathematics-I</td><td>100</td><td>30</td><td>20</td><td>20</td><td>30</td><td>24</td><td>150</td><td>74</td><td>FF</td><td>0</td><td>0</td>
+		</tr><tr>
+			<td class="table_02" align="left">
+                                            3
+                                        </td><td>A000213(022)</td><td>Programming for Problem Solving</td><td>100</td><td>62</td><td>20</td><td>14</td><td>30</td><td>24</td><td>150</td><td>100</td><td>B</td><td>7</td><td>3</td>
+		</tr><tr>
+			<td class="table_02" align="left">
+                                            4
+                                        </td><td>A000214(046)</td><td>English</td><td>100</td><td>74</td><td>20</td><td>7</td><td>30</td><td>24</td><td>150</td><td>105</td><td>B+</td><td>8</td><td>2</td>
+		</tr><tr>
+			<td class="table_02" align="left">
+                                            5
+                                        </td><td>A000215(020)</td><td>Basic Civil Engineering and Mechanics</td><td>100</td><td>27</td><td>20</td><td>11</td><td>30</td><td>27</td><td>150</td><td>65</td><td>FF</td><td>0</td><td>0</td>
+		</tr><tr>
+			<td class="table_02" align="left">
+                                            6
+                                        </td><td>A000225(046)</td><td>Language (Lab)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>10</td><td>7</td><td>10</td><td>7</td><td>B</td><td>7</td><td>1</td>
+		</tr><tr>
+			<td class="table_02" align="left">
+                                            7
+                                        </td><td>A000221(011)</td><td>Chemistry (Lab)</td><td>40</td><td>35</td><td>&nbsp;</td><td>&nbsp;</td><td>20</td><td>19</td><td>60</td><td>54</td><td>A+</td><td>10</td><td>1</td>
+		</tr><tr>
+			<td class="table_02" align="left">
+                                            8
+                                        </td><td>A000222(022)</td><td>Programming for Problem Solving (Lab)</td><td>40</td><td>37</td><td>&nbsp;</td><td>&nbsp;</td><td>20</td><td>19</td><td>60</td><td>56</td><td>A+</td><td>10</td><td>2</td>
+		</tr><tr>
+			<td class="table_02" align="left">
+                                            9
+                                        </td><td>A000223(020)</td><td>Basic Civil Engg. &amp; Mechanics (Lab)</td><td>40</td><td>38</td><td>&nbsp;</td><td>&nbsp;</td><td>20</td><td>20</td><td>60</td><td>58</td><td>A+</td><td>10</td><td>1</td>
+		</tr><tr>
+			<td class="table_02" align="left">
+                                            10
+                                        </td><td>A000224(037)</td><td>Workshop Practice/ Manufacturing Process (Lab)</td><td>40</td><td>36</td><td>&nbsp;</td><td>&nbsp;</td><td>20</td><td>20</td><td>60</td><td>56</td><td>A+</td><td>10</td><td>3</td>
+		</tr>
+	</tbody></table>
+</div>
+                            
+                        
+                        <hr>
+                        <div class="row" style="width: 1000px; margin: 0 auto;">
+                            <div class="col-md-2 col-sm-2 col-xs-2">
+                                <span id="SPIlbl" style="font-weight: 600;">SPI:</span>
+                                <span id="spi"></span>
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-xs-2">
+                                <label style="font-weight: 600;">CPI:</label>
+                                <span id="cpivalue" style="display:none"></span>
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-xs-2"></div>
+                            <div class="col-md-2 col-sm-2 col-xs-2" style="width: 16%;"></div>
+                            <div class="col-md-2 col-sm-2 col-xs-2" style="width: 5%;">
+                                <span id="mxmarks">1000</span>
+                            </div>
+                            <div class="col-md-1 col-sm-2 col-xs-2" style="width: 7%;">
+                                <span id="obtmarks">652</span>
+                            </div>
+                            <div class="col-md-1"></div>
+                            <div class="col-md-1"></div>
+                            <div class="col-md-2">
+                                <span id="rslt" style="font-weight: 600;">RESULT :</span>
+                                <span id="Result" style="font-weight: 600;">Fail</span>
+                            </div>
+                        </div>
+                        <hr style="margin-top: 1px;">
+                        <div style="width: 1000px; margin: 20px auto;">
+                            <div class="row">
+                                <div style="margin-bottom: 5px">
+                                    <div class="col-md-4">
+                                        <span id="RCREATEON" style="font-weight: 600;"><b>Result Created Date :</b></span>
+                                        &nbsp;<span id="rcreateona" style="font-weight: 500;">Jun  6 2024 </span>
+                                        <br>
+                                        <span id="Trdate" style="font-weight: 600;">TR Printed Date :</span>
+                                        &nbsp;<span id="date">27/02/2026</span>
+                                        <br>
+                                        <b style="">This is a Computer Generated Document</b>
+                                    </div>
+
+                                </div>
+								<div class="col-md-4 text-center">
+                                    <div style="margin: 0 auto; height: 120px; width: 120px;">
+                                        <div id="qrResult" title="Enrollment No:CD3394
+Roll No:303302223024
+Name:AKASH PATEL
+Father&#39;s Name:RAVI SHANKER PATEL
+Institute:SHRI SHANKARACHARYA INSTITUTE OF PROFESSIONAL MANAGEMENT &amp; TECHNOLOGY,RAIPUR
+Program Name:B Tech Computer Science and Engineering
+Semester:1 SEMESTER
+A000211(011):77
+A000112(014):74
+A000213(022):100
+A000214(046):105
+A000215(020):65
+A000225(046):7
+A000221(011):54
+A000222(022):56
+A000223(020):58
+A000224(037):56
+Marks Obtained:652
+Total Marks:1000
+Result:Fail
+ResultDate:Jun  6 2024 "><canvas width="145" height="145" style="display: none;"></canvas><img style="display: block;" src="data:image/png;base64,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"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    &nbsp;&nbsp;
+                                <br>
+                                    <img src="./Semester Result_files/signature.jpg" style="margin-top: -16px; margin-right: 89px; height: 34px; float: right">
+                                    <br>
+                                    <b style="float: right; margin-right: 20px;">Exam Controller Signature</b>
+                                </div>
+                            </div>
+                            
+                            
+                            
+                        </div>
+                        <br>
+                        <br>
+                    </div>
+
+                    <div class="clearfix">
+                    </div>
+                </div>
+                <div>
+                <input type="submit" name="printButton" value="Print Result" onclick="javascript:window.print();" id="printButton" class="btn btn-success no-print">
+            &nbsp;
+                <input type="submit" name="btnHome" value="Back to Dashboard" id="btnHome" class="btn btn-primary no-print">
+                </div>
+                    <br><br>
+            </div>
+        
+    
+
+<script type="text/javascript">
+//<![CDATA[
+GenerateQRCode('Enrollment No:CD3394\nRoll No:303302223024\nName:AKASH PATEL\nFather\'s Name:RAVI SHANKER PATEL\nInstitute:SHRI SHANKARACHARYA INSTITUTE OF PROFESSIONAL MANAGEMENT & TECHNOLOGY,RAIPUR\nProgram Name:B Tech Computer Science and Engineering\nSemester:1 SEMESTER\nA000211(011):77\nA000112(014):74\nA000213(022):100\nA000214(046):105\nA000215(020):65\nA000225(046):7\nA000221(011):54\nA000222(022):56\nA000223(020):58\nA000224(037):56\nMarks Obtained:652\nTotal Marks:1000\nResult:Fail\nResultDate:Jun  6 2024 ');//]]>
+</script>
+</form>
+
+
+</body></html>
