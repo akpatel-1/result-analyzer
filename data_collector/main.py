@@ -4,7 +4,7 @@ from scraper.result_navigator import build_roll_url, open_result_page
 from scraper.result_parser import parse_result_page
 from utils.url_parser import parse_result_url
 from utils.stage_resolver import resolve_stage
-from utils.json_saver import save_json
+from utils.json_saver import save_json, build_output_folder
 
 
 def main():
@@ -14,17 +14,36 @@ def main():
 
     semester, session, start_roll, exam_type = parse_result_url(base_url)
     try:
-        exam_type_clean, attempt_no, review_stage, needs_attempt_input = resolve_stage(exam_type)
+        exam_type_clean, attempt_no, review_type, needs_attempt_input = resolve_stage(exam_type)
     except ValueError as exc:
         print(exc)
         return
 
     if needs_attempt_input:
-        attempt_text = input(f"Enter backlog attempt number : ").strip()
-        if not attempt_text.isdigit() or int(attempt_text) < 1:
-            print("Attempt number must be a positive integer.")
+        attempt_text = input(
+            "Enter backlog attempt (0 for Regular, 1-3 for Backlog): "
+        ).strip()
+        if not attempt_text.isdigit():
+            print("Attempt must be 0, 1, 2, or 3.")
             return
-        attempt_no = int(attempt_text)
+
+        selected_attempt = int(attempt_text)
+        if selected_attempt < 0 or selected_attempt > 3:
+            print("Attempt must be 0, 1, 2, or 3.")
+            return
+
+        if selected_attempt == 0:
+            exam_type_clean = "Regular"
+            attempt_no = 1
+        else:
+            exam_type_clean = "Backlog"
+            attempt_no = selected_attempt
+
+    output_folder = build_output_folder(batch, semester)
+    selected_review = review_type if review_type is not None else "none"
+    print(
+        f"Selected -> exam_type: {exam_type_clean}, review_type: {selected_review}, attempt: {attempt_no}"
+    )
 
     start_roll_text = str(start_roll).strip()
     if len(start_roll_text) < 4 or not start_roll_text.isdigit():
@@ -77,17 +96,18 @@ def main():
                 session,
                 exam_type_clean,
                 attempt_no,
-                review_stage,
+                review_type,
                 batch
             )
         except ValueError as exc:
             print(f"Skipped {roll_str[-4:]}: {exc}")
             continue
 
-        save_json(data, batch, attempt_no, review_stage)
+        save_json(data, batch, semester, exam_type_clean, attempt_no, review_type)
         print(f"Saved {roll_str[-4:]}")
 
     driver.quit()
+    print(f"Saved folder: {output_folder}")
 
 
 if __name__ == "__main__":

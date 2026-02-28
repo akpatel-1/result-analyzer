@@ -32,7 +32,7 @@ def safe_text(soup, element_id, default=""):
     return element.text.strip()
 
 
-def parse_result_page(html, semester, session, exam_type, attempt_no, review_stage, batch):
+def parse_result_page(html, semester, session, exam_type, attempt_no, review_type, batch):
     soup = BeautifulSoup(html, "html.parser")
 
     roll_no = safe_text(soup, "roll_no")
@@ -82,7 +82,7 @@ def parse_result_page(html, semester, session, exam_type, attempt_no, review_sta
         "exam_session": session,
         "exam_type": exam_type,
         "attempt_no": attempt_no,
-        "review_stage": review_stage,
+        "review_type": review_type,
         "spi": safe_float(safe_text(soup, "spi", default="")),
         "total_max_marks": safe_int(safe_text(soup, "mxmarks", default="")),
         "total_obt_marks": safe_int(safe_text(soup, "obtmarks", default="")),
