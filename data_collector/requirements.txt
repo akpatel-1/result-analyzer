@@ -1,0 +1,7 @@
+selenium
+undetected-chromedriver
+python-dotenv
+pillow
+pytesseract
+opencv-python
+requests
