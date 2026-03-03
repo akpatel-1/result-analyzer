@@ -1,4 +1,4 @@
-import express from "express";
-import "dotenv/config";
+import 'dotenv/config';
+import express from 'express';
 
 export const app = express();
