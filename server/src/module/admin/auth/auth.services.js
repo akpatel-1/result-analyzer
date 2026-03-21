@@ -33,4 +33,11 @@ export const service = {
 
     return admin;
   },
+
+  async processLogout(sessionId) {
+    if (!sessionId) {
+      return;
+    }
+    await repository.delete(sessionId);
+  },
 };

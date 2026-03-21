@@ -14,4 +14,9 @@ export const repository = {
     redis.set(key, data, { ex: AUTH_CONFIG.SESSSION_TTL });
     return sessionId;
   },
+
+  async delete(sessionId) {
+    const key = `${AUTH_CONFIG.SESSION_PREFIX}${sessionId}`;
+    return redis.del(key);
+  },
 };
