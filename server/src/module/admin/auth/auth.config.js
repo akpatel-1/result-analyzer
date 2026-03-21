@@ -3,7 +3,7 @@ const isProd = process.env.NODE_ENV === 'production';
 export const AUTH_CONFIG = {
   COOKIE_NAME: 'admin_sid',
   SESSION_PREFIX: 'admin:session:',
-  SESSSION_TTL: 7 * 24 * 60 * 60,
+  SESSION_TTL: 7 * 24 * 60 * 60,
   MAX_AGE: 7 * 24 * 60 * 60 * 1000,
 
   get COOKIE_OPTIONS() {
@@ -17,7 +17,7 @@ export const AUTH_CONFIG = {
 
   get CLEAR_COOKIE_OPTIONS() {
     return {
-      ttpOnly: true,
+      httpOnly: true,
       secure: isProd,
       sameSite: isProd ? 'none' : 'lax',
     };
