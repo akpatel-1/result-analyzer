@@ -1,8 +1,8 @@
-import Dashboard from '../components/admin/Dashboard';
+import AdminLoginPage from '../pages/admin/AdminLoginPage';
 
 export const adminRoutes = [
   {
-    path: '/admin/dashboard',
-    element: <Dashboard />,
+    path: '/admin/login',
+    element: <AdminLoginPage />,
   },
 ];
