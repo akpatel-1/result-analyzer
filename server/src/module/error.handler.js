@@ -1,11 +1,15 @@
+import { ApiError } from '../utils/api.error.js';
+
 export function errorHandler(err, req, res, next) {
   const status = err.statusCode || 500;
 
-  console.error(' Error Details:', {
-    url: req.url,
-    error: err.message,
-    code: err.code,
+  console.error('Error Details:', {
+    url: req.originalUrl,
+    method: req.method,
+    message: err.message,
+    code: err.code || 'UNKNOWN',
     type: err.constructor.name,
+    stack: err.stack,
   });
 
   res.status(status).json({
