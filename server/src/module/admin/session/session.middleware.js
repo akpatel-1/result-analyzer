@@ -6,7 +6,7 @@ import { AUTH_CONFIG } from '../auth/auth.config.js';
 import { repository } from './session.repository.js';
 
 export async function validateSession(req, res, next) {
-  const sessionId = req.body[AUTH_CONFIG.COOKIE_NAME];
+  const sessionId = req.cookies[AUTH_CONFIG.COOKIE_NAME];
 
   if (!sessionId) {
     throw new ApiError(ERROR_CONFIG.SESSION_EXPIRED);
