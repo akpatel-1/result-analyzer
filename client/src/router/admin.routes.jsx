@@ -1,8 +1,13 @@
+import AdminDashboardPage from '../pages/admin/AdminDashboarPage';
 import AdminLoginPage from '../pages/admin/AdminLoginPage';
 
 export const adminRoutes = [
   {
     path: '/admin/login',
     element: <AdminLoginPage />,
+  },
+  {
+    path: '/admin/dashboard',
+    element: <AdminDashboardPage />,
   },
 ];
