@@ -48,8 +48,32 @@ def construct_email(name, batch):
     return f"{first}.{last}{batch}@ssipmt.com"
 
 
+def parse_exam_session_and_year(session):
+    value = (session or "").strip()
+    if not value:
+        return None, None
+
+    year_match = re.search(r"\b(19|20)\d{2}\b", value)
+    exam_year = int(year_match.group(0)) if year_match else None
+
+    session_part = re.sub(r"\b(19|20)\d{2}\b", "", value).strip()
+    session_part = re.sub(r"\s+", "", session_part)
+    session_part = session_part.replace("/", "-")
+
+    upper_session = session_part.upper()
+    if "APR" in upper_session and "MAY" in upper_session:
+        exam_session = "Apr-May"
+    elif "NOV" in upper_session and ("DEC" in upper_session or "DEV" in upper_session):
+        exam_session = "Nov-Dec"
+    else:
+        exam_session = session_part.title() if session_part else None
+
+    return exam_session, exam_year
+
+
 def parse_result_page(html, semester, session, exam_type, attempt_no, review_type, batch):
     soup = BeautifulSoup(html, "html.parser")
+    exam_session, exam_year = parse_exam_session_and_year(session)
 
     roll_no = safe_text(soup, "roll_no")
     if not roll_no:
@@ -96,13 +120,14 @@ def parse_result_page(html, semester, session, exam_type, attempt_no, review_typ
         "batch": batch,
         "branch": safe_text(soup, "NOEx"),
         "semester": semester,
-        "exam_session": session,
+        "exam_session": exam_session,
+        "exam_year": exam_year,
         "exam_type": exam_type,
         "attempt_no": attempt_no,
         "review_type": review_type,
         "spi": safe_float(safe_text(soup, "spi", default="")),
         "max_total_marks": safe_int(safe_text(soup, "mxmarks", default="")),
         "obt_total_marks": safe_int(safe_text(soup, "obtmarks", default="")),
-        "overall_status": safe_text(soup, "Result"),
+        "status": safe_text(soup, "Result"),
         "subjects": subjects
     }
