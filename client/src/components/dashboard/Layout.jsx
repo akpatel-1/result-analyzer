@@ -15,18 +15,9 @@ function findItemLabelByTo(items = [], to) {
   return null;
 }
 
-function MainContent({ activeSection, navItems, children }) {
-  const title = findItemLabelByTo(navItems, activeSection) || activeSection;
-
+function MainContent({ children }) {
   return (
-    <main className="flex-1 overflow-y-auto p-6 bg-white">
-      {/* Page Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-800">{title}</h1>
-      </div>
-
-      {children}
-    </main>
+    <main className="flex-1 overflow-y-auto p-6 bg-white">{children}</main>
   );
 }
 
@@ -63,9 +54,7 @@ export default function DashboardLayout({
         />
 
         {/* MAIN CONTENT */}
-        <MainContent activeSection={activeSection} navItems={navItems}>
-          {children}
-        </MainContent>
+        <MainContent>{children}</MainContent>
       </div>
     </div>
   );
