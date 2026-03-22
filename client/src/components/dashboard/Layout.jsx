@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -14,7 +15,7 @@ function findItemLabelByTo(items = [], to) {
   return null;
 }
 
-function MainContent({ activeSection, navItems }) {
+function MainContent({ activeSection, navItems, children }) {
   const title = findItemLabelByTo(navItems, activeSection) || activeSection;
 
   return (
@@ -23,6 +24,8 @@ function MainContent({ activeSection, navItems }) {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-slate-800">{title}</h1>
       </div>
+
+      {children}
     </main>
   );
 }
@@ -31,11 +34,16 @@ export default function DashboardLayout({
   navItems = [],
   bottomItems = [],
   onLogout,
+  children,
 }) {
-  const [activeSection, setActiveSection] = useState(
-    () => navItems[0]?.to ?? ''
-  );
+  const location = useLocation();
+  const currentRoute = `${location.pathname}${location.search}`;
   const [collapsed, setCollapsed] = useState(false);
+  const activeSection =
+    (findItemLabelByTo(navItems, currentRoute) && currentRoute) ||
+    (findItemLabelByTo(navItems, location.pathname) && location.pathname) ||
+    navItems[0]?.to ||
+    '';
 
   return (
     <div className="flex flex-col h-screen bg-white font-sans">
@@ -48,14 +56,16 @@ export default function DashboardLayout({
         <Sidebar
           collapsed={collapsed}
           activeSection={activeSection}
-          setActiveSection={setActiveSection}
+          setActiveSection={() => {}}
           navItems={navItems}
           bottomItems={bottomItems}
           onLogout={onLogout}
         />
 
         {/* MAIN CONTENT */}
-        <MainContent activeSection={activeSection} navItems={navItems} />
+        <MainContent activeSection={activeSection} navItems={navItems}>
+          {children}
+        </MainContent>
       </div>
     </div>
   );

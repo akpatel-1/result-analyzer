@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { adminApi } from '../../components/api/admin.api';
+import { adminApi } from '../../api/admin.api';
 import LoginForm from '../../components/auth/LoginFrom';
 
 export default function AdminLoginPage() {
