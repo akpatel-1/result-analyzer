@@ -8,9 +8,10 @@ import { adminNavigationLinks } from '../../utils/adminNavigationLinks';
 export default function AdminUploadPage() {
   const navigate = useNavigate();
 
-  const handleUpload = async (file) => {
+  const handleUpload = async (files) => {
     const formData = new FormData();
-    formData.append('files', file);
+
+    files.forEach((file) => formData.append('files', file));
 
     const response = await adminApi.profileUpload(formData, {
       headers: { 'Content-Type': 'multipart/form-data' },

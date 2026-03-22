@@ -26,6 +26,7 @@ export default function UploadStudentResults({ onUpload }) {
   const [uploadProgress, setUploadProgress] = useState({}); // { fileName: progress }
   const [uploadResults, setUploadResults] = useState([]); // { name, success, message }
   const [errorMsg, setErrorMsg] = useState('');
+  const [response, setResponse] = useState(null);
 
   // ── Validate & set files ──────────────────
   function handleFiles(incoming) {
@@ -78,65 +79,73 @@ export default function UploadStudentResults({ onUpload }) {
     setUploadProgress({});
     setUploadResults([]);
     setErrorMsg('');
+    setResponse(null);
   }
 
   async function handleUpload() {
     if (files.length === 0 || status === 'uploading') return;
 
-    if (typeof onUpload !== 'function') {
-      setStatus('error');
-      setErrorMsg('Upload handler is not configured.');
-      return;
-    }
-
     try {
       setStatus('uploading');
       setErrorMsg('');
-      const results = [];
+      setResponse(null);
 
-      // Upload files sequentially
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        try {
-          // Simulate progress
-          setUploadProgress((prev) => ({
-            ...prev,
-            [file.name]: 30,
-          }));
+      // mark all files as in-progress
+      const progressInit = {};
+      files.forEach((f) => (progressInit[f.name] = 30));
+      setUploadProgress(progressInit);
 
-          await onUpload(file);
+      const serverResponse = await onUpload(files);
+      const payload = serverResponse?.data ?? serverResponse;
+      setResponse(payload);
 
-          setUploadProgress((prev) => ({
-            ...prev,
-            [file.name]: 100,
-          }));
+      // mark all as done
+      const progressDone = {};
+      files.forEach((f) => (progressDone[f.name] = 100));
+      setUploadProgress(progressDone);
 
-          results.push({
-            name: file.name,
-            success: true,
-            message: 'Uploaded successfully',
-          });
-        } catch (error) {
-          const message =
-            error?.response?.data?.message || error?.message || 'Upload failed';
-          results.push({
-            name: file.name,
+      // build results from server response
+      const skippedRollNos = new Set(payload?.skippedRollNos || []);
+      const skippedSuffixes = new Set(
+        Array.from(skippedRollNos).map((rollNo) => String(rollNo).slice(-4))
+      );
+
+      const results = files.map((f) => {
+        const fileSuffix = f.name.replace(/\.json$/i, '').split('_')[0];
+        const isSkipped = skippedSuffixes.has(fileSuffix);
+
+        if (isSkipped) {
+          return {
+            name: f.name,
             success: false,
-            message,
-          });
+            skipped: true,
+            message: 'Skipped (already exists)',
+          };
         }
-      }
+
+        return {
+          name: f.name,
+          success: true,
+          skipped: false,
+          message: 'Uploaded successfully',
+        };
+      });
 
       setUploadResults(results);
       setStatus('done');
     } catch (error) {
       const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        'Upload failed. Please try again.';
+        error?.response?.data?.message || error?.message || 'Upload failed';
+      const failedResults = files.map((f) => ({
+        name: f.name,
+        success: false,
+        skipped: false,
+        message,
+      }));
       setErrorMsg(message);
       setUploadProgress({});
-      setStatus('error');
+      setUploadResults(failedResults);
+      setStatus('done');
     }
   }
 
@@ -287,9 +296,15 @@ export default function UploadStudentResults({ onUpload }) {
                   Upload Summary
                 </p>
                 <p className="text-xs text-slate-500 mt-1">
-                  {uploadResults.filter((r) => r.success).length} of{' '}
-                  {uploadResults.length} files uploaded successfully
+                  {response?.inserted ??
+                    uploadResults.filter((r) => r.success).length}{' '}
+                  inserted, {response?.skipped ?? 0} skipped
                 </p>
+                {response?.skippedRollNos?.length > 0 && (
+                  <p className="text-xs text-amber-600 mt-1">
+                    Skipped: {response.skippedRollNos.join(', ')}
+                  </p>
+                )}
               </div>
             ) : (
               <div className="bg-red-50 border border-red-200 rounded-xl p-4">
@@ -303,23 +318,31 @@ export default function UploadStudentResults({ onUpload }) {
             )}
 
             {/* Individual results */}
-            <div className="grid grid-cols-5 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               {uploadResults.map((result) => (
                 <div
                   key={result.name}
                   className={`border rounded-xl p-4 flex flex-col items-start gap-3 ${
                     result.success
                       ? 'border-emerald-200 bg-emerald-50'
-                      : 'border-red-200 bg-red-50'
+                      : result.skipped
+                        ? 'border-amber-200 bg-amber-50'
+                        : 'border-red-200 bg-red-50'
                   }`}
                 >
                   <div
                     className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                      result.success ? 'bg-emerald-100' : 'bg-red-100'
+                      result.success
+                        ? 'bg-emerald-100'
+                        : result.skipped
+                          ? 'bg-amber-100'
+                          : 'bg-red-100'
                     }`}
                   >
                     {result.success ? (
                       <RiCheckLine size={20} className="text-emerald-600" />
+                    ) : result.skipped ? (
+                      <RiCloseLine size={20} className="text-amber-600" />
                     ) : (
                       <RiCloseLine size={20} className="text-red-600" />
                     )}
@@ -327,14 +350,22 @@ export default function UploadStudentResults({ onUpload }) {
                   <div className="flex-1 min-w-0">
                     <p
                       className={`text-sm font-medium truncate ${
-                        result.success ? 'text-emerald-700' : 'text-red-700'
+                        result.success
+                          ? 'text-emerald-700'
+                          : result.skipped
+                            ? 'text-amber-700'
+                            : 'text-red-700'
                       }`}
                     >
                       {result.name}
                     </p>
                     <p
                       className={`text-xs mt-0.5 ${
-                        result.success ? 'text-emerald-500' : 'text-red-500'
+                        result.success
+                          ? 'text-emerald-500'
+                          : result.skipped
+                            ? 'text-amber-600'
+                            : 'text-red-500'
                       }`}
                     >
                       {result.message}
@@ -367,7 +398,7 @@ export default function UploadStudentResults({ onUpload }) {
         {/* Done action buttons */}
         {status === 'done' && (
           <div className="mt-4 flex gap-2">
-            {uploadResults.every((r) => !r.success) ? (
+            {uploadResults.every((r) => !r.success && !r.skipped) ? (
               <>
                 <button
                   onClick={handleUpload}

@@ -25,8 +25,8 @@ export const middleware = {
 
     for (const file of req.files) {
       try {
-        const object = JSON.parse(file.buffer.toString('utf-8'));
-        parsedData.push(object);        
+        const parsed = JSON.parse(file.buffer.toString('utf-8'));
+        parsedData.push(...parsed);
       } catch (err) {
         return next(
           new ApiError({
