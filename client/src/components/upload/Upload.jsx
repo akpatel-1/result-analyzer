@@ -211,7 +211,7 @@ export default function UploadStudentResults({ onUpload }) {
 
         {/* ── SELECTED: Files list ── */}
         {status === 'selected' && files.length > 0 && (
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-5 gap-3">
             {files.map((file) => (
               <div
                 key={file.name}
@@ -281,18 +281,29 @@ export default function UploadStudentResults({ onUpload }) {
         {/* ── DONE: Upload results summary ── */}
         {status === 'done' && uploadResults.length > 0 && (
           <div className="space-y-3">
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-              <p className="text-sm font-medium text-slate-700">
-                Upload Summary
-              </p>
-              <p className="text-xs text-slate-500 mt-1">
-                {uploadResults.filter((r) => r.success).length} of{' '}
-                {uploadResults.length} files uploaded successfully
-              </p>
-            </div>
+            {uploadResults.some((r) => r.success) ? (
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <p className="text-sm font-medium text-slate-700">
+                  Upload Summary
+                </p>
+                <p className="text-xs text-slate-500 mt-1">
+                  {uploadResults.filter((r) => r.success).length} of{' '}
+                  {uploadResults.length} files uploaded successfully
+                </p>
+              </div>
+            ) : (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                <p className="text-sm font-medium text-red-700">
+                  All uploads failed
+                </p>
+                <p className="text-xs text-red-500 mt-1">
+                  {uploadResults.length} of {uploadResults.length} files failed
+                </p>
+              </div>
+            )}
 
             {/* Individual results */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-5 gap-3">
               {uploadResults.map((result) => (
                 <div
                   key={result.name}
@@ -353,15 +364,32 @@ export default function UploadStudentResults({ onUpload }) {
           </div>
         )}
 
-        {/* Done action button */}
+        {/* Done action buttons */}
         {status === 'done' && (
-          <div className="mt-4">
-            <button
-              onClick={handleReset}
-              className="w-full py-2 text-sm font-medium text-indigo-600 border border-indigo-200 rounded-xl hover:bg-indigo-50 transition-all"
-            >
-              Upload more files
-            </button>
+          <div className="mt-4 flex gap-2">
+            {uploadResults.every((r) => !r.success) ? (
+              <>
+                <button
+                  onClick={handleUpload}
+                  className="flex-1 py-2 text-sm font-medium text-white bg-red-500 rounded-xl hover:bg-red-600 active:scale-95 transition-all"
+                >
+                  Retry
+                </button>
+                <button
+                  onClick={handleReset}
+                  className="flex-1 py-2 text-sm font-medium text-slate-500 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all"
+                >
+                  Clear & Select New
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={handleReset}
+                className="w-full py-2 text-sm font-medium text-indigo-600 border border-indigo-200 rounded-xl hover:bg-indigo-50 transition-all"
+              >
+                Upload more files
+              </button>
+            )}
           </div>
         )}
 
