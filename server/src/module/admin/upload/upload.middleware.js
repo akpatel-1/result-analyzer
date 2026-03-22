@@ -25,12 +25,8 @@ export const middleware = {
 
     for (const file of req.files) {
       try {
-        const json = JSON.parse(file.buffer.toString('utf-8'));
-        if (Array.isArray(json)) {
-          parsedData.push(...json);
-        } else {
-          parsedData.push(json);
-        }
+        const object = JSON.parse(file.buffer.toString('utf-8'));
+        parsedData.push(object);        
       } catch (err) {
         return next(
           new ApiError({

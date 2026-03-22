@@ -1,9 +1,8 @@
-import { success } from 'zod';
+import { service } from './upload.services.js';
 
 export const controller = {
   async handleProfileUpload(req, res) {
-    res
-      .status(200)
-      .json({ success: true, message: 'Files uploaded successfully' });
+    await service.processProfileUpload(req.data);
+    res.status(201).json({ success: true, message: 'File upload successful' });
   },
 };

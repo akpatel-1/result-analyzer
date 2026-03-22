@@ -17,7 +17,11 @@ export function validateSchema(schema, source = 'body') {
       });
     }
 
-    req.data = Object.assign(req.data || {}, result.data);
+    if (Array.isArray(result.data)) {
+      req.data = result.data;
+    } else {
+      req.data = Object.assign(req.data || {}, result.data);
+    }
 
     next();
   };
