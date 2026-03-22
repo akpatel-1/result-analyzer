@@ -4,7 +4,7 @@ import { repository } from './upload.repository.js';
 export const service = {
   async processProfileUpload(data) {
     const { insertedRollNos, rowCount } =
-      await repository.createStudentsProfile(client, data);
+      await repository.createStudentsProfile(pool, data);
 
     const sentRollNos = data.map((s) => s.roll_no);
     const insertedSet = new Set(insertedRollNos);
