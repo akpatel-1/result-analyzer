@@ -19,4 +19,9 @@ export const repository = {
     const key = `${AUTH_CONFIG.SESSION_PREFIX}${sessionId}`;
     return redis.del(key);
   },
+
+  async get(sessionId) {
+    const key = `${AUTH_CONFIG.SESSION_PREFIX}${sessionId}`;
+    return redis.get(key);
+  },
 };

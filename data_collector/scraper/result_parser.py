@@ -32,6 +32,22 @@ def safe_text(soup, element_id, default=""):
     return element.text.strip()
 
 
+def construct_email(name, batch):
+    """Construct email from name and batch"""
+    if not name or not batch:
+        return None
+    
+    parts = name.strip().split()
+    if len(parts) < 2:
+        # If only one name part, use it twice
+        first = parts[0].lower()
+        return f"{first}.{first}{batch}@ssipmt.com"
+    
+    first = parts[0].lower()
+    last = parts[-1].lower()
+    return f"{first}.{last}{batch}@ssipmt.com"
+
+
 def parse_result_page(html, semester, session, exam_type, attempt_no, review_type, batch):
     soup = BeautifulSoup(html, "html.parser")
 
@@ -45,7 +61,7 @@ def parse_result_page(html, semester, session, exam_type, attempt_no, review_typ
     if not table:
         raise ValueError("Result subject table not found")
 
-    rows = table.find_all("tr")[2:]  # skip header rows
+    rows = table.find_all("tr")[2:]  
 
     for row in rows:
         cols = [c.text.strip() for c in row.find_all("td")]
@@ -66,7 +82,7 @@ def parse_result_page(html, semester, session, exam_type, attempt_no, review_typ
             "obt_ta": safe_int(cols[8]),
             "max_total": safe_int(cols[9]),
             "obt_total": safe_int(cols[10]),
-            "result": subject_result,
+            "status": subject_result,
         }
 
         subjects.append(subject)
@@ -74,6 +90,7 @@ def parse_result_page(html, semester, session, exam_type, attempt_no, review_typ
     return {
         "roll_no": roll_no,
         "name": safe_text(soup, "NOC"),
+        "email": construct_email(safe_text(soup, "NOC"), batch),
         "enroll_id": safe_text(soup, "enroll"),
         "abc_id": safe_text(soup, "abcid") or None,
         "batch": batch,
@@ -86,6 +103,6 @@ def parse_result_page(html, semester, session, exam_type, attempt_no, review_typ
         "spi": safe_float(safe_text(soup, "spi", default="")),
         "max_total_marks": safe_int(safe_text(soup, "mxmarks", default="")),
         "obt_total_marks": safe_int(safe_text(soup, "obtmarks", default="")),
-        "overall_result": safe_text(soup, "Result"),
+        "overall_status": safe_text(soup, "Result"),
         "subjects": subjects
     }
