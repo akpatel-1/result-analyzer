@@ -11,7 +11,9 @@ import {
 } from 'react-icons/io5';
 import { MdOutlineMenuBook } from 'react-icons/md';
 import { TbChartBar, TbReportAnalytics } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
+import { adminApi } from '../../components/api/admin.api';
 import DashboardLayout from '../../components/dashboard/Layout';
 
 const adminNavigationLinks = [
@@ -92,5 +94,12 @@ const adminNavigationLinks = [
 ];
 
 export default function AdminDashboardPage() {
-  return <DashboardLayout navItems={adminNavigationLinks} />;
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    await adminApi.logout();
+    navigate('/login', { replace: true });
+  };
+  return (
+    <DashboardLayout navItems={adminNavigationLinks} onLogout={handleLogout} />
+  );
 }

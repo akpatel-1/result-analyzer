@@ -27,7 +27,11 @@ function MainContent({ activeSection, navItems }) {
   );
 }
 
-export default function DashboardLayout({ navItems = [], bottomItems = [] }) {
+export default function DashboardLayout({
+  navItems = [],
+  bottomItems = [],
+  onLogout,
+}) {
   const [activeSection, setActiveSection] = useState(
     () => navItems[0]?.to ?? ''
   );
@@ -47,6 +51,7 @@ export default function DashboardLayout({ navItems = [], bottomItems = [] }) {
           setActiveSection={setActiveSection}
           navItems={navItems}
           bottomItems={bottomItems}
+          onLogout={onLogout}
         />
 
         {/* MAIN CONTENT */}

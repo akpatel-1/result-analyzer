@@ -1,11 +1,7 @@
-// ✅ FIXED: reads item.to (not item.section), supports color + children
 import { useState } from 'react';
 import { RiArrowDownSLine, RiLogoutBoxLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
-// ─────────────────────────────────────────────────────────────
-// NavButton — renders a single nav item (top-level or child)
-// ─────────────────────────────────────────────────────────────
 function NavButton({
   item,
   activeSection,
@@ -16,16 +12,13 @@ function NavButton({
 }) {
   const { label, icon: Icon, to, color, children } = item;
 
-  // We use the `to` path as the unique key for active tracking
   const isActive = activeSection === to;
   const hasChildren = children && children.length > 0;
 
-  // Track open/close state for items with children
   const [open, setOpen] = useState(false);
 
   function handleClick() {
     if (hasChildren) {
-      // Toggle submenu (only when sidebar is expanded)
       if (!collapsed) setOpen((prev) => !prev);
     } else {
       setActiveSection(to);
@@ -103,6 +96,7 @@ export default function Sidebar({
   setActiveSection,
   navItems = [],
   bottomItems = [],
+  onLogout,
 }) {
   const navigate = useNavigate();
 
@@ -151,6 +145,7 @@ export default function Sidebar({
         <button
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-200 hover:text-red-500 transition-all"
           title={collapsed ? 'Logout' : ''}
+          onClick={onLogout}
         >
           <RiLogoutBoxLine size={20} className="shrink-0" />
           {!collapsed && <span>Logout</span>}
