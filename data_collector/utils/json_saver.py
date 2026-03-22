@@ -29,9 +29,18 @@ def save_json(data, batch, semester, exam_type, attempt, review_type):
     folder = build_output_folder(batch, semester)
     os.makedirs(folder, exist_ok=True)
 
-    roll_no = data.get("roll_no")
-    if not roll_no and isinstance(data.get("student"), dict):
-        roll_no = data["student"].get("roll_no")
+    payload = data
+    if isinstance(data, list):
+        if not data:
+            raise ValueError("Parsed data list is empty")
+        payload = data[0]
+
+    if not isinstance(payload, dict):
+        raise ValueError("Parsed data must be a dict or list of dicts")
+
+    roll_no = payload.get("roll_no")
+    if not roll_no and isinstance(payload.get("student"), dict):
+        roll_no = payload["student"].get("roll_no")
     if not roll_no:
         raise ValueError("Missing roll number in parsed data")
 

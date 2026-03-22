@@ -111,7 +111,7 @@ def parse_result_page(html, semester, session, exam_type, attempt_no, review_typ
 
         subjects.append(subject)
 
-    return {
+    return [{
         "roll_no": roll_no,
         "name": safe_text(soup, "NOC"),
         "email": construct_email(safe_text(soup, "NOC"), batch),
@@ -130,4 +130,5 @@ def parse_result_page(html, semester, session, exam_type, attempt_no, review_typ
         "obt_total_marks": safe_int(safe_text(soup, "obtmarks", default="")),
         "status": safe_text(soup, "Result"),
         "subjects": subjects
-    }
+
+    }]
