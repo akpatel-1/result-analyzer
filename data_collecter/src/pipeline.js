@@ -10,6 +10,7 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function pipeline(client) {
   const input = await prompt();
+  const allResults = [];
 
   const rollNumbers = utils.generateRollNumbers(
     input.startRollNo,
@@ -46,6 +47,8 @@ export async function pipeline(client) {
       const filename = path.join(outputDir, `${roll}.json`);
       fs.writeFileSync(filename, JSON.stringify(finalJson, null, 2));
 
+      allResults.push(finalJson);
+
       console.log(
         `✅ [${roll}] Saved: ${finalJson.name} (${finalJson.obt_total_marks}/${finalJson.max_total_marks})`,
       );
@@ -56,5 +59,12 @@ export async function pipeline(client) {
     await new Promise((r) => setTimeout(r, 1000));
   }
 
+  if (allResults.length > 0) {
+    const combinedFilename = path.join(outputDir, "allResuts.json");
+    fs.writeFileSync(combinedFilename, JSON.stringify(allResults, null, 2));
+    console.log(
+      `\n📦 Saved combined file: ${combinedFilename} (${allResults.length} records)`,
+    );
+  }
   console.log(`\n🎉 Scraping complete. Check the '/${outputDir}' folder.`);
 }
