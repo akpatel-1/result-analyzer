@@ -40,7 +40,7 @@ export async function runScraper(client) {
       const finalJson = createJson(rawData, input);
 
       const filename = path.join(outputDir, `${roll}.json`);
-      fs.writeFileSync(filename, JSON.stringify([finalJson], null, 2));
+      fs.writeFileSync(filename, JSON.stringify(finalJson, null, 2));
 
       console.log(
         `✅ [${roll}] Saved: ${finalJson.name} (${finalJson.obt_total_marks}/${finalJson.max_total_marks})`,
