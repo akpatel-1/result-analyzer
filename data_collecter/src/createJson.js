@@ -28,7 +28,7 @@ export function createJson(rawData, input) {
     spi: rawData.spi,
     max_total_marks: rawData.max_total_marks,
     obt_total_marks: rawData.obt_total_marks,
-    status: rawData.overall_status,
+    overall_status: rawData.overall_status,
     subjects: rawData.subjects,
   };
 

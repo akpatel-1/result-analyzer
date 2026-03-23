@@ -83,7 +83,7 @@ export async function pipeline(client) {
   }
 
   if (allResults.length > 0) {
-    const combinedFilename = path.join(outputDir, "allResuts.json");
+    const combinedFilename = path.join(outputDir, "1allResuts.json");
     fs.writeFileSync(combinedFilename, JSON.stringify(allResults, null, 2));
     console.log(
       `\n📦 Saved combined file: ${combinedFilename} (${allResults.length} records)`,
