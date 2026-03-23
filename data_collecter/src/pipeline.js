@@ -53,7 +53,8 @@ export async function pipeline(client) {
 
       const finalJson = createJson(rawData, input);
 
-      const filename = path.join(outputDir, `${roll}.json`);
+      let file_roll_no = roll.toString().slice(-4);
+      const filename = path.join(outputDir, `${file_roll_no}.json`);
       fs.writeFileSync(filename, JSON.stringify([finalJson], null, 2));
 
       console.log(

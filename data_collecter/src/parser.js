@@ -74,7 +74,7 @@ export function parseResultPage(html, exam_type, review_type) {
 
     const codeRaw = str(cells[1]);
     if (!codeRaw) return;
-    const code = codeRaw.match(/^([A-Z0-9]+)/)?.[1] || codeRaw;
+    const code = codeRaw;
 
     const grade = str(cells[11]);
     const FAIL_GRADES = ["F", "FF"];
