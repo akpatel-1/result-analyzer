@@ -1,33 +1,18 @@
 export const repository = {
-  async createStudentsProfile(client, students) {
-    if (students.length === 0) return { insertedRollNos: [], rowCount: 0 };
-
-    const values = [];
-    const placeholders = students.map((s, i) => {
-      const base = i * 7;
-      values.push(
-        s.name,
-        s.email,
-        s.roll_no,
-        s.enroll_id,
-        s.abc_id,
-        s.batch,
-        s.branch
-      );
-      return `($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6}, $${base + 7})`;
-    });
-
-    const result = await client.query(
-      `INSERT INTO students (name, email, roll_no, enroll_id, abc_id, batch, branch)
-       VALUES ${placeholders.join(', ')}
-       ON CONFLICT DO NOTHING
-       RETURNING roll_no`,
-      values
+  async createStudentsProfile(client, student) {
+    await client.query(
+      `INSERT INTO students
+      (name, roll_no, email, abc_id, enroll_id, batch, branch)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [
+        student.name,
+        student.roll_no,
+        student.email,
+        student.abc_id,
+        student.enroll_id,
+        student.batch,
+        student.branch,
+      ]
     );
-
-    return {
-      insertedRollNos: result.rows.map((r) => r.roll_no),
-      rowCount: result.rowCount,
-    };
   },
 };

@@ -3,8 +3,22 @@ import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
 
+
+
 import { router } from './index.js';
 import { errorHandler } from './module/error.handler.js';
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const app = express();
 
@@ -16,7 +30,7 @@ app.use(
   })
 );
 
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
 app.use(cookieParser());
 app.use(router);
 app.use(errorHandler);

@@ -1,22 +1,19 @@
 import { pool } from '../../../infra/database/db.js';
 import { repository } from './upload.repository.js';
 
+let failed = [];
 export const service = {
-  async processProfileUpload(data) {
-    const { insertedRollNos, rowCount } =
-      await repository.createStudentsProfile(pool, data);
+  async processProfileUpload(students) {
+    const failed = [];
+    for (const key in students) {
+      const student = students[key];
 
-    const sentRollNos = data.map((s) => s.roll_no);
-    const insertedSet = new Set(insertedRollNos);
-    const skippedRollNos = sentRollNos.filter(
-      (roll_no) => !insertedSet.has(roll_no)
-    );
-
-    return {
-      total: data.length,
-      inserted: rowCount,
-      skipped: skippedRollNos.length,
-      skippedRollNos,
-    };
+      try {
+        await repository.createStudentsProfile(pool, student);
+      } catch (err) {
+        failed.push({ roll_no: student.roll_no, error: err.message });
+      }
+    }
+    return failed;
   },
 };

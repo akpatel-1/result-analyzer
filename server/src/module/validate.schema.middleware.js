@@ -17,11 +17,7 @@ export function validateSchema(schema, source = 'body') {
       });
     }
 
-    if (Array.isArray(result.data)) {
-      req.data = result.data;
-    } else {
-      req.data = Object.assign(req.data || {}, result.data);
-    }
+    req.data = Object.assign(req.data || {}, result.data);
 
     next();
   };
