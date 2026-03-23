@@ -4,19 +4,15 @@ import { adminApi } from '../../api/admin.api';
 import DashboardLayout from '../../components/dashboard/Layout';
 import UploadStudentResults from '../../components/upload/Upload';
 import { adminNavigationLinks } from '../../utils/adminNavigationLinks';
+import { parseJsonFiles } from '../../utils/parse.json.files';
 
-export default function AdminUploadPage() {
+export default function AdminProfileUpload() {
   const navigate = useNavigate();
 
   const handleUpload = async (files) => {
-    const formData = new FormData();
+    const payload = await parseJsonFiles(files);
 
-    files.forEach((file) => formData.append('files', file));
-
-    const response = await adminApi.profileUpload(formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return response?.data;
+    return adminApi.upload('profile', payload, {});
   };
 
   const handleLogout = async () => {
@@ -26,7 +22,10 @@ export default function AdminUploadPage() {
 
   return (
     <DashboardLayout navItems={adminNavigationLinks} onLogout={handleLogout}>
-      <UploadStudentResults onUpload={handleUpload} />
+      <UploadStudentResults
+        onUpload={handleUpload}
+        title={'Upload new student profile'}
+      />
     </DashboardLayout>
   );
 }

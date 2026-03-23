@@ -1,14 +1,10 @@
 import { useRef, useState } from 'react';
-import {
-  RiCheckLine,
-  RiCloseLine,
-  RiFileExcel2Line,
-  RiUploadCloud2Line,
-} from 'react-icons/ri';
+import { BsFiletypeJson } from 'react-icons/bs';
+import { RiCheckLine, RiCloseLine, RiUploadCloud2Line } from 'react-icons/ri';
 
-// Allowed file types
-const ACCEPTED = ['.json'];
-const ACCEPT_MIME = 'application/json,.json';
+// Default file types
+const DEFAULT_ACCEPTED = ['.json'];
+const DEFAULT_ACCEPT_MIME = 'application/json,.json';
 
 function formatSize(bytes) {
   if (bytes < 1024) return `${bytes} B`;
@@ -16,19 +12,32 @@ function formatSize(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export default function UploadStudentResults({ onUpload }) {
+export default function UploadStudentResults({
+  onUpload,
+  title = 'Upload files',
+  acceptedExtensions = DEFAULT_ACCEPTED,
+  acceptMime = DEFAULT_ACCEPT_MIME,
+  multiple = true,
+  dropzoneLabel,
+  browseLabel = 'browse to choose a file',
+}) {
   const inputRef = useRef(null);
 
   // states: 'idle' | 'selected' | 'uploading' | 'done' | 'error'
   const [status, setStatus] = useState('idle');
   const [files, setFiles] = useState([]);
   const [dragOver, setDragOver] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState({}); // { fileName: progress }
-  const [uploadResults, setUploadResults] = useState([]); // { name, success, message }
+  const [uploadProgress, setUploadProgress] = useState({});
+  const [uploadResults, setUploadResults] = useState([]);
   const [errorMsg, setErrorMsg] = useState('');
   const [response, setResponse] = useState(null);
+  const allowedExtensions =
+    acceptedExtensions?.length > 0 ? acceptedExtensions : DEFAULT_ACCEPTED;
+  const supportedFormatsText = allowedExtensions.join(', ');
+  const dropText =
+    dropzoneLabel || `Drag & drop your file${multiple ? 's' : ''} here`;
 
-  // ── Validate & set files ──────────────────
+  // ── Validate & set files ──────────────
   function handleFiles(incoming) {
     if (!incoming || incoming.length === 0) return;
 
@@ -37,7 +46,7 @@ export default function UploadStudentResults({ onUpload }) {
 
     Array.from(incoming).forEach((f) => {
       const ext = '.' + f.name.split('.').pop().toLowerCase();
-      if (!ACCEPTED.includes(ext)) {
+      if (!allowedExtensions.includes(ext)) {
         errors.push(f.name);
       } else {
         validFiles.push(f);
@@ -46,7 +55,7 @@ export default function UploadStudentResults({ onUpload }) {
 
     if (errors.length > 0) {
       setErrorMsg(
-        `Invalid files: ${errors.join(', ')}. Only ${ACCEPTED.join(', ')} files are allowed.`
+        `Invalid files: ${errors.join(', ')}. Only ${allowedExtensions.join(', ')} files are allowed.`
       );
       setStatus('error');
     }
@@ -63,7 +72,7 @@ export default function UploadStudentResults({ onUpload }) {
 
   function handleInputChange(e) {
     handleFiles(e.target.files);
-    e.target.value = ''; // reset so same files can be re-selected
+    e.target.value = '';
   }
 
   // ── Drag & Drop ──────────────────────────
@@ -110,9 +119,28 @@ export default function UploadStudentResults({ onUpload }) {
         Array.from(skippedRollNos).map((rollNo) => String(rollNo).slice(-4))
       );
 
+      const failedBySuffix = new Map(
+        (payload?.failed || []).map((item) => [
+          String(item?.roll_no ?? '').slice(-4),
+          item,
+        ])
+      );
+
       const results = files.map((f) => {
-        const fileSuffix = f.name.replace(/\.json$/i, '').split('_')[0];
+        const fileBase = f.name.replace(/\.json$/i, '').split('_')[0];
+        const fileDigits = fileBase.replace(/\D/g, '');
+        const fileSuffix = (fileDigits || fileBase).slice(-4);
+        const failedItem = failedBySuffix.get(fileSuffix);
         const isSkipped = skippedSuffixes.has(fileSuffix);
+
+        if (failedItem) {
+          return {
+            name: f.name,
+            success: false,
+            skipped: false,
+            message: failedItem.error || 'Upload failed',
+          };
+        }
 
         if (isSkipped) {
           return {
@@ -160,10 +188,10 @@ export default function UploadStudentResults({ onUpload }) {
           </div>
           <div>
             <h2 className="text-base font-semibold text-slate-800 leading-tight">
-              Upload new student profile
+              {title}
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
-              Supported formats: .json
+              Supported formats: {supportedFormatsText}
             </p>
           </div>
         </div>
@@ -198,13 +226,11 @@ export default function UploadStudentResults({ onUpload }) {
             </div>
 
             <div className="text-center">
-              <p className="text-sm font-medium text-slate-700">
-                Drag & drop your file here
-              </p>
+              <p className="text-sm font-medium text-slate-700">{dropText}</p>
               <p className="text-xs text-slate-400 mt-1">
                 or{' '}
                 <span className="text-indigo-500 font-medium underline underline-offset-2">
-                  browse to choose a file
+                  {browseLabel}
                 </span>
               </p>
             </div>
@@ -227,7 +253,7 @@ export default function UploadStudentResults({ onUpload }) {
                 className="border border-slate-200 rounded-xl p-4 flex items-center gap-3"
               >
                 <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
-                  <RiFileExcel2Line size={20} className="text-emerald-500" />
+                  <BsFiletypeJson size={20} className="text-emerald-500" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-slate-700 truncate">
@@ -238,9 +264,15 @@ export default function UploadStudentResults({ onUpload }) {
                   </p>
                 </div>
                 <button
-                  onClick={() =>
-                    setFiles(files.filter((f) => f.name !== file.name))
-                  }
+                  onClick={() => {
+                    const remainingFiles = files.filter(
+                      (f) => f.name !== file.name
+                    );
+                    setFiles(remainingFiles);
+                    if (remainingFiles.length === 0) {
+                      setStatus('idle');
+                    }
+                  }}
                   className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all"
                   title="Remove file"
                 >
@@ -261,7 +293,7 @@ export default function UploadStudentResults({ onUpload }) {
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                    <RiFileExcel2Line size={20} className="text-indigo-400" />
+                    <BsFiletypeJson size={20} className="text-indigo-400" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-700 truncate">
@@ -298,7 +330,11 @@ export default function UploadStudentResults({ onUpload }) {
                 <p className="text-xs text-slate-500 mt-1">
                   {response?.inserted ??
                     uploadResults.filter((r) => r.success).length}{' '}
-                  inserted, {response?.skipped ?? 0} skipped
+                  inserted, {response?.skipped ?? 0} skipped,{' '}
+                  {response?.failedCount ??
+                    uploadResults.filter((r) => !r.success && !r.skipped)
+                      .length}{' '}
+                  failed
                 </p>
                 {response?.skippedRollNos?.length > 0 && (
                   <p className="text-xs text-amber-600 mt-1">
@@ -428,8 +464,8 @@ export default function UploadStudentResults({ onUpload }) {
         <input
           ref={inputRef}
           type="file"
-          accept={ACCEPT_MIME}
-          multiple
+          accept={acceptMime}
+          multiple={multiple}
           onChange={handleInputChange}
           className="hidden"
         />

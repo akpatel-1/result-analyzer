@@ -4,5 +4,5 @@ export const adminApi = {
   login: (data) => axiosClient.post('/admin/login', data),
   logout: () => axiosClient.get('/admin/logout'),
 
-  profileUpload: (data) => axiosClient.post('/admin/upload/profile', data),
+  upload: (route, data) => axiosClient.post(`/admin/upload/${route}`, data),
 };

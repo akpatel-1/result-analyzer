@@ -1,6 +1,10 @@
+import { Navigate } from 'react-router-dom';
+
 import AdminDashboardPage from '../pages/admin/AdminDashboarPage';
 import AdminLoginPage from '../pages/admin/AdminLoginPage';
-import AdminUploadPage from '../pages/admin/AdminUploadPage';
+import AdminProfileUpload from '../pages/admin/AdminProfileUpload';
+import AdminResultUpload from '../pages/admin/AdminResultUpload';
+import AdminReviewUpload from '../pages/admin/AdminReviewUpload';
 
 export const adminRoutes = [
   {
@@ -13,6 +17,11 @@ export const adminRoutes = [
   },
   {
     path: '/admin/upload',
-    element: <AdminUploadPage />,
+    children: [
+      { index: true, element: <Navigate to="profile" replace /> },
+      { path: 'profile', element: <AdminProfileUpload /> },
+      { path: 'result', element: <AdminResultUpload /> },
+      { path: 'review', element: <AdminReviewUpload /> },
+    ],
   },
 ];

@@ -1,16 +1,38 @@
 import { FaFileUpload } from 'react-icons/fa';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
-import {
-  IoCheckmarkCircleOutline,
-  IoCloseCircleOutline,
-  IoHomeOutline,
-  IoListOutline,
-  IoPeopleOutline,
-  IoSettingsOutline,
-  IoTrophyOutline,
-} from 'react-icons/io5';
+import { IoCheckmarkCircleOutline, IoCloseCircleOutline, IoHomeOutline, IoListOutline, IoPeopleOutline, IoSettingsOutline, IoTrophyOutline } from 'react-icons/io5';
 import { MdOutlineMenuBook } from 'react-icons/md';
 import { TbChartBar, TbReportAnalytics } from 'react-icons/tb';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const adminNavigationLinks = [
   {
@@ -81,10 +103,31 @@ export const adminNavigationLinks = [
     icon: IoSettingsOutline,
     color: '#f97316',
   },
+
   {
     to: '/admin/upload',
     label: 'Upload results',
     icon: FaFileUpload,
-    color: '#32a866',
+    color: '#22C55E',
+    children: [
+      {
+        to: '/admin/upload/profile',
+        label: 'Profile Upload',
+        icon: IoPeopleOutline,
+        color: '#22C55E',
+      },
+      {
+        to: '/admin/upload/result',
+        label: 'Result Upload',
+        icon: HiOutlineDocumentReport,
+        color: '#22C55E',
+      },
+      {
+        to: '/admin/upload/review',
+        label: 'Review Upload',
+        icon: TbReportAnalytics,
+        color: '#22C55E',
+      },
+    ],
   },
 ];

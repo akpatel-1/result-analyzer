@@ -1,6 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RiArrowDownSLine, RiLogoutBoxLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
+
+function isRouteMatch(activeSection = '', route = '') {
+  if (!activeSection || !route) return false;
+
+  const cleanActive = String(activeSection).split('#')[0];
+  const cleanRoute = String(route).split('#')[0];
+
+  return (
+    cleanActive === cleanRoute ||
+    cleanActive.startsWith(`${cleanRoute}/`) ||
+    cleanActive.startsWith(`${cleanRoute}?`)
+  );
+}
+
+function findActiveChildColor(children = [], activeSection = '') {
+  for (const child of children) {
+    if (isRouteMatch(activeSection, child.to)) return child.color;
+    if (child.children?.length) {
+      const nestedColor = findActiveChildColor(child.children, activeSection);
+      if (nestedColor) return nestedColor;
+    }
+  }
+  return null;
+}
 
 function NavButton({
   item,
@@ -12,14 +36,29 @@ function NavButton({
 }) {
   const { label, icon: Icon, to, color, children } = item;
 
-  const isActive = activeSection === to;
   const hasChildren = children && children.length > 0;
+  const activeChildColor = hasChildren
+    ? findActiveChildColor(children, activeSection)
+    : null;
+  const isDirectActive = isRouteMatch(activeSection, to);
+  const isActive = isDirectActive || Boolean(activeChildColor);
+  const resolvedActiveColor = activeChildColor || color;
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(Boolean(activeChildColor));
+
+  useEffect(() => {
+    if (hasChildren && activeChildColor) {
+      setOpen(true);
+    }
+  }, [hasChildren, activeChildColor]);
 
   function handleClick() {
     if (hasChildren) {
       if (!collapsed) setOpen((prev) => !prev);
+      if (to) {
+        setActiveSection(to);
+        navigate(to);
+      }
     } else {
       setActiveSection(to);
       if (to) navigate(to);
@@ -32,7 +71,7 @@ function NavButton({
       <button
         onClick={handleClick}
         title={collapsed ? label : ''}
-        style={isActive ? { color } : {}}
+        style={isActive ? { color: resolvedActiveColor } : {}}
         className={`
           w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
           ${depth > 0 ? 'pl-8' : ''}
@@ -47,7 +86,7 @@ function NavButton({
         <Icon
           size={20}
           className="shrink-0"
-          style={{ color: isActive ? color : undefined }}
+          style={{ color: isActive ? resolvedActiveColor : undefined }}
         />
 
         {/* Label — hidden when collapsed */}
@@ -65,7 +104,7 @@ function NavButton({
         {!collapsed && !hasChildren && isActive && (
           <span
             className="ml-auto w-1.5 h-1.5 rounded-full shrink-0"
-            style={{ backgroundColor: color }}
+            style={{ backgroundColor: resolvedActiveColor }}
           />
         )}
       </button>
