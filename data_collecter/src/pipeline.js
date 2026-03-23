@@ -8,7 +8,7 @@ import { createJson } from "./createJson.js";
 
 const BASE_URL = process.env.BASE_URL;
 
-export async function runScraper(client) {
+export async function pipeline(client) {
   const input = await prompt();
 
   const rollNumbers = utils.generateRollNumbers(
@@ -30,7 +30,11 @@ export async function runScraper(client) {
       const response = await client.get(url, {
         headers: { Referer: `${BASE_URL}/WebApp/Result/SemesterResult.aspx` },
       });
-      const rawData = parseResultPage(response.data);
+      const rawData = parseResultPage(
+        response.data,
+        input.exam_type,
+        input.review_type,
+      );
 
       if (!rawData) {
         console.log(`⚠️  [${roll}] No result found.`);

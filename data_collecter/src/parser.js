@@ -1,6 +1,6 @@
 import { load } from "cheerio";
 
-export function parseResultPage(html) {
+export function parseResultPage(html, exam_type, review_type) {
   const $ = load(html);
   const table = $("#GdUnReport");
   if (!table.length) return null;
@@ -29,7 +29,6 @@ export function parseResultPage(html) {
   const max_total_marks = parseInt($("#mxmarks").text().trim()) || 0;
   const result_status = $("#Result").text().trim();
 
-  // Attempt to grab SPI if it exists on the page (based on your JSON structure)
   const spiRaw = $("#spi").text().trim() || null;
   const spi = spiRaw ? parseFloat(spiRaw) : null;
 
@@ -39,6 +38,24 @@ export function parseResultPage(html) {
     if (i < 2) return;
     const cells = $(row).find("td");
     if (cells.length < 11) return;
+
+    const obtEseRaw = $(cells[4])
+      .text()
+      .replace(/\u00a0/g, "")
+      .trim();
+    const obtTotalRaw = $(cells[10])
+      .text()
+      .replace(/\u00a0/g, "")
+      .trim();
+
+    // review_type 1 = RTRV (#), 2 = RRV ($)
+    if (review_type === 1) {
+      if (!obtTotalRaw.includes("#")) return; // Skip if no #
+    } else if (review_type === 2) {
+      if (!obtTotalRaw.includes("$")) return; // Skip if no $
+    } else if (exam_type === "Backlog") {
+      if (!obtEseRaw.includes("*")) return; // Skip if no *
+    }
 
     const num = (el) => {
       const txt = $(el)
@@ -59,7 +76,6 @@ export function parseResultPage(html) {
     if (!codeRaw) return;
     const code = codeRaw.match(/^([A-Z0-9]+)/)?.[1] || codeRaw;
 
-    // Determine status (Pass/Fail)
     const grade = str(cells[11]);
     const FAIL_GRADES = ["F", "FF"];
     const subjectStatus =
@@ -96,7 +112,7 @@ export function parseResultPage(html) {
     spi,
     max_total_marks,
     obt_total_marks,
-    status: result_status,
+    overall_status: result_status,
     subjects,
   };
 }
