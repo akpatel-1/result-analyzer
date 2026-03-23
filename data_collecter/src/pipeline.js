@@ -10,7 +10,6 @@ const BASE_URL = process.env.BASE_URL;
 
 export async function pipeline(client) {
   const input = await prompt();
-  const allResults = [];
 
   const rollNumbers = utils.generateRollNumbers(
     input.startRollNo,
@@ -23,14 +22,17 @@ export async function pipeline(client) {
     `\n🚀 Scraping ${rollNumbers.length} results to ./${outputDir}/ ...\n`,
   );
 
-  for (let i = 0; i < rollNumbers.length; i++) {
-    const roll = rollNumbers[i];
-    const url = utils.buildResultUrl(input.sampleUrl, roll);
+  const allResults = [];
 
+  const CONCURRENCY_LIMIT = 5;
+
+  const processRoll = async (roll) => {
+    const url = utils.buildResultUrl(input.sampleUrl, roll);
     try {
       const response = await client.get(url, {
         headers: { Referer: `${BASE_URL}/WebApp/Result/SemesterResult.aspx` },
       });
+
       const rawData = parseResultPage(
         response.data,
         input.exam_type,
@@ -39,24 +41,45 @@ export async function pipeline(client) {
 
       if (!rawData) {
         console.log(`⚠️  [${roll}] No result found.`);
-        continue;
+        return null;
+      }
+
+      if (rawData.subjects.length === 0) {
+        console.log(
+          `⚠️  [${roll}] Page loaded, but no matching ${input.review_type ? "Review" : input.exam_type} subjects found.`,
+        );
+        return null;
       }
 
       const finalJson = createJson(rawData, input);
 
       const filename = path.join(outputDir, `${roll}.json`);
-      fs.writeFileSync(filename, JSON.stringify(finalJson, null, 2));
-
-      allResults.push(finalJson);
+      fs.writeFileSync(filename, JSON.stringify([finalJson], null, 2));
 
       console.log(
         `✅ [${roll}] Saved: ${finalJson.name} (${finalJson.obt_total_marks}/${finalJson.max_total_marks})`,
       );
+      return finalJson;
     } catch (err) {
       console.log(`❌ [${roll}] Error: ${err.message}`);
+      return null;
+    }
+  };
+
+  for (let i = 0; i < rollNumbers.length; i += CONCURRENCY_LIMIT) {
+    const batch = rollNumbers.slice(i, i + CONCURRENCY_LIMIT);
+
+    const batchResults = await Promise.all(
+      batch.map((roll) => processRoll(roll)),
+    );
+
+    for (const result of batchResults) {
+      if (result) allResults.push(result);
     }
 
-    await new Promise((r) => setTimeout(r, 1000));
+    if (i + CONCURRENCY_LIMIT < rollNumbers.length) {
+      await new Promise((r) => setTimeout(r, 500));
+    }
   }
 
   if (allResults.length > 0) {
@@ -66,5 +89,6 @@ export async function pipeline(client) {
       `\n📦 Saved combined file: ${combinedFilename} (${allResults.length} records)`,
     );
   }
+
   console.log(`\n🎉 Scraping complete. Check the '/${outputDir}' folder.`);
 }
