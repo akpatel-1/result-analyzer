@@ -24,7 +24,7 @@ export default function AdminProfileUpload() {
     <DashboardLayout navItems={adminNavigationLinks} onLogout={handleLogout}>
       <UploadStudentResults
         onUpload={handleUpload}
-        title={'Upload new student profile'}
+        title={'Upload Student profile'}
       />
     </DashboardLayout>
   );
