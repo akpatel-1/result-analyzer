@@ -1,19 +1,35 @@
 import { pool } from '../../../infra/database/db.js';
 import { repository } from './upload.repository.js';
 
-let failed = [];
 export const service = {
   async processProfileUpload(students) {
-    const failed = [];
-    for (const key in students) {
-      const student = students[key];
+    const promises = Object.values(students).map((student) =>
+      repository.createStudentsProfile(pool, student)
+    );
 
-      try {
-        await repository.createStudentsProfile(pool, student);
-      } catch (err) {
-        failed.push({ roll_no: student.roll_no, error: err.message });
+    console.log('promise: ', promises);
+
+    const results = await Promise.allSettled(promises);
+
+    console.log('results: ', results);
+
+    const success = [];
+    const failed = [];
+
+    Object.values(students).forEach((student, index) => {
+      const result = results[index];
+      console.log('result: ', result);
+
+      if (result.status === 'fulfilled') {
+        success.push(student.roll_no);
+      } else {
+        failed.push({
+          roll_no: student.roll_no,
+          error: result.reason.message,
+        });
       }
-    }
-    return failed;
+    });
+
+    return { success, failed };
   },
 };
