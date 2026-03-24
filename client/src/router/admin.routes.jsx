@@ -14,13 +14,10 @@ export const adminRoutes = [
     element: <AdminLoginPage />,
   },
   {
-    loader: loader.protectedRoute,
     path: '/admin/dashboard',
     element: <AdminDashboardPage />,
   },
   {
-    loader: loader.protectedRoute,
-
     path: '/admin/upload',
     children: [
       { index: true, element: <Navigate to="profile" replace /> },

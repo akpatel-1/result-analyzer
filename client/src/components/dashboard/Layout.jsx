@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
+import { adminApi } from '../../api/admin.api';
 import Header from './Header';
 import Sidebar from './Sidebar';
 
@@ -28,6 +29,8 @@ export default function DashboardLayout({
   children,
 }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const didVerifyRef = useRef(false);
   const currentRoute = `${location.pathname}${location.search}`;
   const [collapsed, setCollapsed] = useState(false);
   const activeSection =
@@ -35,6 +38,31 @@ export default function DashboardLayout({
     (findItemLabelByTo(navItems, location.pathname) && location.pathname) ||
     navItems[0]?.to ||
     '';
+
+  useEffect(() => {
+    if (didVerifyRef.current) return;
+    didVerifyRef.current = true;
+
+    let cancelled = false;
+
+    adminApi
+      .me()
+      .then((res) => {
+        const role = res?.data?.user?.role;
+        if (!cancelled && role !== 'admin') {
+          navigate('/error/403', { replace: true });
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          navigate('/admin/login', { replace: true });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [navigate]);
 
   return (
     <div className="flex flex-col h-screen bg-white font-sans">

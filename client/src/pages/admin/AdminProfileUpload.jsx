@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../api/admin.api';
 import DashboardLayout from '../../components/dashboard/Layout';
 import UploadStudentResults from '../../components/upload/Upload';
-import { adminNavigationLinks } from '../../utils/adminNavigationLinks';
+import { adminNavigationLinks } from '../../utils/dashboard.navigation';
 import { parseJsonFiles } from '../../utils/parse.json.files';
 
 export default function AdminProfileUpload() {

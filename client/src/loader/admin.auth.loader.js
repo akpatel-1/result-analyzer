@@ -7,7 +7,7 @@ export const loader = {
     try {
       const res = await adminApi.me();
       if (res.data.user.role !== 'admin') {
-        return redirect('/unauthorized');
+        return redirect('/error/403');
       }
       return null;
     } catch {
@@ -19,11 +19,11 @@ export const loader = {
     try {
       const res = await adminApi.me();
       if (res.data.user.role !== 'admin') {
-        return redirect('/unauthorized');
+        return redirect('/error/403');
       }
       return redirect('/admin/dashboard');
     } catch {
-      return redirect('/admin/login');
+      return null;
     }
   },
 };

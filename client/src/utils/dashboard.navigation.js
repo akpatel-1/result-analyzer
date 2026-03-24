@@ -1,40 +1,18 @@
 import { FaFileUpload } from 'react-icons/fa';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
-import { IoCheckmarkCircleOutline, IoCloseCircleOutline, IoHomeOutline, IoListOutline, IoPeopleOutline, IoSettingsOutline, IoTrophyOutline } from 'react-icons/io5';
+import {
+  IoCheckmarkCircleOutline,
+  IoCloseCircleOutline,
+  IoHomeOutline,
+  IoListOutline,
+  IoPeopleOutline,
+  IoSettingsOutline,
+  IoTrophyOutline,
+} from 'react-icons/io5';
 import { MdOutlineMenuBook } from 'react-icons/md';
 import { TbChartBar, TbReportAnalytics } from 'react-icons/tb';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export const adminNavigationLinks = [
+const shared = [
   {
     to: '/admin/dashboard',
     label: 'Dashboard',
@@ -103,7 +81,10 @@ export const adminNavigationLinks = [
     icon: IoSettingsOutline,
     color: '#f97316',
   },
+];
 
+export const adminNavigationLinks = [
+  ...shared,
   {
     to: '/admin/upload',
     label: 'Upload results',
@@ -131,3 +112,5 @@ export const adminNavigationLinks = [
     ],
   },
 ];
+
+export const hodNavigationLinks = [...shared];

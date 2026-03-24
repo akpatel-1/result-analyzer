@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { adminApi } from '../../api/admin.api';
 import DashboardLayout from '../../components/dashboard/Layout';
-import { adminNavigationLinks } from '../../utils/adminNavigationLinks';
+import { adminNavigationLinks } from '../../utils/dashboard.navigation';
 
 export default function AdminDashboardPage() {
   const navigate = useNavigate();
