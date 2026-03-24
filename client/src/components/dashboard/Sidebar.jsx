@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { RiArrowDownSLine, RiLogoutBoxLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
@@ -44,21 +44,15 @@ function NavButton({
   const isActive = isDirectActive || Boolean(activeChildColor);
   const resolvedActiveColor = activeChildColor || color;
 
-  const [open, setOpen] = useState(Boolean(activeChildColor));
-
-  useEffect(() => {
-    if (hasChildren && activeChildColor) {
-      setOpen(true);
-    }
-  }, [hasChildren, activeChildColor]);
+  const [manualOpen, setManualOpen] = useState(false);
+  const open = !collapsed && (manualOpen || Boolean(activeChildColor));
 
   function handleClick() {
     if (hasChildren) {
-      if (!collapsed) setOpen((prev) => !prev);
-      if (to) {
-        setActiveSection(to);
-        navigate(to);
+      if (!collapsed) {
+        setManualOpen((prev) => !prev);
       }
+      return;
     } else {
       setActiveSection(to);
       if (to) navigate(to);
