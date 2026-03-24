@@ -1,5 +1,3 @@
-import { success } from 'zod';
-
 import { ApiError } from '../../../utils/api.error.js';
 import { ERROR_CONFIG } from '../../error.config.js';
 import { AUTH_CONFIG } from '../auth/auth.config.js';
@@ -12,15 +10,16 @@ export async function validateSession(req, res, next) {
     throw new ApiError(ERROR_CONFIG.SESSION_EXPIRED);
   }
 
-  const admin = await repository.get(sessionId);
+  const user = await repository.get(sessionId);
 
-  if (!admin) {
+  if (!user) {
     throw new ApiError(ERROR_CONFIG.USER_NOT_FOUND);
   }
 
   req.session = {
-    id: admin.id,
-    email: admin.email,
+    id: user.id,
+    role: user.role,
+    email: user.email,
   };
 
   next();

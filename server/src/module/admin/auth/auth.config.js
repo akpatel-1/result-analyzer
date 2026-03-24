@@ -1,8 +1,8 @@
 const isProd = process.env.NODE_ENV === 'production';
 
 export const AUTH_CONFIG = {
-  COOKIE_NAME: 'admin_sid',
-  SESSION_PREFIX: 'admin:session:',
+  COOKIE_NAME: 'sid',
+  SESSION_PREFIX: 'sess:',
   SESSION_TTL: 7 * 24 * 60 * 60,
   MAX_AGE: 7 * 24 * 60 * 60 * 1000,
 

@@ -19,4 +19,9 @@ export const ERROR_CONFIG = {
     message: 'User not found',
     code: 'USER_NOT_FOUND',
   },
+  FORBIDDEN_REQUEST: {
+    statusCode: 403,
+    message: 'You do not have permission to perform this action',
+    code: 'FORBIDDEN_REQUEST',
+  },
 };

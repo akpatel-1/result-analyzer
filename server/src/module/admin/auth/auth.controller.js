@@ -6,7 +6,9 @@ export const controller = {
     const { sessionId, data } = await service.processLogin(req.data);
 
     res.cookie(AUTH_CONFIG.COOKIE_NAME, sessionId, AUTH_CONFIG.COOKIE_OPTIONS);
-    res.status(200).json({ success: true, message: 'Login successful', data });
+    res
+      .status(200)
+      .json({ success: true, message: 'Login successful', ...data });
   },
 
   async handleLogout(req, res) {
@@ -20,5 +22,10 @@ export const controller = {
       success: true,
       message: 'Logout successful',
     });
+  },
+
+  async handleMe(req, res) {
+    const { role, email } = req.session;
+    res.status(200).json({ success: true, user: { role, email } });
   },
 };

@@ -8,11 +8,13 @@ import { findAdminByEmail } from './auth.repository.js';
 export const service = {
   async processLogin({ email, password }) {
     const admin = await this._authenticate(email, password);
-    const sessionId = await repository.create(admin.id);
+
+    const sessionId = await repository.create(admin);
     return {
       sessionId,
       data: {
         id: admin.id,
+        role: admin.role,
         email: admin.email,
       },
     };
@@ -25,7 +27,7 @@ export const service = {
       throw new ApiError(ERROR_CONFIG.INVALID_CREDENTIALS);
     }
 
-    const isMatch = argon2.verify(admin.password_hash, password);
+    const isMatch = await argon2.verify(admin.password_hash, password);
 
     if (!isMatch) {
       throw new ApiError(ERROR_CONFIG.INVALID_CREDENTIALS);
