@@ -9,10 +9,13 @@ import {
   IoSettingsOutline,
   IoTrophyOutline,
 } from 'react-icons/io5';
+import { IoPersonOutline } from 'react-icons/io5';
 import { MdOutlineMenuBook } from 'react-icons/md';
+import { MdOutlineSchool } from 'react-icons/md';
 import { TbChartBar, TbReportAnalytics } from 'react-icons/tb';
 
-const shared = [
+
+export const adminNavigationLinks = [
   {
     to: '/admin/dashboard',
     label: 'Dashboard',
@@ -81,10 +84,7 @@ const shared = [
     icon: IoSettingsOutline,
     color: '#f97316',
   },
-];
 
-export const adminNavigationLinks = [
-  ...shared,
   {
     to: '/admin/upload',
     label: 'Upload results',
@@ -113,4 +113,150 @@ export const adminNavigationLinks = [
   },
 ];
 
-export const hodNavigationLinks = [...shared];
+export const hodNavigationLinks = [
+  {
+    to: '/hod/dashboard',
+    label: 'Dashboard',
+    icon: IoHomeOutline,
+    color: '#6777F1',
+  },
+  {
+    to: '/hod/results',
+    label: 'Results',
+    icon: HiOutlineDocumentReport,
+    color: '#22C55E',
+    children: [
+      {
+        to: '/hod/results?status=all',
+        label: 'All Results',
+        icon: IoListOutline,
+        color: '#6B7280',
+      },
+      {
+        to: '/hod/results?status=passed',
+        label: 'Passed',
+        icon: IoCheckmarkCircleOutline,
+        color: '#10B981',
+      },
+      {
+        to: '/hod/results?status=failed',
+        label: 'Failed',
+        icon: IoCloseCircleOutline,
+        color: '#EF4444',
+      },
+    ],
+  },
+  {
+    to: '/hod/students',
+    label: 'Students',
+    icon: IoPeopleOutline,
+    color: '#8B5CF6',
+  },
+  {
+    to: '/hod/subjects',
+    label: 'Subjects',
+    icon: MdOutlineMenuBook,
+    color: '#F59E0B',
+  },
+  {
+    to: '/hod/analytics',
+    label: 'Analytics',
+    icon: TbChartBar,
+    color: '#0EA5E9',
+  },
+  {
+    to: '/hod/rankings',
+    label: 'Rankings',
+    icon: IoTrophyOutline,
+    color: '#EAB308',
+  },
+  {
+    to: '/hod/reports',
+    label: 'Reports',
+    icon: TbReportAnalytics,
+    color: '#6366F1',
+  },
+  {
+    to: '/hod/settings',
+    label: 'Settings',
+    icon: IoSettingsOutline,
+    color: '#f97316',
+  },
+];
+
+export const studentNavigationLinks = [
+  {
+    to: '/student/dashboard',
+    label: 'Dashboard',
+    icon: IoHomeOutline,
+    color: '#6777F1',
+  },
+  {
+    to: '/student/profile',
+    label: 'My Profile',
+    icon: IoPersonOutline,
+    color: '#8B5CF6',
+  },
+  {
+    to: '/student/semester',
+    label: 'Semester',
+    icon: MdOutlineSchool,
+    color: '#F59E0B',
+    children: [
+      {
+        to: '/student/semester?sem=1',
+        label: 'Semester 1',
+        icon: IoListOutline,
+        color: '#6B7280',
+      },
+      {
+        to: '/student/semester?sem=2',
+        label: 'Semester 2',
+        icon: IoListOutline,
+        color: '#6B7280',
+      },
+      {
+        to: '/student/semester?sem=3',
+        label: 'Semester 3',
+        icon: IoListOutline,
+        color: '#6B7280',
+      },
+      {
+        to: '/student/semester?sem=4',
+        label: 'Semester 4',
+        icon: IoListOutline,
+        color: '#6B7280',
+      },
+      {
+        to: '/student/semester?sem=5',
+        label: 'Semester 5',
+        icon: IoListOutline,
+        color: '#6B7280',
+      },
+    ],
+  },
+  {
+    to: '/student/results',
+    label: 'Results',
+    icon: HiOutlineDocumentReport,
+    color: '#22C55E',
+  },
+  {
+    to: '/student/subjects',
+    label: 'Subjects',
+    icon: MdOutlineMenuBook,
+    color: '#0EA5E9',
+  },
+  {
+    to: '/student/rankings',
+    label: 'Rankings',
+    icon: IoTrophyOutline,
+    color: '#EAB308',
+  },
+  {
+    to: '/student/settings',
+    label: 'Settings',
+    icon: IoSettingsOutline,
+    color: '#f97316',
+  },
+];
