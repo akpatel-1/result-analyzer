@@ -15,3 +15,11 @@ uploadRoute.post(
   validateSchema(schema),
   controller.handleProfileUpload
 );
+
+uploadRoute.post(
+  '/upload/subjects-info',
+  validateSession,
+  validateRole('admin'),
+  validateSchema(schema),
+  controller.createSubjectInfo
+);

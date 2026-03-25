@@ -115,13 +115,18 @@ export default function UploadStudentResults({
 
       // build results from server response
       const successSet = new Set(
-        payload?.data?.success || payload?.success || []
+        payload?.status?.success ||
+          payload?.data?.success ||
+          payload?.success ||
+          []
       );
       const failedByRollNo = new Map(
-        (payload?.data?.failed || payload?.failed || []).map((item) => [
-          String(item?.roll_no ?? ''),
-          item,
-        ])
+        (
+          payload?.status?.failed ||
+          payload?.data?.failed ||
+          payload?.failed ||
+          []
+        ).map((item) => [String(item?.roll_no ?? ''), item])
       );
       const skippedRollNos = new Set(payload?.skippedRollNos || []);
 
@@ -357,7 +362,8 @@ export default function UploadStudentResults({
                           Successful
                         </p>
                         <p className="text-2xl font-bold text-emerald-700 mt-1">
-                          {response?.data?.success?.length ??
+                          {response?.status?.success?.length ??
+                            response?.data?.success?.length ??
                             uploadResults.filter((r) => r.success && !r.skipped)
                               .length}
                         </p>
@@ -376,7 +382,8 @@ export default function UploadStudentResults({
                           Failed
                         </p>
                         <p className="text-2xl font-bold text-red-700 mt-1">
-                          {response?.data?.failed?.length ??
+                          {response?.status?.failed?.length ??
+                            response?.data?.failed?.length ??
                             uploadResults.filter(
                               (r) => !r.success && !r.skipped
                             ).length}

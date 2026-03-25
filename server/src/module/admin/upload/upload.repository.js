@@ -15,4 +15,20 @@ export const repository = {
       ]
     );
   },
+
+  async insertSubjectsInfo(client, data) {
+    await client.query(
+      `INSERT INTO subjects_info
+      (code, name, max_ese, max_ct, max_ta, max_total)
+      VALUES ($1, $2, $3, $4, $5, $6)`,
+      [
+        data.code,
+        data.name,
+        data.max_ese,
+        data.max_ct,
+        data.max_ta,
+        data.max_total,
+      ]
+    );
+  },
 };
