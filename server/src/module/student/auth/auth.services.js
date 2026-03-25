@@ -57,9 +57,47 @@ export const service = {
       await repository.createRefreshToken(client, {
         studentId: student.id,
         tokenHash: hashedToken,
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        expiresAt: AUTH_CONFIG.REFRESH_TOKEN_EXPIRE,
       });
       return { studentId: student.id, rawToken };
     });
+  },
+
+  async refreshAccessToken(refreshToken) {
+    if (!refreshToken) {
+      throw new ApiError(ERROR_CONFIG.SESSION_EXPIRED);
+    }
+    const hashedToken = token.generateHash(refreshToken);
+
+    const { studentId, rawToken } = await withTransaction(
+      pool,
+      async (client) => {
+        const studentId = await repository.markRefreshTokenAsRevoked(
+          client,
+          hashedToken
+        );
+
+        if (!studentId) {
+          throw new ApiError(ERROR_CONFIG.SESSION_EXPIRED);
+        }
+
+        const rawToken = await this._createSessionById(client, studentId);
+
+        return { studentId, rawToken };
+      }
+    );
+    const accessToken = token.generateAccessToken(studentId);
+
+    return { accessToken, refreshToken: rawToken };
+  },
+
+  async _createSessionById(client, studentId) {
+    const { rawToken, hashedToken } = token.generateAuthToken();
+    await repository.createRefreshToken(client, {
+      studentId,
+      tokenHash: hashedToken,
+      expiresAt: AUTH_CONFIG.REFRESH_TOKEN_EXPIRE,
+    });
+    return rawToken;
   },
 };

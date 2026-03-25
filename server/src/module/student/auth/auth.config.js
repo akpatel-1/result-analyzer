@@ -9,6 +9,8 @@ export const AUTH_CONFIG = {
   REFRESH_COOKIE_NAME: 'user_rid',
   REFRESH_MAX_AGE: 30 * 24 * 60 * 60 * 1000,
 
+  REFRESH_TOKEN_EXPIRE: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+
   get ACCESS_COOKIE_OPTIONS() {
     return {
       httpOnly: true,

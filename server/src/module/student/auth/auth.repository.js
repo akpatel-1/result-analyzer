@@ -16,4 +16,26 @@ export const repository = {
       [data.studentId, data.tokenHash, data.expiresAt]
     );
   },
+
+  async markRefreshTokenAsRevoked(client, tokenHash) {
+    const result = await client.query(
+      `UPDATE refresh_tokens 
+       SET revoked_at = NOW() 
+       WHERE token_hash = $1
+       AND revoked_at IS NULL
+       AND expires_at > NOW() 
+       RETURNING student_id`,
+      [tokenHash]
+    );
+    return result.rows[0]?.student_id;
+  },
+
+  async findStudentById(client, id) {
+    const result = await client.query(
+      `SELECT id, email FROM students WHERE id = $1`,
+      [id]
+    );
+
+    return result.rows[0];
+  },
 };

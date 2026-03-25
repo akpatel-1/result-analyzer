@@ -40,4 +40,14 @@ export const ERROR_CONFIG = {
     message: 'Invalid or expired OTP',
     code: 'INVALID_OR_EXPIRED_OTP',
   },
+  ACCESS_TOKEN_MISSING: {
+    statusCode: 401,
+    message: 'Authentication required.',
+    code: 'ACCESS_TOKEN_MISSING',
+  },
+  INVALID_TOKEN: {
+    statusCode: 401,
+    message: 'Invalid token structure',
+    code: 'INVALID_TOKEN',
+  },
 };

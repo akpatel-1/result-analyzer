@@ -17,3 +17,5 @@ studentAuth.post(
   validateSchema(schema.otp),
   controller.handleOtpVerification
 );
+
+studentAuth.post('/auth/refresh', controller.refreshToken);
