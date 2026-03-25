@@ -1,18 +1,21 @@
 import { FaFileUpload } from 'react-icons/fa';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
-import {
-  IoCheckmarkCircleOutline,
-  IoCloseCircleOutline,
-  IoHomeOutline,
-  IoListOutline,
-  IoPeopleOutline,
-  IoSettingsOutline,
-  IoTrophyOutline,
-} from 'react-icons/io5';
+import { IoCheckmarkCircleOutline, IoCloseCircleOutline, IoHomeOutline, IoListOutline, IoPeopleOutline, IoSettingsOutline, IoTrophyOutline } from 'react-icons/io5';
 import { IoPersonOutline } from 'react-icons/io5';
 import { MdOutlineMenuBook } from 'react-icons/md';
 import { MdOutlineSchool } from 'react-icons/md';
 import { TbChartBar, TbReportAnalytics } from 'react-icons/tb';
+
+
+
+
+
+
+
+
+
+
+
 
 
 export const adminNavigationLinks = [
@@ -107,6 +110,12 @@ export const adminNavigationLinks = [
         to: '/admin/upload/review',
         label: 'Review Upload',
         icon: TbReportAnalytics,
+        color: '#22C55E',
+      },
+      {
+        to: '/admin/upload/subjects',
+        label: 'Subjects Upload',
+        icon: MdOutlineMenuBook,
         color: '#22C55E',
       },
     ],
