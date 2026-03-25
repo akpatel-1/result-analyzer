@@ -100,4 +100,8 @@ export const service = {
     });
     return rawToken;
   },
+
+  async logoutStudent(studentId) {
+    return await repository.revokeRefreshToken(pool, studentId);
+  },
 };

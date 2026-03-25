@@ -2,6 +2,7 @@ import express from 'express';
 
 import { validateSchema } from '../../validate.schema.middleware.js';
 import { controller } from './auth.controller.js';
+import { authenticateToken } from './auth.middleware.js';
 import { schema } from './auth.schema.js';
 
 export const studentAuth = express.Router();
@@ -19,3 +20,5 @@ studentAuth.post(
 );
 
 studentAuth.post('/auth/refresh', controller.refreshToken);
+
+studentAuth.post('/auth/logout', authenticateToken, controller.logout);

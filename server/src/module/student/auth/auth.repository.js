@@ -38,4 +38,12 @@ export const repository = {
 
     return result.rows[0];
   },
+  async revokeRefreshToken(client, studentId) {
+    const result = await client.query(
+      `UPDATE refresh_tokens
+      SET revoked_at = NOW()
+      WHERE student_id = $1`,
+      [studentId]
+    );
+  },
 };

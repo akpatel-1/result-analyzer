@@ -12,7 +12,7 @@ export const controller = {
   },
 
   async handleOtpVerification(req, res) {
-    const toekn = await service.processOtpVerification(req.data);
+    const token = await service.processOtpVerification(req.data);
 
     res.cookie(
       AUTH_CONFIG.ACCESS_COOKIE_NAME,
@@ -49,5 +49,10 @@ export const controller = {
     );
 
     return res.status(200).json({ success: true });
+  },
+
+  async logout(req, res) {
+    await service.logoutStudent(req.studentId);
+    res.status(200).json({ message: 'success' });
   },
 };
