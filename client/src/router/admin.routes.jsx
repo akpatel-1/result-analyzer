@@ -20,7 +20,6 @@ export const adminRoutes = [
     element: <AdminDashboardPage />,
   },
   {
-    loader: loader.protectedRoute,
     path: '/admin/upload',
     children: [
       { index: true, element: <Navigate to="profile" replace /> },

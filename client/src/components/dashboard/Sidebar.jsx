@@ -32,6 +32,7 @@ function NavButton({
   setActiveSection,
   collapsed,
   navigate,
+  darkMode,
   depth = 0,
 }) {
   const { label, icon: Icon, to, color, children } = item;
@@ -72,7 +73,9 @@ function NavButton({
           ${
             isActive
               ? 'bg-indigo-50'
-              : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'
+              : darkMode
+                ? 'text-slate-300 hover:bg-slate-800 hover:text-slate-100'
+                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'
           }
         `}
       >
@@ -114,6 +117,7 @@ function NavButton({
               setActiveSection={setActiveSection}
               collapsed={collapsed}
               navigate={navigate}
+              darkMode={darkMode}
               depth={depth + 1}
             />
           ))}
@@ -130,6 +134,7 @@ export default function Sidebar({
   navItems = [],
   bottomItems = [],
   onLogout,
+  darkMode,
 }) {
   const navigate = useNavigate();
 
@@ -137,14 +142,19 @@ export default function Sidebar({
     <aside
       className={`
         ${collapsed ? 'w-16' : 'w-60'}
-        flex flex-col h-full bg-white border-r border-slate-200
+        flex flex-col h-full border-r
+        ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}
         transition-all duration-300 ease-in-out shrink-0
       `}
     >
       {/* ── Main Nav Items ── */}
-      <nav className="flex-1 py-6 flex flex-col gap-1 px-2 overflow-y-auto">
+      <nav className="no-scrollbar flex-1 py-6 flex flex-col gap-1 px-2 overflow-y-auto">
         {!collapsed && (
-          <p className="text-xs font-semibold text-slate-400 uppercase px-3 mb-2 tracking-widest">
+          <p
+            className={`text-xs font-semibold uppercase px-3 mb-2 tracking-widest ${
+              darkMode ? 'text-slate-500' : 'text-slate-400'
+            }`}
+          >
             Menu
           </p>
         )}
@@ -157,12 +167,17 @@ export default function Sidebar({
             setActiveSection={setActiveSection}
             collapsed={collapsed}
             navigate={navigate}
+            darkMode={darkMode}
           />
         ))}
       </nav>
 
       {/* ── Bottom Items + Logout ── */}
-      <div className="py-4 px-2 border-t border-slate-200 flex flex-col gap-1">
+      <div
+        className={`py-4 px-2 border-t flex flex-col gap-1 ${
+          darkMode ? 'border-slate-800' : 'border-slate-200'
+        }`}
+      >
         {bottomItems.map((item) => (
           <NavButton
             key={item.to}
@@ -171,6 +186,7 @@ export default function Sidebar({
             setActiveSection={setActiveSection}
             collapsed={collapsed}
             navigate={navigate}
+            darkMode={darkMode}
           />
         ))}
 

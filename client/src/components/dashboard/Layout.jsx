@@ -16,9 +16,15 @@ function findItemLabelByTo(items = [], to) {
   return null;
 }
 
-function MainContent({ children }) {
+function MainContent({ children, darkMode }) {
   return (
-    <main className="flex-1 overflow-y-auto p-6 bg-white">{children}</main>
+    <main
+      className={`flex-1 overflow-y-auto p-6 ${
+        darkMode ? 'bg-slate-900' : 'bg-white'
+      }`}
+    >
+      {children}
+    </main>
   );
 }
 
@@ -33,6 +39,11 @@ export default function DashboardLayout({
   const didVerifyRef = useRef(false);
   const currentRoute = `${location.pathname}${location.search}`;
   const [collapsed, setCollapsed] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) return savedTheme === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
   const activeSection =
     (findItemLabelByTo(navItems, currentRoute) && currentRoute) ||
     (findItemLabelByTo(navItems, location.pathname) && location.pathname) ||
@@ -64,10 +75,30 @@ export default function DashboardLayout({
     };
   }, [navigate]);
 
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      return;
+    }
+
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
+  }, [darkMode]);
+
   return (
-    <div className="flex flex-col h-screen bg-white font-sans">
+    <div
+      className={`flex flex-col h-screen font-sans ${
+        darkMode ? 'bg-slate-900' : 'bg-white'
+      }`}
+    >
       {/* HEADER */}
-      <Header collapsed={collapsed} setCollapsed={setCollapsed} />
+      <Header
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+      />
 
       {/* BODY = SIDEBAR + MAIN */}
       <div className="flex flex-1 overflow-hidden">
@@ -79,10 +110,11 @@ export default function DashboardLayout({
           navItems={navItems}
           bottomItems={bottomItems}
           onLogout={onLogout}
+          darkMode={darkMode}
         />
 
         {/* MAIN CONTENT */}
-        <MainContent>{children}</MainContent>
+        <MainContent darkMode={darkMode}>{children}</MainContent>
       </div>
     </div>
   );

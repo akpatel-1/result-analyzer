@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BsFiletypeJson } from 'react-icons/bs';
 import { RiCheckLine, RiCloseLine, RiUploadCloud2Line } from 'react-icons/ri';
 
@@ -31,11 +31,26 @@ export default function UploadStudentResults({
   const [uploadResults, setUploadResults] = useState([]);
   const [errorMsg, setErrorMsg] = useState('');
   const [response, setResponse] = useState(null);
+  const [isDark, setIsDark] = useState(() =>
+    document.documentElement.classList.contains('dark')
+  );
   const allowedExtensions =
     acceptedExtensions?.length > 0 ? acceptedExtensions : DEFAULT_ACCEPTED;
   const supportedFormatsText = allowedExtensions.join(', ');
   const dropText =
     dropzoneLabel || `Drag & drop your file${multiple ? 's' : ''} here`;
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const updateTheme = () => setIsDark(root.classList.contains('dark'));
+
+    updateTheme();
+
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+
+    return () => observer.disconnect();
+  }, []);
 
   // ── Validate & set files ──────────────
   function handleFiles(incoming) {
@@ -113,7 +128,6 @@ export default function UploadStudentResults({
       files.forEach((f) => (progressDone[f.name] = 100));
       setUploadProgress(progressDone);
 
-      
       const successList = (
         payload?.status?.success ||
         payload?.success ||
@@ -218,17 +232,29 @@ export default function UploadStudentResults({
   return (
     <div className="w-full">
       {/* Card */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+      <div
+        className={`border rounded-2xl p-6 shadow-sm ${
+          isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
+        }`}
+      >
         {/* Title */}
         <div className="flex items-center gap-3 mb-5">
           <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
             <RiUploadCloud2Line size={22} className="text-indigo-500" />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-slate-800 leading-tight">
+            <h2
+              className={`text-base font-semibold leading-tight ${
+                isDark ? 'text-slate-100' : 'text-slate-800'
+              }`}
+            >
               {title}
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p
+              className={`text-xs mt-0.5 ${
+                isDark ? 'text-slate-500' : 'text-slate-400'
+              }`}
+            >
               Supported formats: {supportedFormatsText}
             </p>
           </div>
@@ -249,23 +275,51 @@ export default function UploadStudentResults({
               cursor-pointer transition-all duration-200
               ${
                 dragOver
-                  ? 'border-indigo-400 bg-indigo-50'
-                  : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
+                  ? isDark
+                    ? 'border-indigo-400 bg-indigo-950/40'
+                    : 'border-indigo-400 bg-indigo-50'
+                  : isDark
+                    ? 'border-slate-700 hover:border-indigo-400 hover:bg-slate-800'
+                    : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
               }
             `}
           >
             <div
-              className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${dragOver ? 'bg-indigo-100' : 'bg-slate-100'}`}
+              className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
+                dragOver
+                  ? isDark
+                    ? 'bg-indigo-900/60'
+                    : 'bg-indigo-100'
+                  : isDark
+                    ? 'bg-slate-800'
+                    : 'bg-slate-100'
+              }`}
             >
               <RiUploadCloud2Line
                 size={28}
-                className={`transition-colors ${dragOver ? 'text-indigo-500' : 'text-slate-400'}`}
+                className={`transition-colors ${
+                  dragOver
+                    ? 'text-indigo-500'
+                    : isDark
+                      ? 'text-slate-500'
+                      : 'text-slate-400'
+                }`}
               />
             </div>
 
             <div className="text-center">
-              <p className="text-sm font-medium text-slate-700">{dropText}</p>
-              <p className="text-xs text-slate-400 mt-1">
+              <p
+                className={`text-sm font-medium ${
+                  isDark ? 'text-slate-200' : 'text-slate-700'
+                }`}
+              >
+                {dropText}
+              </p>
+              <p
+                className={`text-xs mt-1 ${
+                  isDark ? 'text-slate-500' : 'text-slate-400'
+                }`}
+              >
                 or{' '}
                 <span className="text-indigo-500 font-medium underline underline-offset-2">
                   {browseLabel}
@@ -288,16 +342,28 @@ export default function UploadStudentResults({
             {files.map((file) => (
               <div
                 key={file.name}
-                className="border border-slate-200 rounded-xl p-4 flex items-center gap-3"
+                className={`border rounded-xl p-4 flex items-center gap-3 ${
+                  isDark
+                    ? 'border-slate-700 bg-slate-800/40'
+                    : 'border-slate-200'
+                }`}
               >
                 <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
                   <BsFiletypeJson size={20} className="text-emerald-500" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-700 truncate">
+                  <p
+                    className={`text-sm font-medium truncate ${
+                      isDark ? 'text-slate-200' : 'text-slate-700'
+                    }`}
+                  >
                     {file.name}
                   </p>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p
+                    className={`text-xs mt-0.5 ${
+                      isDark ? 'text-slate-500' : 'text-slate-400'
+                    }`}
+                  >
                     {formatSize(file.size)}
                   </p>
                 </div>
@@ -311,7 +377,11 @@ export default function UploadStudentResults({
                       setStatus('idle');
                     }
                   }}
-                  className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all"
+                  className={`p-1.5 rounded-lg transition-all ${
+                    isDark
+                      ? 'text-slate-500 hover:bg-slate-700 hover:text-slate-300'
+                      : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+                  }`}
                   title="Remove file"
                 >
                   <RiCloseLine size={16} />
@@ -327,24 +397,40 @@ export default function UploadStudentResults({
             {files.map((file) => (
               <div
                 key={file.name}
-                className="border border-slate-200 rounded-xl p-4"
+                className={`border rounded-xl p-4 ${
+                  isDark
+                    ? 'border-slate-700 bg-slate-800/40'
+                    : 'border-slate-200'
+                }`}
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
                     <BsFiletypeJson size={20} className="text-indigo-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-700 truncate">
+                    <p
+                      className={`text-sm font-medium truncate ${
+                        isDark ? 'text-slate-200' : 'text-slate-700'
+                      }`}
+                    >
                       {file.name}
                     </p>
-                    <p className="text-xs text-slate-400 mt-0.5">
+                    <p
+                      className={`text-xs mt-0.5 ${
+                        isDark ? 'text-slate-500' : 'text-slate-400'
+                      }`}
+                    >
                       Uploading...{' '}
                       {Math.min(uploadProgress[file.name] || 0, 100)}%
                     </p>
                   </div>
                 </div>
                 {/* Progress bar */}
-                <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className={`w-full h-1.5 rounded-full overflow-hidden ${
+                    isDark ? 'bg-slate-700' : 'bg-slate-100'
+                  }`}
+                >
                   <div
                     className="h-full bg-indigo-500 rounded-full transition-all duration-300"
                     style={{
@@ -505,7 +591,11 @@ export default function UploadStudentResults({
           <div className="flex gap-2 mt-4">
             <button
               onClick={handleReset}
-              className="flex-1 py-2 text-sm font-medium text-slate-500 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all"
+              className={`flex-1 py-2 text-sm font-medium border rounded-xl transition-all ${
+                isDark
+                  ? 'text-slate-300 border-slate-700 hover:bg-slate-800'
+                  : 'text-slate-500 border-slate-200 hover:bg-slate-50'
+              }`}
             >
               Cancel
             </button>
@@ -531,7 +621,11 @@ export default function UploadStudentResults({
                 </button>
                 <button
                   onClick={handleReset}
-                  className="flex-1 py-2 text-sm font-medium text-slate-500 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all"
+                  className={`flex-1 py-2 text-sm font-medium border rounded-xl transition-all ${
+                    isDark
+                      ? 'text-slate-300 border-slate-700 hover:bg-slate-800'
+                      : 'text-slate-500 border-slate-200 hover:bg-slate-50'
+                  }`}
                 >
                   Clear & Select New
                 </button>
