@@ -114,28 +114,34 @@ export default function UploadStudentResults({
       setUploadProgress(progressDone);
 
       // build results from server response
-      const skippedRollNos = new Set(payload?.skippedRollNos || []);
-      const skippedSuffixes = new Set(
-        Array.from(skippedRollNos).map((rollNo) => String(rollNo).slice(-4))
+      const successSet = new Set(
+        payload?.data?.success || payload?.success || []
       );
-
-      const failedBySuffix = new Map(
-        (payload?.failed || []).map((item) => [
-          String(item?.roll_no ?? '').slice(-4),
+      const failedByRollNo = new Map(
+        (payload?.data?.failed || payload?.failed || []).map((item) => [
+          String(item?.roll_no ?? ''),
           item,
         ])
       );
+      const skippedRollNos = new Set(payload?.skippedRollNos || []);
+
+      // Extract roll numbers from file names
+      const extractRollNo = (fileName) => {
+        const fileBase = fileName.replace(/\.json$/i, '').split('_')[0];
+        const fileDigits = fileBase.replace(/\D/g, '');
+        return fileDigits || fileBase;
+      };
 
       const results = files.map((f) => {
-        const fileBase = f.name.replace(/\.json$/i, '').split('_')[0];
-        const fileDigits = fileBase.replace(/\D/g, '');
-        const fileSuffix = (fileDigits || fileBase).slice(-4);
-        const failedItem = failedBySuffix.get(fileSuffix);
-        const isSkipped = skippedSuffixes.has(fileSuffix);
+        const rollNo = extractRollNo(f.name);
+        const failedItem = failedByRollNo.get(rollNo);
+        const isSkipped = skippedRollNos.has(rollNo);
+        const isSuccess = successSet.has(rollNo);
 
         if (failedItem) {
           return {
             name: f.name,
+            rollNo,
             success: false,
             skipped: false,
             message: failedItem.error || 'Upload failed',
@@ -145,14 +151,26 @@ export default function UploadStudentResults({
         if (isSkipped) {
           return {
             name: f.name,
+            rollNo,
             success: false,
             skipped: true,
             message: 'Skipped (already exists)',
           };
         }
 
+        if (isSuccess) {
+          return {
+            name: f.name,
+            rollNo,
+            success: true,
+            skipped: false,
+            message: 'Uploaded successfully',
+          };
+        }
+
         return {
           name: f.name,
+          rollNo,
           success: true,
           skipped: false,
           message: 'Uploaded successfully',
@@ -321,35 +339,69 @@ export default function UploadStudentResults({
 
         {/* ── DONE: Upload results summary ── */}
         {status === 'done' && uploadResults.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-4">
+            {/* Summary Box */}
             {uploadResults.some((r) => r.success) ? (
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                <p className="text-sm font-medium text-slate-700">
-                  Upload Summary
-                </p>
-                <p className="text-xs text-slate-500 mt-1">
-                  {response?.inserted ??
-                    uploadResults.filter((r) => r.success).length}{' '}
-                  inserted, {response?.skipped ?? 0} skipped,{' '}
-                  {response?.failedCount ??
-                    uploadResults.filter((r) => !r.success && !r.skipped)
-                      .length}{' '}
-                  failed
-                </p>
-                {response?.skippedRollNos?.length > 0 && (
-                  <p className="text-xs text-amber-600 mt-1">
-                    Skipped: {response.skippedRollNos.join(', ')}
-                  </p>
-                )}
+              <div className="bg-linear-0-to-r from-emerald-50 to-emerald-100 border border-emerald-300 rounded-xl p-5 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-200 flex items-center justify-center shrink-0 mt-0.5">
+                    <RiCheckLine size={20} className="text-emerald-700" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-emerald-900">
+                      Upload Summary
+                    </p>
+                    <div className="grid grid-cols-3 gap-4 mt-3">
+                      <div>
+                        <p className="text-xs text-emerald-700 font-medium">
+                          Successful
+                        </p>
+                        <p className="text-2xl font-bold text-emerald-700 mt-1">
+                          {response?.data?.success?.length ??
+                            uploadResults.filter((r) => r.success && !r.skipped)
+                              .length}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-amber-700 font-medium">
+                          Skipped
+                        </p>
+                        <p className="text-2xl font-bold text-amber-700 mt-1">
+                          {response?.skippedRollNos?.length ??
+                            uploadResults.filter((r) => r.skipped).length}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-red-700 font-medium">
+                          Failed
+                        </p>
+                        <p className="text-2xl font-bold text-red-700 mt-1">
+                          {response?.data?.failed?.length ??
+                            uploadResults.filter(
+                              (r) => !r.success && !r.skipped
+                            ).length}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-                <p className="text-sm font-medium text-red-700">
-                  All uploads failed
-                </p>
-                <p className="text-xs text-red-500 mt-1">
-                  {uploadResults.length} of {uploadResults.length} files failed
-                </p>
+              <div className="bg-linear-to-r from-red-50 to-red-100 border border-red-300 rounded-xl p-5 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-red-200 flex items-center justify-center shrink-0 mt-0.5">
+                    <RiCloseLine size={20} className="text-red-700" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-red-900">
+                      All uploads failed
+                    </p>
+                    <p className="text-xs text-red-700 mt-1">
+                      {uploadResults.length} of {uploadResults.length} files
+                      failed to upload
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -395,13 +447,26 @@ export default function UploadStudentResults({
                     >
                       {result.name}
                     </p>
+                    {result.rollNo && (
+                      <p
+                        className={`text-xs font-mono mt-1 ${
+                          result.success
+                            ? 'text-emerald-600'
+                            : result.skipped
+                              ? 'text-amber-600'
+                              : 'text-red-600'
+                        }`}
+                      >
+                        Roll No: {result.rollNo}
+                      </p>
+                    )}
                     <p
-                      className={`text-xs mt-0.5 ${
+                      className={`text-xs mt-2 leading-relaxed ${
                         result.success
-                          ? 'text-emerald-500'
+                          ? 'text-emerald-600'
                           : result.skipped
                             ? 'text-amber-600'
-                            : 'text-red-500'
+                            : 'text-red-600'
                       }`}
                     >
                       {result.message}
