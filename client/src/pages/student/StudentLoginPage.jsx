@@ -39,7 +39,7 @@ export default function StudentLoginPage() {
       setLoading(true);
       await studentApi.requestOtp({ email });
       setShowOtpInput(true);
-      setResendTimer(30);
+      setResendTimer(60);
     } catch (error) {
       setEmailError(error.response?.data?.message || 'Failed to send OTP');
     } finally {
@@ -168,7 +168,7 @@ export default function StudentLoginPage() {
                         setEmail(e.target.value);
                         if (emailError) setEmailError('');
                       }}
-                      placeholder="student@university.edu"
+                      placeholder="student@ssipmt.com"
                       disabled={loading}
                       className={`block w-full pl-11 pr-4 py-3 rounded-xl border ${
                         emailError
