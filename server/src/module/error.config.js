@@ -24,4 +24,15 @@ export const ERROR_CONFIG = {
     message: 'You do not have permission to perform this action',
     code: 'FORBIDDEN_REQUEST',
   },
+  EMAIL_SEND_FAILED: {
+    statusCode: 500,
+    message: 'Unable to send OTP at the moment. Please try again later.',
+    code: 'EMAIL_SEND_FAILED',
+  },
+  EMAIL_NOT_FOUND: {
+    statusCode: 404,
+    message:
+      'No account found with this email. Please use your registered college email.',
+    code: 'EMAIL_NOT_FOUND',
+  },
 };
