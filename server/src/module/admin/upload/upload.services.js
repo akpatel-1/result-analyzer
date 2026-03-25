@@ -3,29 +3,34 @@ import { repository } from './upload.repository.js';
 
 export const service = {
   async processProfileUpload(students) {
+    const BATCH_SIZE = 50;
     const success = [];
     const failed = [];
 
     const studentArray = Object.values(students);
-    const promises = studentArray.map((student) =>
-      repository.createStudentsProfile(pool, student)
-    );
 
-    const results = await Promise.allSettled(promises);
+    for (let i = 0; i < studentArray.length; i += BATCH_SIZE) {
+      const batch = studentArray.slice(i, i + BATCH_SIZE);
 
-    results.forEach((result, index) => {
-      const student = studentArray[index];
+      const batchPromises = batch.map((student) =>
+        repository.createStudentsProfile(pool, student)
+      );
 
-      if (result.status === 'fulfilled') {
-        success.push(student.roll_no);
-      } else {
-        failed.push({
-          roll_no: student.roll_no,
-          error: result.reason.message || 'Unknown error',
-        });
-      }
-    });
+      const results = await Promise.allSettled(batchPromises);
 
+      results.forEach((result, index) => {
+        const student = batch[index];
+
+        if (result.status === 'fulfilled') {
+          success.push(student.roll_no);
+        } else {
+          failed.push({
+            roll_no: student.roll_no,
+            error: result.reason?.message || 'Unknown error',
+          });
+        }
+      });
+    }
     return { success, failed };
   },
 
@@ -53,7 +58,6 @@ export const service = {
         });
       }
     });
-
     return { success, failed };
   },
 };
