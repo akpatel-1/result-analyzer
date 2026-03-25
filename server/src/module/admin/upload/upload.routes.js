@@ -8,18 +8,10 @@ import { schema } from './upload.schema.js';
 
 export const uploadRoute = express.Router();
 
-uploadRoute.post(
-  '/upload/profile',
-  validateSession,
-  validateRole('admin'),
-  validateSchema(schema),
-  controller.handleProfileUpload
-);
+uploadRoute.use(validateSession, validateRole('admin'), validateSchema(schema));
 
-uploadRoute.post(
-  '/upload/subjects-info',
-  validateSession,
-  validateRole('admin'),
-  validateSchema(schema),
-  controller.createSubjectInfo
-);
+uploadRoute.post('/upload/profile', controller.handleProfileUpload);
+
+uploadRoute.post('/upload/subjects-info', controller.createSubjectInfo);
+
+uploadRoute.post('/upload/results', controller.createResults);

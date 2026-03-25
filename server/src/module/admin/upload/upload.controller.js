@@ -19,4 +19,13 @@ export const controller = {
       status,
     });
   },
+
+  async createResults(req, res) {
+    const status = await service.uploadResults(req.data);
+    res.status(201).json({
+      success: true,
+      message: 'File upload completed',
+      status,
+    });
+  },
 };
