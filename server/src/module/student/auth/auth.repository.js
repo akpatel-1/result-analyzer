@@ -7,4 +7,13 @@ export const repository = {
 
     return result.rows[0];
   },
+
+  async createRefreshToken(client, data) {
+    await client.query(
+      `INSERT INTO refresh_tokens
+      (student_id, token_hash,expires_at)
+      VALUES ($1, $2, $3)`,
+      [data.studentId, data.tokenHash, data.expiresAt]
+    );
+  },
 };

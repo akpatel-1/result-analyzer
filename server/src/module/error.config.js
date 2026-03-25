@@ -35,4 +35,9 @@ export const ERROR_CONFIG = {
       'No account found with this email. Please use your registered college email.',
     code: 'EMAIL_NOT_FOUND',
   },
+  INVALID_OR_EXPIRED_OTP: {
+    statusCode: 400,
+    message: 'Invalid or expired OTP',
+    code: 'INVALID_OR_EXPIRED_OTP',
+  },
 };

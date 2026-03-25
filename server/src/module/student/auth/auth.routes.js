@@ -11,3 +11,9 @@ studentAuth.post(
   validateSchema(schema.email),
   controller.handleOtpRequest
 );
+
+studentAuth.post(
+  '/otp-verification',
+  validateSchema(schema.otp),
+  controller.handleOtpVerification
+);

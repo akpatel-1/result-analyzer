@@ -1,6 +1,8 @@
 import { pool } from '../../../infra/database/db.js';
 import { ApiError } from '../../../utils/api.error.js';
+import { withTransaction } from '../../../utils/transaction.js';
 import { ERROR_CONFIG } from '../../error.config.js';
+import { AUTH_CONFIG } from './auth.config.js';
 import { sendOtp } from './auth.email.service.js';
 import { OTP } from './auth.otp.js';
 import { otpRepository } from './auth.otp.repository.js';
@@ -24,6 +26,40 @@ export const service = {
       await otpRepository.delete(hashedEmail);
       throw err;
     }
-    return otp;
+  },
+
+  async processOtpVerification({ email, otp }) {
+    await this._authenticate(email, otp);
+    const { studentId, rawToken } = await this._createSession(email);
+    const accessToken = token.generateAccessToken(studentId);
+    return { accessToken, refreshToken: rawToken };
+  },
+
+  async _authenticate(email, otp) {
+    const hashedEmail = token.generateHash(email);
+    const otpRecord = await otpRepository.get(hashedEmail);
+
+    if (!otpRecord || !otpRecord.hashedOtp) {
+      throw new ApiError(ERROR_CONFIG.INVALID_OR_EXPIRED_OTP);
+    }
+
+    if (!OTP.verifyOtp(otp, otpRecord.hashedOtp)) {
+      throw new ApiError(ERROR_CONFIG.INVALID_OR_EXPIRED_OTP);
+    }
+
+    await otpRepository.delete(hashedEmail);
+  },
+
+  async _createSession(email) {
+    return withTransaction(pool, async (client) => {
+      const student = await repository.findStudentByEmail(client, email);
+      const { rawToken, hashedToken } = token.generateAuthToken();
+      await repository.createRefreshToken(client, {
+        studentId: student.id,
+        tokenHash: hashedToken,
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      });
+      return { studentId: student.id, rawToken };
+    });
   },
 };

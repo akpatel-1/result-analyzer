@@ -11,6 +11,12 @@ export const otpRepository = {
     const key = this._getKey(hashedEmail);
     return redis.del(key);
   },
+
+  async get(hashedEmail) {
+    const key = this._getKey(hashedEmail);
+    return redis.get(key);
+  },
+
   _getKey(hashedEmail) {
     return `${AUTH_CONFIG.OTP_PREFIX}${hashedEmail}`;
   },
