@@ -17,8 +17,10 @@ export const service = {
       throw new ApiError(ERROR_CONFIG.EMAIL_NOT_FOUND);
     }
 
-    const { otp, hashedOtp } = OTP.generateOtp();
     const hashedEmail = token.generateHash(email);
+    await otpRepository.checkCoolDown(hashedEmail);
+    await otpRepository.checkRateLimit(hashedEmail);
+    const { otp, hashedOtp } = OTP.generateOtp();
     await otpRepository.create(hashedEmail, hashedOtp);
     try {
       await sendOtp(email, otp);

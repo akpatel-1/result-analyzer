@@ -3,6 +3,11 @@ const isProd = process.env.NODE_ENV === 'production';
 export const AUTH_CONFIG = {
   OTP_PREFIX: 'student:otp:',
   OTP_TTL: 10 * 60,
+  OTP_RATE_LIMIT_PREFIX: 'student:otp:rate:',
+  OTP_COOLDOWN_PREFIX: 'student:otp:cooldown:',
+  OTP_COOLDOWN_TTL: 60,
+  OTP_RATE_LIMIT_TTL: 600,
+  OTP_MAX_REQUESTS: 3,
 
   ACCESS_COOKIE_NAME: 'student_sid',
   ACCESS_MAX_AGE: 30 * 60 * 1000,

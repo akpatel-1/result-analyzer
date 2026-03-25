@@ -50,4 +50,9 @@ export const ERROR_CONFIG = {
     message: 'Invalid token structure',
     code: 'INVALID_TOKEN',
   },
+  OTP_RATE_LIMIT_EXCEEDED: {
+    statusCode: 429,
+    message: 'Too many OTP requests. Please try again after 10 minutes.',
+    code: 'OTP_RATE_LIMIT_EXCEEDED',
+  },
 };
