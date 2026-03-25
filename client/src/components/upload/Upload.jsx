@@ -120,15 +120,16 @@ export default function UploadStudentResults({
           payload?.success ||
           []
       );
+      const failedList =
+        payload?.status?.failed ||
+        payload?.data?.failed ||
+        payload?.failed ||
+        [];
       const failedByRollNo = new Map(
-        (
-          payload?.status?.failed ||
-          payload?.data?.failed ||
-          payload?.failed ||
-          []
-        ).map((item) => [String(item?.roll_no ?? ''), item])
+        failedList.map((item) => [String(item?.roll_no ?? ''), item])
       );
       const skippedRollNos = new Set(payload?.skippedRollNos || []);
+      const consumedFailed = new Set();
 
       // Extract roll numbers from file names
       const extractRollNo = (fileName) => {
@@ -144,6 +145,7 @@ export default function UploadStudentResults({
         const isSuccess = successSet.has(rollNo);
 
         if (failedItem) {
+          consumedFailed.add(String(failedItem?.roll_no ?? ''));
           return {
             name: f.name,
             rollNo,
@@ -173,12 +175,27 @@ export default function UploadStudentResults({
           };
         }
 
+        const fallbackFailed = failedList.find(
+          (item) => !consumedFailed.has(String(item?.roll_no ?? ''))
+        );
+
+        if (fallbackFailed) {
+          consumedFailed.add(String(fallbackFailed?.roll_no ?? ''));
+          return {
+            name: f.name,
+            rollNo: String(fallbackFailed?.roll_no ?? rollNo),
+            success: false,
+            skipped: false,
+            message: fallbackFailed.error || 'Upload failed',
+          };
+        }
+
         return {
           name: f.name,
           rollNo,
-          success: true,
+          success: false,
           skipped: false,
-          message: 'Uploaded successfully',
+          message: 'Upload status not returned for this roll number',
         };
       });
 
