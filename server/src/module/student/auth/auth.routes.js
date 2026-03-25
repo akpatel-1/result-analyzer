@@ -22,3 +22,5 @@ studentAuth.post(
 studentAuth.post('/auth/refresh', controller.refreshToken);
 
 studentAuth.post('/auth/logout', authenticateToken, controller.logout);
+
+studentAuth.post('/me', authenticateToken, controller.handleMe);

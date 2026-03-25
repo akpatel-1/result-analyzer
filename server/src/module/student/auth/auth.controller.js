@@ -1,5 +1,3 @@
-import { success } from 'zod';
-
 import { AUTH_CONFIG } from './auth.config.js';
 import { service } from './auth.services.js';
 
@@ -53,6 +51,19 @@ export const controller = {
 
   async logout(req, res) {
     await service.logoutStudent(req.studentId);
+    res.clearCookie(
+      AUTH_CONFIG.ACCESS_COOKIE_NAME,
+      AUTH_CONFIG.ACCESS_COOKIE_OPTIONS
+    );
+    res.clearCookie(
+      AUTH_CONFIG.REFRESH_COOKIE_NAME,
+      AUTH_CONFIG.REFRESH_COOKIE_OPTIONS
+    );
     res.status(200).json({ message: 'success' });
+  },
+
+  async handleMe(req, res) {
+    const user = req.studentId;
+    res.status(200).json({ success: true, message: 'Authenticated', user });
   },
 };

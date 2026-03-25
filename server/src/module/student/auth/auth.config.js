@@ -14,7 +14,9 @@ export const AUTH_CONFIG = {
   REFRESH_COOKIE_NAME: 'student_rid',
   REFRESH_MAX_AGE: 30 * 24 * 60 * 60 * 1000,
 
-  REFRESH_TOKEN_EXPIRE: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  get REFRESH_TOKEN_EXPIRE() {
+    return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  },
 
   get ACCESS_COOKIE_OPTIONS() {
     return {
@@ -31,6 +33,14 @@ export const AUTH_CONFIG = {
       secure: isProd,
       sameSite: isProd ? 'none' : 'lax',
       maxAge: this.REFRESH_MAX_AGE,
+    };
+  },
+
+  get CLEAR_COOKIE_OPTIONS() {
+    return {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
     };
   },
 };
