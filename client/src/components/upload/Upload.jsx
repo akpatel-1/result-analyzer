@@ -113,67 +113,87 @@ export default function UploadStudentResults({
       files.forEach((f) => (progressDone[f.name] = 100));
       setUploadProgress(progressDone);
 
-      // build results from server response
-      const successSet = new Set(
-        payload?.data?.success || payload?.success || []
-      );
-      const failedByRollNo = new Map(
-        (payload?.data?.failed || payload?.failed || []).map((item) => [
-          String(item?.roll_no ?? ''),
-          item,
-        ])
-      );
-      const skippedRollNos = new Set(payload?.skippedRollNos || []);
+      
+      const successList = (
+        payload?.status?.success ||
+        payload?.success ||
+        []
+      ).map((value) => String(value));
+      new Set(successList);
 
-      // Extract roll numbers from file names
+      const failedList = payload?.status?.failed || payload?.failed || [];
+      const skippedRollNos = new Set(
+        (payload?.skippedRollNos || []).map(String)
+      );
+
+      // Extract digits from filename: "3001.json" → "3001", "303302223029.json" → "303302223029"
       const extractRollNo = (fileName) => {
-        const fileBase = fileName.replace(/\.json$/i, '').split('_')[0];
-        const fileDigits = fileBase.replace(/\D/g, '');
-        return fileDigits || fileBase;
+        const base = fileName.replace(/\.json$/i, '').split('_')[0];
+        return base.replace(/\D/g, '') || base;
+      };
+
+      // Match file digits against a server roll_no:
+      // handles both exact match ("303302223001" === "303302223001")
+      // and short filename suffix ("303302223001".endsWith("3001"))
+      const rollMatches = (serverRollNo, fileDigits) => {
+        const s = String(serverRollNo ?? '');
+        const f = String(fileDigits ?? '');
+        if (!s || !f) return false;
+        return s === f || s.endsWith(f) || f.endsWith(s);
       };
 
       const results = files.map((f) => {
-        const rollNo = extractRollNo(f.name);
-        const failedItem = failedByRollNo.get(rollNo);
-        const isSkipped = skippedRollNos.has(rollNo);
-        const isSuccess = successSet.has(rollNo);
+        const fileDigits = extractRollNo(f.name);
 
+        // 1. Failed match — show exact server error message
+        const failedItem = failedList.find((item) =>
+          rollMatches(item?.roll_no, fileDigits)
+        );
         if (failedItem) {
           return {
             name: f.name,
-            rollNo,
+            rollNo: String(failedItem.roll_no ?? fileDigits),
             success: false,
             skipped: false,
             message: failedItem.error || 'Upload failed',
           };
         }
 
-        if (isSkipped) {
+        // 2. Skipped
+        const skippedMatch = [...skippedRollNos].find((s) =>
+          rollMatches(s, fileDigits)
+        );
+        if (skippedMatch) {
           return {
             name: f.name,
-            rollNo,
+            rollNo: skippedMatch,
             success: false,
             skipped: true,
             message: 'Skipped (already exists)',
           };
         }
 
-        if (isSuccess) {
+        // 3. Success match
+        const successMatch = successList.find((s) =>
+          rollMatches(s, fileDigits)
+        );
+        if (successMatch) {
           return {
             name: f.name,
-            rollNo,
+            rollNo: successMatch,
             success: true,
             skipped: false,
             message: 'Uploaded successfully',
           };
         }
 
+        // 4. No match in server response
         return {
           name: f.name,
-          rollNo,
-          success: true,
+          rollNo: fileDigits,
+          success: false,
           skipped: false,
-          message: 'Uploaded successfully',
+          message: 'Upload status not returned for this file',
         };
       });
 
@@ -342,7 +362,7 @@ export default function UploadStudentResults({
           <div className="space-y-4">
             {/* Summary Box */}
             {uploadResults.some((r) => r.success) ? (
-              <div className="bg-linear-0-to-r from-emerald-50 to-emerald-100 border border-emerald-300 rounded-xl p-5 shadow-sm">
+              <div className="bg-linear-to-r from-emerald-50 to-emerald-100 border border-emerald-300 rounded-xl p-5 shadow-sm">
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-lg bg-emerald-200 flex items-center justify-center shrink-0 mt-0.5">
                     <RiCheckLine size={20} className="text-emerald-700" />
@@ -357,7 +377,8 @@ export default function UploadStudentResults({
                           Successful
                         </p>
                         <p className="text-2xl font-bold text-emerald-700 mt-1">
-                          {response?.data?.success?.length ??
+                          {response?.status?.success?.length ??
+                            response?.data?.success?.length ??
                             uploadResults.filter((r) => r.success && !r.skipped)
                               .length}
                         </p>
@@ -376,7 +397,8 @@ export default function UploadStudentResults({
                           Failed
                         </p>
                         <p className="text-2xl font-bold text-red-700 mt-1">
-                          {response?.data?.failed?.length ??
+                          {response?.status?.failed?.length ??
+                            response?.data?.failed?.length ??
                             uploadResults.filter(
                               (r) => !r.success && !r.skipped
                             ).length}

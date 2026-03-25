@@ -6,6 +6,7 @@ import AdminLoginPage from '../pages/admin/AdminLoginPage';
 import AdminProfileUpload from '../pages/admin/AdminProfileUpload';
 import AdminResultUpload from '../pages/admin/AdminResultUpload';
 import AdminReviewUpload from '../pages/admin/AdminReviewUpload';
+import AdminSubjectUpload from '../pages/admin/AdminSubjectsUpload';
 
 export const adminRoutes = [
   {
@@ -26,6 +27,7 @@ export const adminRoutes = [
       { path: 'profile', element: <AdminProfileUpload /> },
       { path: 'result', element: <AdminResultUpload /> },
       { path: 'review', element: <AdminReviewUpload /> },
+      { path: 'subjects', element: <AdminSubjectUpload /> },
     ],
   },
 ];
