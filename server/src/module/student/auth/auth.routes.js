@@ -7,13 +7,13 @@ import { schema } from './auth.schema.js';
 export const studentAuth = express.Router();
 
 studentAuth.post(
-  '/otp-requests',
+  '/otp',
   validateSchema(schema.email),
   controller.handleOtpRequest
 );
 
 studentAuth.post(
-  '/otp-verification',
+  '/otp/verify',
   validateSchema(schema.otp),
   controller.handleOtpVerification
 );
