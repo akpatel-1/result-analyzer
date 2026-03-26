@@ -69,9 +69,9 @@ export const service = {
     const tasks = studentArray.map((student) =>
       limit(() =>
         withTransaction(pool, async (client) => {
-          const studentId = await repository.getStudentIdFromAbcId(
+          const studentId = await repository.getStudentIdByRollNo(
             client,
-            student.abc_id
+            student.roll_no
           );
           if (!studentId) {
             throw new ApiError(ERROR_CONFIG.STUDENT_NOT_FOUND);

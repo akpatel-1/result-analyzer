@@ -32,10 +32,10 @@ export const repository = {
     );
   },
 
-  async getStudentIdFromAbcId(client, id) {
+  async getStudentIdByRollNo(client, roll_no) {
     const result = await client.query(
-      `SELECT id FROM students WHERE abc_id = $1`,
-      [id]
+      `SELECT id FROM students WHERE roll_no = $1`,
+      [roll_no]
     );
     return result.rows[0]?.id;
   },
