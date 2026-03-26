@@ -32,7 +32,7 @@ export const repository = {
     );
   },
 
-  async getStudentIdFromRollNo(client, id) {
+  async getStudentIdFromAbcId(client, id) {
     const result = await client.query(
       `SELECT id FROM students WHERE abc_id = $1`,
       [id]
@@ -58,7 +58,7 @@ export const repository = {
     return result.rows[0]?.id;
   },
 
-  async insertOverallResult(client, student, attemptId) {
+  async insertOverallResult(client, attemptId, student) {
     await client.query(
       `
       INSERT INTO overall_result

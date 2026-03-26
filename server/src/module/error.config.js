@@ -55,4 +55,9 @@ export const ERROR_CONFIG = {
     message: 'Too many OTP requests. Please try again after 10 minutes.',
     code: 'OTP_RATE_LIMIT_EXCEEDED',
   },
+  STUDENT_NOT_FOUND: {
+    statusCode: 404,
+    message: 'Student not found',
+    code: 'STUDENT_NOT_FOUND',
+  },
 };
