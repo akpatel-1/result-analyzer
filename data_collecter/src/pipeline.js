@@ -11,11 +11,8 @@ const BASE_URL = process.env.BASE_URL;
 export async function pipeline(client) {
   const input = await prompt();
 
-  const rollNumbers =
-    input.rollNumbers && input.rollNumbers.length > 0
-      ? input.rollNumbers
-      : utils.generateRollNumbers(input.startRollNo, input.endRollNo);
-  const outputDir = path.join(`${input.batch}_S${input.semester}`);
+  const rollNumbers = utils.generateRollNumbers(input.startRollNo, input.endRollNo);
+  const outputDir = path.join("results", input.batch);
   fs.mkdirSync(outputDir, { recursive: true });
 
   console.log(

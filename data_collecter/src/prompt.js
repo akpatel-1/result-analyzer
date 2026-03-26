@@ -15,6 +15,10 @@ function ask(question) {
 
 export async function prompt() {
   const sampleUrl = await ask("🔗 Paste a result page URL:\n→ ");
+  const startRollRaw = await ask(
+    "\n📋 Enter last 4 digit of starting roll number:→ ",
+  );
+  const endRollRaw = await ask("📋 Enter last 4 digit ending roll number:→ ");
   const batch = await ask("📅 Enter batch year :→ ");
 
   let exam_type, attempt_no, review_type;
@@ -24,7 +28,6 @@ export async function prompt() {
   const Type = url.searchParams.get("T");
   const RollNo = url.searchParams.get("R");
   const removed = RollNo.slice(0, -4);
-  const semester = url.searchParams.get("S");
 
   const inputMode = await ask(
     "\n🧭 Choose roll input mode (1 = Range, 2 = Specific roll no.):→ ",
@@ -106,7 +109,6 @@ export async function prompt() {
     sampleUrl,
     startRollNo,
     endRollNo,
-    rollNumbers,
     batch,
     exam_type,
     attempt_no,
