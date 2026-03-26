@@ -1,21 +1,21 @@
 import { redirect } from 'react-router-dom';
 
-import { hodApi } from '../api/hod.api';
+import { deptApi } from '../api/dept.api';
 
 export const loader = {
   async protectedRoute() {
     try {
-      await hodApi.me();
+      await deptApi.me();
       return null;
     } catch {
-      return redirect('/hod/login');
+      return redirect('/dept/login');
     }
   },
 
   async publicRoute() {
     try {
-      await hodApi.me();
-      return redirect('/hod/dashboard');
+      await deptApi.me();
+      return redirect('/dept/dashboard');
     } catch {
       return null;
     }

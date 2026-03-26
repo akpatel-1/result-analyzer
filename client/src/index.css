@@ -15,15 +15,37 @@
 
 /* ── Dark theme ── */
 .dark {
-  --surface: #0f172a;
-  --surface-raised: #1e293b;
-  --canvas: #0f172a;
-  --border: #1e293b;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #475569;
-  --accent: #818cf8;
-  --accent-hover: #6366f1;
+  /* Base surfaces */
+  --canvas: #0b1220;           /* main background (slightly deeper) */
+  --surface: #111827;          /* primary panels */
+  --surface-raised: #1f2937;   /* cards / modals */
+  --surface-hover: #273449;    /* hover state */
+
+  /* Borders & dividers */
+  --border: #2d3748;
+  --border-subtle: #1f2937;
+
+  /* Text */
+  --text-primary: #e5e7eb;     /* softer than pure white */
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-inverse: #0b1220;
+
+  /* Accent (modern indigo/blue blend) */
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --accent-soft: rgba(99, 102, 241, 0.15);
+
+  /* Status colors */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #38bdf8;
+
+  /* Shadows (important for depth in dark UI) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
 }
 
 @layer utilities {

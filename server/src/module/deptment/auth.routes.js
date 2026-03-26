@@ -6,13 +6,13 @@ import { schema } from '../admin/auth/auth.schema.js';
 import { validateSession } from '../admin/session/session.middleware.js';
 import { validateSchema } from '../validate.schema.middleware.js';
 
-export const hodAuth = express.Router();
+export const deptAuth = express.Router();
 
-hodAuth.post('/login', validateSchema(schema), controller.handleLogin);
-hodAuth.get(
+deptAuth.post('/login', validateSchema(schema), controller.handleLogin);
+deptAuth.get(
   '/logout',
   validateSession,
-  validateRole('hod'),
+  validateRole('dept'),
   controller.handleLogout
 );
-hodAuth.get('/me', validateSession, controller.handleMe);
+deptAuth.get('/me', validateSession, controller.handleMe);

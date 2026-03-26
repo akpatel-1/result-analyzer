@@ -1,22 +1,18 @@
 import { FaFileUpload } from 'react-icons/fa';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
-import { IoCheckmarkCircleOutline, IoCloseCircleOutline, IoHomeOutline, IoListOutline, IoPeopleOutline, IoSettingsOutline, IoTrophyOutline } from 'react-icons/io5';
+import {
+  IoCheckmarkCircleOutline,
+  IoCloseCircleOutline,
+  IoHomeOutline,
+  IoListOutline,
+  IoPeopleOutline,
+  IoSettingsOutline,
+  IoTrophyOutline,
+} from 'react-icons/io5';
 import { IoPersonOutline } from 'react-icons/io5';
 import { MdOutlineMenuBook } from 'react-icons/md';
 import { MdOutlineSchool } from 'react-icons/md';
 import { TbChartBar, TbReportAnalytics } from 'react-icons/tb';
-
-
-
-
-
-
-
-
-
-
-
-
 
 export const adminNavigationLinks = [
   {
@@ -122,33 +118,33 @@ export const adminNavigationLinks = [
   },
 ];
 
-export const hodNavigationLinks = [
+export const deptNavigationLinks = [
   {
-    to: '/hod/dashboard',
+    to: '/dept/dashboard',
     label: 'Dashboard',
     icon: IoHomeOutline,
     color: '#6777F1',
   },
   {
-    to: '/hod/results',
+    to: '/dept/results',
     label: 'Results',
     icon: HiOutlineDocumentReport,
     color: '#22C55E',
     children: [
       {
-        to: '/hod/results?status=all',
+        to: '/dept/results?status=all',
         label: 'All Results',
         icon: IoListOutline,
         color: '#6B7280',
       },
       {
-        to: '/hod/results?status=passed',
+        to: '/dept/results?status=passed',
         label: 'Passed',
         icon: IoCheckmarkCircleOutline,
         color: '#10B981',
       },
       {
-        to: '/hod/results?status=failed',
+        to: '/dept/results?status=failed',
         label: 'Failed',
         icon: IoCloseCircleOutline,
         color: '#EF4444',
@@ -156,37 +152,37 @@ export const hodNavigationLinks = [
     ],
   },
   {
-    to: '/hod/students',
+    to: '/dept/students',
     label: 'Students',
     icon: IoPeopleOutline,
     color: '#8B5CF6',
   },
   {
-    to: '/hod/subjects',
+    to: '/dept/subjects',
     label: 'Subjects',
     icon: MdOutlineMenuBook,
     color: '#F59E0B',
   },
   {
-    to: '/hod/analytics',
+    to: '/dept/analytics',
     label: 'Analytics',
     icon: TbChartBar,
     color: '#0EA5E9',
   },
   {
-    to: '/hod/rankings',
+    to: '/dept/rankings',
     label: 'Rankings',
     icon: IoTrophyOutline,
     color: '#EAB308',
   },
   {
-    to: '/hod/reports',
+    to: '/dept/reports',
     label: 'Reports',
     icon: TbReportAnalytics,
     color: '#6366F1',
   },
   {
-    to: '/hod/settings',
+    to: '/dept/settings',
     label: 'Settings',
     icon: IoSettingsOutline,
     color: '#f97316',
