@@ -62,8 +62,12 @@ export function parseResultPage(html, exam_type, review_type) {
         .text()
         .replace(/\u00a0/g, "")
         .trim();
-      return txt === "" ? null : parseInt(txt);
+
+      if (txt === "" || isNaN(txt)) return null;
+
+      return parseInt(txt);
     };
+
     const str = (el) => {
       const txt = $(el)
         .text()
