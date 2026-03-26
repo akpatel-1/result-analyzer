@@ -15,10 +15,6 @@ function ask(question) {
 
 export async function prompt() {
   const sampleUrl = await ask("🔗 Paste a result page URL:\n→ ");
-  const startRollRaw = await ask(
-    "\n📋 Enter last 4 digit of starting roll number:→ ",
-  );
-  const endRollRaw = await ask("📋 Enter last 4 digit ending roll number:→ ");
   const batch = await ask("📅 Enter batch year :→ ");
 
   let exam_type, attempt_no, review_type;
@@ -28,8 +24,36 @@ export async function prompt() {
   const Type = url.searchParams.get("T");
   const RollNo = url.searchParams.get("R");
   const removed = RollNo.slice(0, -4);
-  const startRollNo = removed + startRollRaw;
-  const endRollNo = removed + endRollRaw;
+
+  const inputMode = await ask(
+    "\n🧭 Choose roll input mode (1 = Range, 2 = Specific roll no.):→ ",
+  );
+
+  let startRollNo = null;
+  let endRollNo = null;
+  let rollNumbers = null;
+
+  if (inputMode === "2") {
+    const specificRaw = await ask(
+      "📌 Enter specific roll no(last 4 digit) separated by ',' :→ ",
+    );
+
+    const parsed = specificRaw
+      .split(",")
+      .map((r) => r.trim())
+      .filter((r) => /^\d{4}$/.test(r))
+      .map((r) => removed + r);
+
+    const uniqueRolls = [...new Set(parsed)];
+    rollNumbers = uniqueRolls;
+  } else {
+    const startRollRaw = await ask(
+      "📋 Enter last 4 digit of starting roll number:→ ",
+    );
+    const endRollRaw = await ask("📋 Enter last 4 digit ending roll number:→ ");
+    startRollNo = removed + startRollRaw;
+    endRollNo = removed + endRollRaw;
+  }
 
   if (Type === "Regular") {
     exam_type = "Regular";
@@ -81,6 +105,7 @@ export async function prompt() {
     sampleUrl,
     startRollNo,
     endRollNo,
+    rollNumbers,
     batch,
     exam_type,
     attempt_no,
