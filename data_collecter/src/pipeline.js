@@ -15,7 +15,7 @@ export async function pipeline(client) {
     input.rollNumbers && input.rollNumbers.length > 0
       ? input.rollNumbers
       : utils.generateRollNumbers(input.startRollNo, input.endRollNo);
-  const outputDir = path.join("results", input.batch);
+  const outputDir = path.join(`${input.batch}_S${input.semester}`);
   fs.mkdirSync(outputDir, { recursive: true });
 
   console.log(

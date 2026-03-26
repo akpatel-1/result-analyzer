@@ -112,6 +112,11 @@ export default function UploadStudentResults({
       const skippedRollNos = new Set(
         (payload?.skippedRollNos || []).map(String)
       );
+      const hasSuccessfulResponse =
+        payload?.success === true &&
+        successList.length > 0 &&
+        failedList.length === 0 &&
+        skippedRollNos.size === 0;
 
       const extractRollNo = (fileName) => {
         const base = fileName.replace(/\.json$/i, '').split('_')[0];
@@ -161,6 +166,16 @@ export default function UploadStudentResults({
           return {
             name: f.name,
             rollNo: successMatch,
+            success: true,
+            skipped: false,
+            message: 'Uploaded successfully',
+          };
+        }
+
+        if (hasSuccessfulResponse) {
+          return {
+            name: f.name,
+            rollNo: fileDigits,
             success: true,
             skipped: false,
             message: 'Uploaded successfully',
@@ -343,7 +358,7 @@ export default function UploadStudentResults({
                   </p>
                   <div className="grid grid-cols-3 gap-4 mt-3">
                     <div>
-                      <p className="text-[10px] font-medium text-emerald-500 uppercase tracking-wide">
+                      <p className="text-xs font-medium text-emerald-500 uppercase tracking-wide">
                         Successful
                       </p>
                       <p className="text-xl font-bold text-emerald-500 mt-0.5">
@@ -353,7 +368,7 @@ export default function UploadStudentResults({
                       </p>
                     </div>
                     <div>
-                      <p className="text-[10px] font-medium text-amber-500 uppercase tracking-wide">
+                      <p className="text-xs font-medium text-amber-500 uppercase tracking-wide">
                         Skipped
                       </p>
                       <p className="text-xl font-bold text-amber-500 mt-0.5">
@@ -362,7 +377,7 @@ export default function UploadStudentResults({
                       </p>
                     </div>
                     <div>
-                      <p className="text-[10px] font-medium text-red-500 uppercase tracking-wide">
+                      <p className="text-xs font-medium text-red-500 uppercase tracking-wide">
                         Failed
                       </p>
                       <p className="text-xl font-bold text-red-500 mt-0.5">
@@ -441,14 +456,12 @@ export default function UploadStudentResults({
                         {result.name}
                       </p>
                       {result.rollNo && (
-                        <p
-                          className={`text-[10px] font-mono mt-0.5 ${tone.roll}`}
-                        >
+                        <p className={`text-xs font-mono mt-0.5 ${tone.roll}`}>
                           Roll: {result.rollNo}
                         </p>
                       )}
                       <p
-                        className={`text-[10px] mt-1.5 leading-relaxed ${tone.message}`}
+                        className={`text-xs mt-1.5 leading-relaxed ${tone.message}`}
                       >
                         {result.message}
                       </p>

@@ -24,6 +24,7 @@ export async function prompt() {
   const Type = url.searchParams.get("T");
   const RollNo = url.searchParams.get("R");
   const removed = RollNo.slice(0, -4);
+  const semester = url.searchParams.get("S");
 
   const inputMode = await ask(
     "\n🧭 Choose roll input mode (1 = Range, 2 = Specific roll no.):→ ",
@@ -110,5 +111,6 @@ export async function prompt() {
     exam_type,
     attempt_no,
     review_type,
+    semester,
   };
 }
