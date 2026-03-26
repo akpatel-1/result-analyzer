@@ -9,23 +9,11 @@ function findItemLabelByTo(items = [], to) {
   for (const item of items) {
     if (item.to === to) return item.label;
     if (item.children?.length) {
-      const childLabel = findItemLabelByTo(item.children, to);
-      if (childLabel) return childLabel;
+      const found = findItemLabelByTo(item.children, to);
+      if (found) return found;
     }
   }
   return null;
-}
-
-function MainContent({ children, darkMode }) {
-  return (
-    <main
-      className={`flex-1 overflow-y-auto p-6 ${
-        darkMode ? 'bg-slate-900' : 'bg-white'
-      }`}
-    >
-      {children}
-    </main>
-  );
 }
 
 export default function DashboardLayout({
@@ -37,37 +25,39 @@ export default function DashboardLayout({
   const location = useLocation();
   const navigate = useNavigate();
   const didVerifyRef = useRef(false);
+
   const currentRoute = `${location.pathname}${location.search}`;
+
   const [collapsed, setCollapsed] = useState(false);
+
+  // ── Dark mode: read once from localStorage/system, no flicker ──
   const [darkMode, setDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) return savedTheme === 'dark';
+    const saved = localStorage.getItem('theme');
+    if (saved) return saved === 'dark';
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
+
   const activeSection =
     (findItemLabelByTo(navItems, currentRoute) && currentRoute) ||
     (findItemLabelByTo(navItems, location.pathname) && location.pathname) ||
     navItems[0]?.to ||
     '';
 
+  // ── Auth check ──
   useEffect(() => {
     if (didVerifyRef.current) return;
     didVerifyRef.current = true;
 
     let cancelled = false;
-
     adminApi
       .me()
       .then((res) => {
         const role = res?.data?.user?.role;
-        if (!cancelled && role !== 'admin') {
+        if (!cancelled && role !== 'admin')
           navigate('/error/403', { replace: true });
-        }
       })
       .catch(() => {
-        if (!cancelled) {
-          navigate('/admin/login', { replace: true });
-        }
+        if (!cancelled) navigate('/admin/login', { replace: true });
       });
 
     return () => {
@@ -75,24 +65,20 @@ export default function DashboardLayout({
     };
   }, [navigate]);
 
+  // ── Sync dark mode to <html> class + localStorage ──
   useEffect(() => {
+    const root = document.documentElement;
     if (darkMode) {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
       localStorage.setItem('theme', 'dark');
-      return;
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
     }
-
-    document.documentElement.classList.remove('dark');
-    localStorage.setItem('theme', 'light');
   }, [darkMode]);
 
   return (
-    <div
-      className={`flex flex-col h-screen font-sans ${
-        darkMode ? 'bg-slate-900' : 'bg-white'
-      }`}
-    >
-      {/* HEADER */}
+    <div className="flex flex-col h-screen bg-surface font-sans">
       <Header
         collapsed={collapsed}
         setCollapsed={setCollapsed}
@@ -100,9 +86,7 @@ export default function DashboardLayout({
         setDarkMode={setDarkMode}
       />
 
-      {/* BODY = SIDEBAR + MAIN */}
       <div className="flex flex-1 overflow-hidden">
-        {/* SIDEBAR */}
         <Sidebar
           collapsed={collapsed}
           activeSection={activeSection}
@@ -113,8 +97,7 @@ export default function DashboardLayout({
           darkMode={darkMode}
         />
 
-        {/* MAIN CONTENT */}
-        <MainContent darkMode={darkMode}>{children}</MainContent>
+        <main className="flex-1 overflow-y-auto p-6 bg-canvas">{children}</main>
       </div>
     </div>
   );

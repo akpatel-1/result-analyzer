@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { BsFiletypeJson } from 'react-icons/bs';
 import { RiCheckLine, RiCloseLine, RiUploadCloud2Line } from 'react-icons/ri';
 
-// Default file types
 const DEFAULT_ACCEPTED = ['.json'];
 const DEFAULT_ACCEPT_MIME = 'application/json,.json';
 
@@ -23,7 +22,6 @@ export default function UploadStudentResults({
 }) {
   const inputRef = useRef(null);
 
-  // states: 'idle' | 'selected' | 'uploading' | 'done' | 'error'
   const [status, setStatus] = useState('idle');
   const [files, setFiles] = useState([]);
   const [dragOver, setDragOver] = useState(false);
@@ -31,28 +29,13 @@ export default function UploadStudentResults({
   const [uploadResults, setUploadResults] = useState([]);
   const [errorMsg, setErrorMsg] = useState('');
   const [response, setResponse] = useState(null);
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains('dark')
-  );
+
   const allowedExtensions =
     acceptedExtensions?.length > 0 ? acceptedExtensions : DEFAULT_ACCEPTED;
   const supportedFormatsText = allowedExtensions.join(', ');
   const dropText =
     dropzoneLabel || `Drag & drop your file${multiple ? 's' : ''} here`;
 
-  useEffect(() => {
-    const root = document.documentElement;
-    const updateTheme = () => setIsDark(root.classList.contains('dark'));
-
-    updateTheme();
-
-    const observer = new MutationObserver(updateTheme);
-    observer.observe(root, { attributes: true, attributeFilter: ['class'] });
-
-    return () => observer.disconnect();
-  }, []);
-
-  // ── Validate & set files ──────────────
   function handleFiles(incoming) {
     if (!incoming || incoming.length === 0) return;
 
@@ -61,16 +44,13 @@ export default function UploadStudentResults({
 
     Array.from(incoming).forEach((f) => {
       const ext = '.' + f.name.split('.').pop().toLowerCase();
-      if (!allowedExtensions.includes(ext)) {
-        errors.push(f.name);
-      } else {
-        validFiles.push(f);
-      }
+      if (!allowedExtensions.includes(ext)) errors.push(f.name);
+      else validFiles.push(f);
     });
 
     if (errors.length > 0) {
       setErrorMsg(
-        `Invalid files: ${errors.join(', ')}. Only ${allowedExtensions.join(', ')} files are allowed.`
+        `Invalid: ${errors.join(', ')}. Only ${allowedExtensions.join(', ')} allowed.`
       );
       setStatus('error');
     }
@@ -79,9 +59,7 @@ export default function UploadStudentResults({
       setFiles(validFiles);
       setStatus('selected');
       setUploadProgress({});
-      if (errors.length === 0) {
-        setErrorMsg('');
-      }
+      if (errors.length === 0) setErrorMsg('');
     }
   }
 
@@ -90,7 +68,6 @@ export default function UploadStudentResults({
     e.target.value = '';
   }
 
-  // ── Drag & Drop ──────────────────────────
   function handleDrop(e) {
     e.preventDefault();
     setDragOver(false);
@@ -114,7 +91,6 @@ export default function UploadStudentResults({
       setErrorMsg('');
       setResponse(null);
 
-      // mark all files as in-progress
       const progressInit = {};
       files.forEach((f) => (progressInit[f.name] = 30));
       setUploadProgress(progressInit);
@@ -123,7 +99,6 @@ export default function UploadStudentResults({
       const payload = serverResponse?.data ?? serverResponse;
       setResponse(payload);
 
-      // mark all as done
       const progressDone = {};
       files.forEach((f) => (progressDone[f.name] = 100));
       setUploadProgress(progressDone);
@@ -132,23 +107,17 @@ export default function UploadStudentResults({
         payload?.status?.success ||
         payload?.success ||
         []
-      ).map((value) => String(value));
-      new Set(successList);
-
+      ).map((v) => String(v));
       const failedList = payload?.status?.failed || payload?.failed || [];
       const skippedRollNos = new Set(
         (payload?.skippedRollNos || []).map(String)
       );
 
-      // Extract digits from filename: "3001.json" → "3001", "303302223029.json" → "303302223029"
       const extractRollNo = (fileName) => {
         const base = fileName.replace(/\.json$/i, '').split('_')[0];
         return base.replace(/\D/g, '') || base;
       };
 
-      // Match file digits against a server roll_no:
-      // handles both exact match ("303302223001" === "303302223001")
-      // and short filename suffix ("303302223001".endsWith("3001"))
       const rollMatches = (serverRollNo, fileDigits) => {
         const s = String(serverRollNo ?? '');
         const f = String(fileDigits ?? '');
@@ -159,7 +128,6 @@ export default function UploadStudentResults({
       const results = files.map((f) => {
         const fileDigits = extractRollNo(f.name);
 
-        // 1. Failed match — show exact server error message
         const failedItem = failedList.find((item) =>
           rollMatches(item?.roll_no, fileDigits)
         );
@@ -173,7 +141,6 @@ export default function UploadStudentResults({
           };
         }
 
-        // 2. Skipped
         const skippedMatch = [...skippedRollNos].find((s) =>
           rollMatches(s, fileDigits)
         );
@@ -187,7 +154,6 @@ export default function UploadStudentResults({
           };
         }
 
-        // 3. Success match
         const successMatch = successList.find((s) =>
           rollMatches(s, fileDigits)
         );
@@ -201,7 +167,6 @@ export default function UploadStudentResults({
           };
         }
 
-        // 4. No match in server response
         return {
           name: f.name,
           rollNo: fileDigits,
@@ -231,36 +196,23 @@ export default function UploadStudentResults({
 
   return (
     <div className="w-full">
-      {/* Card */}
-      <div
-        className={`border rounded-2xl p-6 shadow-sm ${
-          isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
-        }`}
-      >
-        {/* Title */}
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
-            <RiUploadCloud2Line size={22} className="text-indigo-500" />
+      <div className="border border-border bg-surface rounded-xl p-5 shadow-sm">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+            <RiUploadCloud2Line size={20} className="text-accent" />
           </div>
           <div>
-            <h2
-              className={`text-base font-semibold leading-tight ${
-                isDark ? 'text-slate-100' : 'text-slate-800'
-              }`}
-            >
+            <h2 className="text-sm font-semibold text-text-primary leading-tight">
               {title}
             </h2>
-            <p
-              className={`text-xs mt-0.5 ${
-                isDark ? 'text-slate-500' : 'text-slate-400'
-              }`}
-            >
-              Supported formats: {supportedFormatsText}
+            <p className="text-xs text-text-muted mt-0.5">
+              Supported: {supportedFormatsText}
             </p>
           </div>
         </div>
 
-        {/* ── IDLE / ERROR: Drop Zone ── */}
+        {/* ── IDLE / ERROR: Dropzone ── */}
         {(status === 'idle' || status === 'error') && (
           <div
             onClick={() => inputRef.current?.click()}
@@ -270,169 +222,102 @@ export default function UploadStudentResults({
             }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
-            className={`
-              border-2 border-dashed rounded-xl p-8 flex flex-col items-center gap-3
-              cursor-pointer transition-all duration-200
-              ${
-                dragOver
-                  ? isDark
-                    ? 'border-indigo-400 bg-indigo-950/40'
-                    : 'border-indigo-400 bg-indigo-50'
-                  : isDark
-                    ? 'border-slate-700 hover:border-indigo-400 hover:bg-slate-800'
-                    : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
-              }
-            `}
+            className={[
+              'border-2 border-dashed rounded-xl p-8 flex flex-col items-center gap-3 cursor-pointer transition-colors duration-150',
+              dragOver
+                ? 'border-accent bg-accent/5'
+                : 'border-border hover:border-accent/50 hover:bg-surface-raised',
+            ].join(' ')}
           >
             <div
-              className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
-                dragOver
-                  ? isDark
-                    ? 'bg-indigo-900/60'
-                    : 'bg-indigo-100'
-                  : isDark
-                    ? 'bg-slate-800'
-                    : 'bg-slate-100'
-              }`}
+              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${dragOver ? 'bg-accent/10' : 'bg-surface-raised'}`}
             >
               <RiUploadCloud2Line
-                size={28}
-                className={`transition-colors ${
-                  dragOver
-                    ? 'text-indigo-500'
-                    : isDark
-                      ? 'text-slate-500'
-                      : 'text-slate-400'
-                }`}
+                size={24}
+                className={dragOver ? 'text-accent' : 'text-text-muted'}
               />
             </div>
 
             <div className="text-center">
-              <p
-                className={`text-sm font-medium ${
-                  isDark ? 'text-slate-200' : 'text-slate-700'
-                }`}
-              >
+              <p className="text-sm font-medium text-text-primary">
                 {dropText}
               </p>
-              <p
-                className={`text-xs mt-1 ${
-                  isDark ? 'text-slate-500' : 'text-slate-400'
-                }`}
-              >
+              <p className="text-xs text-text-muted mt-1">
                 or{' '}
-                <span className="text-indigo-500 font-medium underline underline-offset-2">
+                <span className="text-accent font-medium underline underline-offset-2">
                   {browseLabel}
                 </span>
               </p>
             </div>
 
-            {/* Error message */}
-            {status === 'error' && (
-              <p className="text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2 w-full text-center">
+            {status === 'error' && errorMsg && (
+              <p className="text-xs text-red-500 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 w-full text-center">
                 {errorMsg}
               </p>
             )}
           </div>
         )}
 
-        {/* ── SELECTED: Files list ── */}
+        {/* ── SELECTED: File list ── */}
         {status === 'selected' && files.length > 0 && (
-          <div className="grid grid-cols-5 gap-3">
+          <div className="grid grid-cols-5 gap-2.5">
             {files.map((file) => (
               <div
                 key={file.name}
-                className={`border rounded-xl p-4 flex items-center gap-3 ${
-                  isDark
-                    ? 'border-slate-700 bg-slate-800/40'
-                    : 'border-slate-200'
-                }`}
+                className="border border-border bg-surface-raised rounded-xl p-3 flex items-center gap-2.5"
               >
-                <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
-                  <BsFiletypeJson size={20} className="text-emerald-500" />
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
+                  <BsFiletypeJson size={17} className="text-emerald-500" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p
-                    className={`text-sm font-medium truncate ${
-                      isDark ? 'text-slate-200' : 'text-slate-700'
-                    }`}
-                  >
+                  <p className="text-xs font-medium text-text-primary truncate">
                     {file.name}
                   </p>
-                  <p
-                    className={`text-xs mt-0.5 ${
-                      isDark ? 'text-slate-500' : 'text-slate-400'
-                    }`}
-                  >
+                  <p className="text-[10px] text-text-muted mt-0.5">
                     {formatSize(file.size)}
                   </p>
                 </div>
                 <button
                   onClick={() => {
-                    const remainingFiles = files.filter(
-                      (f) => f.name !== file.name
-                    );
-                    setFiles(remainingFiles);
-                    if (remainingFiles.length === 0) {
-                      setStatus('idle');
-                    }
+                    const remaining = files.filter((f) => f.name !== file.name);
+                    setFiles(remaining);
+                    if (remaining.length === 0) setStatus('idle');
                   }}
-                  className={`p-1.5 rounded-lg transition-all ${
-                    isDark
-                      ? 'text-slate-500 hover:bg-slate-700 hover:text-slate-300'
-                      : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
-                  }`}
-                  title="Remove file"
+                  className="p-1 rounded-md text-text-muted hover:bg-surface hover:text-text-primary transition-colors shrink-0"
+                  title="Remove"
                 >
-                  <RiCloseLine size={16} />
+                  <RiCloseLine size={14} />
                 </button>
               </div>
             ))}
           </div>
         )}
 
-        {/* ── UPLOADING: Progress for each file ── */}
+        {/* ── UPLOADING: Progress ── */}
         {status === 'uploading' && files.length > 0 && (
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2.5">
             {files.map((file) => (
               <div
                 key={file.name}
-                className={`border rounded-xl p-4 ${
-                  isDark
-                    ? 'border-slate-700 bg-slate-800/40'
-                    : 'border-slate-200'
-                }`}
+                className="border border-border bg-surface-raised rounded-xl p-3"
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                    <BsFiletypeJson size={20} className="text-indigo-400" />
+                <div className="flex items-center gap-2.5 mb-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                    <BsFiletypeJson size={17} className="text-accent" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p
-                      className={`text-sm font-medium truncate ${
-                        isDark ? 'text-slate-200' : 'text-slate-700'
-                      }`}
-                    >
+                    <p className="text-xs font-medium text-text-primary truncate">
                       {file.name}
                     </p>
-                    <p
-                      className={`text-xs mt-0.5 ${
-                        isDark ? 'text-slate-500' : 'text-slate-400'
-                      }`}
-                    >
-                      Uploading...{' '}
-                      {Math.min(uploadProgress[file.name] || 0, 100)}%
+                    <p className="text-[10px] text-text-muted mt-0.5">
+                      Uploading… {Math.min(uploadProgress[file.name] || 0, 100)}
+                      %
                     </p>
                   </div>
                 </div>
-                {/* Progress bar */}
-                <div
-                  className={`w-full h-1.5 rounded-full overflow-hidden ${
-                    isDark ? 'bg-slate-700' : 'bg-slate-100'
-                  }`}
-                >
+                <div className="w-full h-1 rounded-full overflow-hidden bg-border">
                   <div
-                    className="h-full bg-indigo-500 rounded-full transition-all duration-300"
+                    className="h-full bg-accent rounded-full transition-all duration-300"
                     style={{
                       width: `${Math.min(uploadProgress[file.name] || 0, 100)}%`,
                     }}
@@ -443,197 +328,168 @@ export default function UploadStudentResults({
           </div>
         )}
 
-        {/* ── DONE: Upload results summary ── */}
+        {/* ── DONE: Summary + results ── */}
         {status === 'done' && uploadResults.length > 0 && (
-          <div className="space-y-4">
-            {/* Summary Box */}
+          <div className="space-y-3">
+            {/* Summary */}
             {uploadResults.some((r) => r.success) ? (
-              <div className="bg-linear-to-r from-emerald-50 to-emerald-100 border border-emerald-300 rounded-xl p-5 shadow-sm">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-emerald-200 flex items-center justify-center shrink-0 mt-0.5">
-                    <RiCheckLine size={20} className="text-emerald-700" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-emerald-900">
-                      Upload Summary
-                    </p>
-                    <div className="grid grid-cols-3 gap-4 mt-3">
-                      <div>
-                        <p className="text-xs text-emerald-700 font-medium">
-                          Successful
-                        </p>
-                        <p className="text-2xl font-bold text-emerald-700 mt-1">
-                          {response?.status?.success?.length ??
-                            response?.data?.success?.length ??
-                            uploadResults.filter((r) => r.success && !r.skipped)
-                              .length}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-amber-700 font-medium">
-                          Skipped
-                        </p>
-                        <p className="text-2xl font-bold text-amber-700 mt-1">
-                          {response?.skippedRollNos?.length ??
-                            uploadResults.filter((r) => r.skipped).length}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-red-700 font-medium">
-                          Failed
-                        </p>
-                        <p className="text-2xl font-bold text-red-700 mt-1">
-                          {response?.status?.failed?.length ??
-                            response?.data?.failed?.length ??
-                            uploadResults.filter(
-                              (r) => !r.success && !r.skipped
-                            ).length}
-                        </p>
-                      </div>
+              <div className="border border-emerald-500/20 bg-emerald-500/5 rounded-xl p-4 flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
+                  <RiCheckLine size={17} className="text-emerald-500" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-text-primary">
+                    Upload Summary
+                  </p>
+                  <div className="grid grid-cols-3 gap-4 mt-3">
+                    <div>
+                      <p className="text-[10px] font-medium text-emerald-500 uppercase tracking-wide">
+                        Successful
+                      </p>
+                      <p className="text-xl font-bold text-emerald-500 mt-0.5">
+                        {response?.status?.success?.length ??
+                          uploadResults.filter((r) => r.success && !r.skipped)
+                            .length}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-medium text-amber-500 uppercase tracking-wide">
+                        Skipped
+                      </p>
+                      <p className="text-xl font-bold text-amber-500 mt-0.5">
+                        {response?.skippedRollNos?.length ??
+                          uploadResults.filter((r) => r.skipped).length}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-medium text-red-500 uppercase tracking-wide">
+                        Failed
+                      </p>
+                      <p className="text-xl font-bold text-red-500 mt-0.5">
+                        {response?.status?.failed?.length ??
+                          uploadResults.filter((r) => !r.success && !r.skipped)
+                            .length}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="bg-linear-to-r from-red-50 to-red-100 border border-red-300 rounded-xl p-5 shadow-sm">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-red-200 flex items-center justify-center shrink-0 mt-0.5">
-                    <RiCloseLine size={20} className="text-red-700" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-red-900">
-                      All uploads failed
-                    </p>
-                    <p className="text-xs text-red-700 mt-1">
-                      {uploadResults.length} of {uploadResults.length} files
-                      failed to upload
-                    </p>
-                  </div>
+              <div className="border border-red-500/20 bg-red-500/5 rounded-xl p-4 flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+                  <RiCloseLine size={17} className="text-red-500" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-text-primary">
+                    All uploads failed
+                  </p>
+                  <p className="text-xs text-text-muted mt-1">
+                    {uploadResults.length} of {uploadResults.length} files
+                    failed
+                  </p>
                 </div>
               </div>
             )}
 
             {/* Individual results */}
-            <div className="grid grid-cols-3 gap-3">
-              {uploadResults.map((result) => (
-                <div
-                  key={result.name}
-                  className={`border rounded-xl p-4 flex flex-col items-start gap-3 ${
-                    result.success
-                      ? 'border-emerald-200 bg-emerald-50'
-                      : result.skipped
-                        ? 'border-amber-200 bg-amber-50'
-                        : 'border-red-200 bg-red-50'
-                  }`}
-                >
+            <div className="grid grid-cols-3 gap-2.5">
+              {uploadResults.map((result) => {
+                const tone = result.success
+                  ? {
+                      card: 'border-emerald-500/20 bg-emerald-500/5',
+                      iconWrap: 'bg-emerald-500/10',
+                      icon: 'text-emerald-500',
+                      title: 'text-emerald-700 dark:text-emerald-300',
+                      roll: 'text-emerald-500',
+                      message: 'text-emerald-700 dark:text-emerald-300',
+                    }
+                  : result.skipped
+                    ? {
+                        card: 'border-amber-500/20 bg-amber-500/5',
+                        iconWrap: 'bg-amber-500/10',
+                        icon: 'text-amber-500',
+                        title: 'text-amber-700 dark:text-amber-300',
+                        roll: 'text-amber-500',
+                        message: 'text-amber-700 dark:text-amber-300',
+                      }
+                    : {
+                        card: 'border-red-500/20 bg-red-500/5',
+                        iconWrap: 'bg-red-500/10',
+                        icon: 'text-red-500',
+                        title: 'text-red-700 dark:text-red-300',
+                        roll: 'text-red-500',
+                        message: 'text-red-700 dark:text-red-300',
+                      };
+                return (
                   <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                      result.success
-                        ? 'bg-emerald-100'
-                        : result.skipped
-                          ? 'bg-amber-100'
-                          : 'bg-red-100'
-                    }`}
+                    key={result.name}
+                    className={`border rounded-xl p-3.5 flex flex-col gap-2 ${tone.card}`}
                   >
-                    {result.success ? (
-                      <RiCheckLine size={20} className="text-emerald-600" />
-                    ) : result.skipped ? (
-                      <RiCloseLine size={20} className="text-amber-600" />
-                    ) : (
-                      <RiCloseLine size={20} className="text-red-600" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p
-                      className={`text-sm font-medium truncate ${
-                        result.success
-                          ? 'text-emerald-700'
-                          : result.skipped
-                            ? 'text-amber-700'
-                            : 'text-red-700'
-                      }`}
+                    <div
+                      className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${tone.iconWrap}`}
                     >
-                      {result.name}
-                    </p>
-                    {result.rollNo && (
+                      {result.success ? (
+                        <RiCheckLine size={15} className={tone.icon} />
+                      ) : (
+                        <RiCloseLine size={15} className={tone.icon} />
+                      )}
+                    </div>
+                    <div className="min-w-0">
                       <p
-                        className={`text-xs font-mono mt-1 ${
-                          result.success
-                            ? 'text-emerald-600'
-                            : result.skipped
-                              ? 'text-amber-600'
-                              : 'text-red-600'
-                        }`}
+                        className={`text-xs font-medium truncate ${tone.title}`}
                       >
-                        Roll No: {result.rollNo}
+                        {result.name}
                       </p>
-                    )}
-                    <p
-                      className={`text-xs mt-2 leading-relaxed ${
-                        result.success
-                          ? 'text-emerald-600'
-                          : result.skipped
-                            ? 'text-amber-600'
-                            : 'text-red-600'
-                      }`}
-                    >
-                      {result.message}
-                    </p>
+                      {result.rollNo && (
+                        <p
+                          className={`text-[10px] font-mono mt-0.5 ${tone.roll}`}
+                        >
+                          Roll: {result.rollNo}
+                        </p>
+                      )}
+                      <p
+                        className={`text-[10px] mt-1.5 leading-relaxed ${tone.message}`}
+                      >
+                        {result.message}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
 
-        {/* Action buttons */}
+        {/* ── Action Buttons ── */}
         {status === 'selected' && (
           <div className="flex gap-2 mt-4">
-            <button
-              onClick={handleReset}
-              className={`flex-1 py-2 text-sm font-medium border rounded-xl transition-all ${
-                isDark
-                  ? 'text-slate-300 border-slate-700 hover:bg-slate-800'
-                  : 'text-slate-500 border-slate-200 hover:bg-slate-50'
-              }`}
-            >
+            <button onClick={handleReset} className="btn-ghost flex-1">
               Cancel
             </button>
-            <button
-              onClick={handleUpload}
-              className="flex-1 py-2 text-sm font-medium text-white bg-indigo-500 rounded-xl hover:bg-indigo-600 active:scale-95 transition-all"
-            >
+            <button onClick={handleUpload} className="btn-primary flex-1">
               Upload {files.length} file{files.length !== 1 ? 's' : ''}
             </button>
           </div>
         )}
 
-        {/* Done action buttons */}
         {status === 'done' && (
-          <div className="mt-4 flex gap-2">
+          <div className="flex gap-2 mt-4">
             {uploadResults.every((r) => !r.success && !r.skipped) ? (
               <>
                 <button
                   onClick={handleUpload}
-                  className="flex-1 py-2 text-sm font-medium text-white bg-red-500 rounded-xl hover:bg-red-600 active:scale-95 transition-all"
+                  className="flex-1 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 active:scale-[0.98] transition-all"
                 >
                   Retry
                 </button>
-                <button
-                  onClick={handleReset}
-                  className={`flex-1 py-2 text-sm font-medium border rounded-xl transition-all ${
-                    isDark
-                      ? 'text-slate-300 border-slate-700 hover:bg-slate-800'
-                      : 'text-slate-500 border-slate-200 hover:bg-slate-50'
-                  }`}
-                >
+                <button onClick={handleReset} className="btn-ghost flex-1">
                   Clear & Select New
                 </button>
               </>
             ) : (
               <button
                 onClick={handleReset}
-                className="w-full py-2 text-sm font-medium text-indigo-600 border border-indigo-200 rounded-xl hover:bg-indigo-50 transition-all"
+                className="w-full py-2 text-sm font-medium text-accent border border-accent/30 rounded-lg hover:bg-accent/5 transition-all"
               >
                 Upload more files
               </button>
@@ -641,7 +497,7 @@ export default function UploadStudentResults({
           </div>
         )}
 
-        {/* Hidden file input */}
+        {/* Hidden input */}
         <input
           ref={inputRef}
           type="file"

@@ -14,82 +14,55 @@ export default function Header({
   setDarkMode,
 }) {
   return (
-    <header
-      className={`h-16 flex items-center justify-between px-6 border-b sticky top-0 z-30 ${
-        darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
-      }`}
-    >
-      {/* Left: Toggle + Brand */}
-      <div className="flex items-center gap-4">
+    <header className="h-14 flex items-center justify-between px-4 border-b border-border bg-surface sticky top-0 z-30 shrink-0">
+      {/* Left */}
+      <div className="flex items-center gap-3">
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-indigo-600 transition-all"
+          className="icon-btn text-blue-500 hover:text-blue-600"
           title="Toggle Sidebar"
         >
           {collapsed ? (
-            <RiMenuUnfoldLine size={20} />
+            <RiMenuUnfoldLine size={18} />
           ) : (
-            <RiMenuFoldLine size={20} />
+            <RiMenuFoldLine size={18} />
           )}
         </button>
         <span
-          className={`font-bold text-lg tracking-tight ${
-            darkMode ? 'text-slate-100' : 'text-slate-800'
+          className={`font-sans font-extrabold text-[25px] tracking-[-0.02em] select-none ${
+            darkMode ? 'text-white' : 'text-black'
           }`}
         >
-          i<span className="text-indigo-500">nsight</span>
+          Insight<span className="text-red-500">.</span>
         </span>
       </div>
 
       {/* Center: Search */}
-      <div
-        className={`hidden md:flex items-center gap-2 rounded-xl px-4 py-2 w-64 ${
-          darkMode ? 'bg-slate-800' : 'bg-slate-100'
-        }`}
-      >
-        <RiSearchLine
-          className={darkMode ? 'text-slate-500' : 'text-slate-400'}
-          size={16}
-        />
+      <div className="hidden md:flex items-center gap-2 bg-surface-raised border border-border rounded-lg px-3 py-1.5 w-56">
+        <RiSearchLine size={14} className="text-text-muted shrink-0" />
         <input
           type="text"
-          placeholder="Search anything..."
-          className={`bg-transparent outline-none text-sm w-full ${
-            darkMode
-              ? 'text-slate-200 placeholder-slate-500'
-              : 'text-slate-600 placeholder-slate-400'
-          }`}
+          placeholder="Search..."
+          className="bg-transparent outline-none text-sm w-full text-text-primary placeholder:text-text-muted"
         />
       </div>
 
-      {/* Right: Actions */}
-      <div className="flex items-center gap-3">
+      {/* Right */}
+      <div className="flex items-center gap-1">
         <button
-          className={`p-2 rounded-lg hover:text-indigo-500 transition-all ${
-            darkMode
-              ? 'text-slate-300 hover:bg-slate-800'
-              : 'text-slate-500 hover:bg-slate-100'
-          }`}
-          title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          className="icon-btn"
+          title={darkMode ? 'Light mode' : 'Dark mode'}
           onClick={() => setDarkMode((prev) => !prev)}
         >
-          {darkMode ? <RiSunLine size={20} /> : <RiMoonClearLine size={20} />}
+          {darkMode ? <RiSunLine size={18} /> : <RiMoonClearLine size={18} />}
         </button>
 
-        {/* Notifications */}
-        <button
-          className={`relative p-2 rounded-lg hover:text-indigo-500 transition-all ${
-            darkMode
-              ? 'text-slate-300 hover:bg-slate-800'
-              : 'text-slate-500 hover:bg-slate-100'
-          }`}
-        >
-          <RiNotification3Line size={20} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
+        <button className="icon-btn relative">
+          <RiNotification3Line size={18} />
+          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-red-500" />
         </button>
 
-        {/* Avatar */}
-        <div className="w-9 h-9 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold cursor-pointer">
+        <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white text-xs font-bold cursor-pointer ml-1 shrink-0">
           A
         </div>
       </div>

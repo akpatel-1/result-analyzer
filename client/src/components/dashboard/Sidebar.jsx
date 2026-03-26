@@ -72,7 +72,9 @@ function NavButton({
           ${depth > 0 ? 'pl-8' : ''}
           ${
             isActive
-              ? 'bg-indigo-50'
+              ? darkMode
+                ? 'bg-slate-800'
+                : 'bg-blue-50'
               : darkMode
                 ? 'text-slate-300 hover:bg-slate-800 hover:text-slate-100'
                 : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'

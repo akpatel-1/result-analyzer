@@ -1,5 +1,4 @@
 import pLimit from 'p-limit';
-import client from 'pg/lib/native/client';
 
 import { pool } from '../../../infra/database/db.js';
 import { ApiError } from '../../../utils/api.error.js';
