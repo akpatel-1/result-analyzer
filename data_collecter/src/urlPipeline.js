@@ -1,21 +1,23 @@
 import fs from "fs";
 import path from "path";
 import "dotenv/config";
-import { prompt } from "./prompt.js";
 import { utils } from "./utils.js";
-import { parseResultPage } from "./parser.js";
+import { parseResultPage } from "./urlParser.js";
 import { createJson } from "./createJson.js";
+import client from "./auth/client.js";
 
 const BASE_URL = process.env.BASE_URL;
 
-export async function pipeline(client) {
-  const input = await prompt();
-
-  const rollNumbers = utils.generateRollNumbers(
-    input.startRollNo,
-    input.endRollNo,
-  );
-  const outputDir = path.join("results", input.batch);
+export async function urlPipeline(
+  inputUrl,
+  batch,
+  startRollNo,
+  endRollNo,
+  attempt_no,
+  review_type,
+) {
+  const rollNumbers = utils.generateRollNumbers(startRollNo, endRollNo);
+  const outputDir = path.join("results", batch);
   fs.mkdirSync(outputDir, { recursive: true });
 
   console.log(
@@ -24,20 +26,16 @@ export async function pipeline(client) {
 
   const allResults = [];
 
-  const CONCURRENCY_LIMIT = 5;
+  const CONCURRENCY_LIMIT = 10;
 
   const processRoll = async (roll) => {
-    const url = utils.buildResultUrl(input.sampleUrl, roll);
+    const url = utils.buildResultUrl(inputUrl, roll);
     try {
       const response = await client.get(url, {
         headers: { Referer: `${BASE_URL}/WebApp/Result/SemesterResult.aspx` },
       });
 
-      const rawData = parseResultPage(
-        response.data,
-        input.exam_type,
-        input.review_type,
-      );
+      const rawData = parseResultPage(response.data);
 
       if (!rawData) {
         console.log(`⚠️  [${roll}] No result found.`);
@@ -45,13 +43,16 @@ export async function pipeline(client) {
       }
 
       if (rawData.subjects.length === 0) {
-        console.log(
-          `⚠️  [${roll}] Page loaded, but no matching ${input.review_type ? "Review" : input.exam_type} subjects found.`,
-        );
+        console.log(`⚠️  [${roll}] Page loaded, but no subjects found.`);
         return null;
       }
 
-      const finalJson = createJson(rawData, input);
+      const finalJson = createJson(rawData, {
+        batch,
+        exam_type: "Regular",
+        attempt_no,
+        review_type,
+      });
 
       let file_roll_no = roll.toString().slice(-4);
       const filename = path.join(outputDir, `${file_roll_no}.json`);
@@ -84,7 +85,7 @@ export async function pipeline(client) {
   }
 
   if (allResults.length > 0) {
-    const combinedFilename = path.join(outputDir, "1allResuts.json");
+    const combinedFilename = path.join(outputDir, "1-allResuts.json");
     fs.writeFileSync(combinedFilename, JSON.stringify(allResults, null, 2));
     console.log(
       `\n📦 Saved combined file: ${combinedFilename} (${allResults.length} records)`,

@@ -3,13 +3,13 @@ export const utils = {
     if (startRollNo.length !== endRollNo.length) {
       throw new Error("Start and end roll numbers must have the same length");
     }
-    const prefix = startRollNo.slice(0, -3);
-    const startN = parseInt(startRollNo.slice(-3));
-    const endN = parseInt(endRollNo.slice(-3));
+    const prefix = startRollNo.slice(0, -4);
+    const startN = parseInt(startRollNo.slice(-4));
+    const endN = parseInt(endRollNo.slice(-4));
 
     const rolls = [];
     for (let i = startN; i <= endN; i++) {
-      rolls.push(prefix + String(i).padStart(3, "0"));
+      rolls.push(prefix + String(i).padStart(4, "0"));
     }
     return rolls;
   },
@@ -29,5 +29,3 @@ export const utils = {
     return `${first}.${last}${year}@ssipmt.com`;
   },
 };
-
-//csvtu.digivarsity.online/WebApp/Result/SemesterResult.aspx?S=1%20SEMESTER&E=NOV-DEC%202023&R=303302223048&T=RTRV

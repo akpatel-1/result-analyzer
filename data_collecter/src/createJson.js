@@ -2,15 +2,12 @@ import { utils } from "./utils.js";
 import { ResultSchema } from "./schema.js";
 
 export function createJson(rawData, input) {
-  let reviewString = null;
-  if (input.review_type === 1) reviewString = "RTRV";
-  if (input.review_type === 2) reviewString = "RRV";
+  const reviewString = input.review_type ?? null;
 
   let sessionString = rawData.exam_session;
   if (sessionString.toLowerCase().includes("apr")) sessionString = "Apr-May";
   if (sessionString.toLowerCase().includes("nov")) sessionString = "Nov-Dec";
 
-  // Construct raw object
   const unvalidatedData = {
     roll_no: rawData.roll_no,
     name: rawData.name,
@@ -33,7 +30,7 @@ export function createJson(rawData, input) {
   };
 
   try {
-    console.log('Parsing')
+    console.log("Parsing");
     return ResultSchema.parse(unvalidatedData);
   } catch (error) {
     const issues = error?.issues ?? error?.errors;

@@ -1,7 +1,6 @@
 import { fileURLToPath } from "node:url";
 import { login } from "./src/auth/login.js";
-import client from "./src/auth/client.js";
-import { pipeline } from "./src/pipeline.js";
+import { prompt } from "./src/prompt.js";
 
 export async function orchestrator() {
   try {
@@ -12,7 +11,7 @@ export async function orchestrator() {
       return;
     }
 
-    await pipeline(client);
+    await prompt();
   } catch (error) {
     console.error("💥 Fatal error:", error.message);
     process.exitCode = 1;
