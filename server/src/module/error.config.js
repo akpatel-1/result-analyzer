@@ -31,8 +31,7 @@ export const ERROR_CONFIG = {
   },
   EMAIL_NOT_FOUND: {
     statusCode: 404,
-    message:
-      'No account found with this email. Please use your registered college email.',
+    message: 'We couldn’t find an account associated with this email address.',
     code: 'EMAIL_NOT_FOUND',
   },
   INVALID_OR_EXPIRED_OTP: {
