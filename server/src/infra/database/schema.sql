@@ -26,7 +26,7 @@ create table if not exists attempts (
   semester smallint not null check (semester between 1 and 8),
   exam_type citext not null check (exam_type in ('Regular', 'Backlog')),
   attempt_no smallint not null check (attempt_no between 1 and 4),
-  review_type citext default null check (review_type in ('VALUATION', 'RTRV', 'RRV')),
+  review_type citext not null check (review_type in ('VALUATION', 'RTRV', 'RRV')),
   exam_session citext not null check (exam_session in ('Apr-May', 'Nov-Dec')),
   exam_year smallint not null,
   created_at timestamp default now(),
@@ -52,8 +52,8 @@ create table if not exists overall_result (
   id uuid primary key default gen_random_uuid (),
   attempt_id uuid not null unique references attempts (id) on delete cascade,
   spi numeric(4, 2),
-  max_marks smallint not null,
-  obt_marks smallint not null,
+  overall_max smallint not null,
+  overall_obt smallint not null,
   overall_status citext not null check (
     overall_status in (
       'Pass',
@@ -83,18 +83,6 @@ create table if not exists subject_result (
   unique (attempt_id, subject_id)
 );
 
-create table if not exists subject_review (
-  id uuid primary key default gen_random_uuid (),
-  subject_result_id uuid not null references subject_result (id) on delete cascade,
-  review_type citext not null check (review_type in ('RTRV', 'RRV')),
-  obt_ese smallint,
-  obt_ct smallint,
-  obt_ta smallint,
-  obt_total smallint not null,
-  status citext not null check (status in ('Pass', 'Fail')),
-  created_at timestamp default now(),
-  unique (subject_result_id, review_type)
-);
 
 create table if not exists refresh_tokens (
   id uuid primary key default gen_random_uuid (),

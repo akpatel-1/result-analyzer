@@ -6,7 +6,7 @@ export const controller = {
 
     res.status(201).json({
       success: true,
-      message: 'File upload completed',
+      message: 'Profile upload completed',
       status,
     });
   },
@@ -15,7 +15,7 @@ export const controller = {
     const status = await service.uploadSubjectInfo(req.data);
     res.status(201).json({
       success: true,
-      message: 'File upload completed',
+      message: 'Subject information upload completed',
       status,
     });
   },
@@ -24,17 +24,9 @@ export const controller = {
     const status = await service.uploadResults(req.data);
     res.status(201).json({
       success: true,
-      message: 'File upload completed',
+      message: 'Results upload completed',
       status,
     });
   },
 
-  async createReviews(req, res) {
-    const status = await service.uploadReviews(req.data);
-    res.status(201).json({
-      success: true,
-      message: 'File upload completed',
-      status,
-    });
-  },
 };

@@ -32,10 +32,10 @@ export const repository = {
     );
   },
 
-  async getStudentIdByRollNo(client, roll_no, batch) {
+  async getStudentId(client, student) {
     const result = await client.query(
       `SELECT id FROM students WHERE roll_no = $1 AND batch = $2`,
-      [roll_no, batch]
+      [student.roll_no, student.batch]
     );
     return result.rows[0]?.id;
   },
@@ -63,13 +63,13 @@ export const repository = {
     await client.query(
       `
       INSERT INTO overall_result
-      (attempt_id, spi, max_marks, obt_marks, overall_status)
+      (attempt_id, spi, overall_max, overall_obt, overall_status)
       VALUES($1, $2, $3, $4, $5)`,
       [
         attemptId,
         student.spi,
-        student.max_total_marks,
-        student.obt_total_marks,
+        student.overall_max,
+        student.overall_obt,
         student.overall_status,
       ]
     );
@@ -95,7 +95,7 @@ export const repository = {
     return result.rows[0]?.id;
   },
 
-  async insertSubjectResult(client, subject, attemptId, subjectId) {
+  async insertSubjectResult(client, attemptId, subjectId, subject) {
     await client.query(
       `
       INSERT INTO subject_result
@@ -113,44 +113,4 @@ export const repository = {
     );
   },
 
-  async getAttemptId(client, data) {
-    const result = await client.query(
-      `
-      SELECT id FROM attempts
-      WHERE student_id = $1
-      AND semester = $2
-      ORDER BY created_at DESC
-      LIMIT 1`,
-      [data.student_id, data.semester]
-    );
-    return result.rows[0]?.id;
-  },
-
-  async getSubjectResultId(client, data) {
-    const result = await client.query(
-      `
-      SELECT id FROM subject_result
-      WHERE attempt_id = $1
-      AND subject_id = $2`,
-      [data.attempt_id, data.subject_id]
-    );
-    return result.rows[0].id;
-  },
-
-  async insertIntoSubjectReview(client, subjectResultId, student, subject) {
-    await client.query(
-      `
-      INSERT INTO subject_review (subject_result_id ,review_type, obt_ese, obt_ct, obt_ta, obt_total, status) 
-      VALUES ($1, $2, $3 ,$4, $5, $6, $7)`,
-      [
-        subjectResultId,
-        student.review_type,
-        subject.obt_ese,
-        subject.obt_ct,
-        subject.obt_ta,
-        subject.obt_total,
-        subject.status,
-      ]
-    );
-  },
 };

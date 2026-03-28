@@ -29,8 +29,8 @@ const studentResultSchema = z.object({
   attempt_no: z.number(),
   review_type: z.string().nullable(),
   spi: z.number().nullable(),
-  max_total_marks: z.number(),
-  obt_total_marks: z.number(),
+  overall_max: z.number(),
+  overall_obt: z.number(),
   overall_status: z.string(),
   subjects: z.array(subjectSchema),
 });

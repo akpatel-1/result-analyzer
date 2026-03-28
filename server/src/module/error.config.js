@@ -60,4 +60,9 @@ export const ERROR_CONFIG = {
     message: 'Student not found',
     code: 'STUDENT_NOT_FOUND',
   },
+  SUBJECTS_LESS_THAN_10: {
+    statusCode: 400,
+    message: 'Subjects must be at least 10',
+    code: 'SUBJECTS_LESS_THAN_10',
+  },
 };
