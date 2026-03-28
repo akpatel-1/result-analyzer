@@ -54,7 +54,7 @@ export const service = {
     const limit = pLimit(10);
     const students = Object.values(studentsObj);
 
-    const tasks = students.map((students) =>
+    const tasks = students.map((student) =>
       limit(() =>
         withTransaction(pool, async (client) => {
           const studentId = await repository.getStudentId(client, {

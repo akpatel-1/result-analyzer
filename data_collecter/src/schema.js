@@ -56,7 +56,7 @@ export const ResultSchema = z
     exam_year: z.number().int().positive(),
 
     // Table: subject_review
-    review_type: z.enum(["VALIDATION", "RTRV", "RRV"]),
+    review_type: z.enum(["VALUATION", "RTRV", "RRV"]),
 
     // Table: overall_result
     spi: z.number().min(0).max(10, "SPI must be between 0 and 10").nullable(),
