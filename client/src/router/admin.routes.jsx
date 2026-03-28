@@ -23,9 +23,9 @@ export const adminRoutes = [
     path: '/admin/upload',
     children: [
       { index: true, element: <Navigate to="profile" replace /> },
-      { path: 'profile', element: <AdminProfileUpload /> },
-      { path: 'result', element: <AdminResultUpload /> },
-      { path: 'review', element: <AdminReviewUpload /> },
+      { path: 'profiles', element: <AdminProfileUpload /> },
+      { path: 'results', element: <AdminResultUpload /> },
+      { path: 'reviews', element: <AdminReviewUpload /> },
       { path: 'subjects', element: <AdminSubjectUpload /> },
     ],
   },

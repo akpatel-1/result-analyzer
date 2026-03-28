@@ -4,6 +4,7 @@ import { pool } from '../../../infra/database/db.js';
 import { ApiError } from '../../../utils/api.error.js';
 import { withTransaction } from '../../../utils/transaction.js';
 import { ERROR_CONFIG } from '../../error.config.js';
+import { AUTH_CONFIG } from '../auth/auth.config.js';
 import { repository } from './upload.repository.js';
 
 export const service = {
@@ -71,7 +72,8 @@ export const service = {
         withTransaction(pool, async (client) => {
           const studentId = await repository.getStudentIdByRollNo(
             client,
-            student.roll_no
+            student.roll_no,
+            student.batch
           );
           if (!studentId) {
             throw new ApiError(ERROR_CONFIG.STUDENT_NOT_FOUND);
@@ -80,6 +82,7 @@ export const service = {
             student_id: studentId,
             semester: student.semester,
             exam_type: student.exam_type,
+            review_type,
             attempt_no: student.attempt_no,
             exam_session: student.exam_session,
             exam_year: student.exam_year,
@@ -123,4 +126,81 @@ export const service = {
 
     return { success, failed };
   },
+
+  async uploadReviews(students) {
+    const success = [];
+    const failed = [];
+    const limit = pLimit(10);
+
+    const studentArray = Object.values(students);
+
+    const tasks = studentArray.map((student) =>
+      limit(() =>
+        withTransaction(pool, async (client) => {
+          const studentId = await repository.getStudentIdByRollNo(
+            client,
+            student.roll_no,
+            student.batch
+          );
+
+          if (!studentId) {
+            throw new ApiError(ERROR_CONFIG.STUDENT_NOT_FOUND);
+          }
+
+          const attemptId = await repository.getAttemptId(client, {
+            student_id: studentId,
+            semester: student.semester,
+          });
+
+          for (const subject of student.subjects) {
+            const subjectInfoId = await repository.getSingleSubjectInfoId(
+              client,
+              subject.code
+            );
+            const subjectResultId = await repository.getSubjectResultId(
+              client,
+              { attempt_id: attemptId, subject_id: subjectInfoId }
+            );
+            await repository.insertIntoSubjectReview(
+              client,
+              subjectResultId,
+              student,
+              subject
+            );
+          }
+          const reviewAttemptId = await repository.insertAttempts(client, {
+            student_id: studentId,
+            semester: student.semester,
+            exam_type: student.exam_type,
+            review_type: student.review_type,
+            attempt_no: student.attempt_no,
+            exam_session: student.exam_session,
+            exam_year: student.exam_year,
+          });
+
+          await repository.insertOverallResult(
+            client,
+            reviewAttemptId,
+            student
+          );
+        })
+      )
+    );
+    const results = await Promise.allSettled(tasks);
+
+    results.forEach((result, index) => {
+      const student = studentArray[index];
+
+      if (result.status === 'fulfilled') {
+        success.push(student.roll_no);
+      } else {
+        failed.push({
+          roll_no: student.roll_no,
+          error: result.reason?.message || 'Unknown error',
+        });
+      }
+    });
+    return { success, failed };
+  },
+
 };

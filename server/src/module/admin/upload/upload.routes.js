@@ -15,3 +15,5 @@ uploadRoute.post('/upload/profile', controller.handleProfileUpload);
 uploadRoute.post('/upload/subjects-info', controller.createSubjectInfo);
 
 uploadRoute.post('/upload/results', controller.createResults);
+
+uploadRoute.post('/upload/reviews', controller.createReviews);

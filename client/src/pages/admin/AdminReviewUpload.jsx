@@ -12,7 +12,7 @@ export default function AdminReviewUpload() {
   const handleUpload = async (files) => {
     const payload = await parseJsonFiles(files);
 
-    return adminApi.upload('review', payload, {});
+    return adminApi.upload('reviews', payload, {});
   };
 
   const handleLogout = async () => {

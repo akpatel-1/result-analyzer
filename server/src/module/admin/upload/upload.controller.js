@@ -28,4 +28,13 @@ export const controller = {
       status,
     });
   },
+
+  async createReviews(req, res) {
+    const status = await service.uploadReviews(req.data);
+    res.status(201).json({
+      success: true,
+      message: 'File upload completed',
+      status,
+    });
+  },
 };

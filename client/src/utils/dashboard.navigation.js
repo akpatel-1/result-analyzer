@@ -91,19 +91,19 @@ export const adminNavigationLinks = [
     color: '#22C55E',
     children: [
       {
-        to: '/admin/upload/profile',
+        to: '/admin/upload/profiles',
         label: 'Profile Upload',
         icon: IoPeopleOutline,
         color: '#22C55E',
       },
       {
-        to: '/admin/upload/result',
+        to: '/admin/upload/results',
         label: 'Result Upload',
         icon: HiOutlineDocumentReport,
         color: '#22C55E',
       },
       {
-        to: '/admin/upload/review',
+        to: '/admin/upload/reviews',
         label: 'Review Upload',
         icon: TbReportAnalytics,
         color: '#22C55E',
