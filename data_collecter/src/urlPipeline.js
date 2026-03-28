@@ -59,7 +59,7 @@ export async function urlPipeline(
       fs.writeFileSync(filename, JSON.stringify([finalJson], null, 2));
 
       console.log(
-        `✅ [${roll}] Saved: ${finalJson.name} (${finalJson.obt_total_marks}/${finalJson.max_total_marks})`,
+        `✅ [${roll}] Saved: ${finalJson.name} (${finalJson.overall_obt}/${finalJson.overall_max})`,
       );
       return finalJson;
     } catch (err) {

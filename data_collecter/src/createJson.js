@@ -2,8 +2,6 @@ import { utils } from "./utils.js";
 import { ResultSchema } from "./schema.js";
 
 export function createJson(rawData, input) {
-  const reviewString = input.review_type ?? null;
-
   let sessionString = rawData.exam_session;
   if (sessionString.toLowerCase().includes("apr")) sessionString = "Apr-May";
   if (sessionString.toLowerCase().includes("nov")) sessionString = "Nov-Dec";
@@ -21,10 +19,10 @@ export function createJson(rawData, input) {
     exam_year: rawData.exam_year,
     exam_type: input.exam_type,
     attempt_no: parseInt(input.attempt_no) || 1,
-    review_type: reviewString,
+    review_type: input.review_type,
     spi: rawData.spi,
-    max_total_marks: rawData.max_total_marks,
-    obt_total_marks: rawData.obt_total_marks,
+    overall_max: rawData.overall_max,
+    overall_obt: rawData.overall_obt,
     overall_status: rawData.overall_status,
     subjects: rawData.subjects,
   };

@@ -34,9 +34,9 @@ export const ResultSchema = z
     // Table: students
     roll_no: z.string().min(1, "Roll number is required"),
     name: z.string().min(1, "Name is required"),
-    email: z.string().email("Invalid email format").nullable(),
-    enroll_id: z.string().nullable().optional(),
-    abc_id: z.string().nullable().optional(),
+    email: z.string().email("Invalid email format"),
+    enroll_id: z.string(),
+    abc_id: z.string(),
     batch: z.number().int().positive("Batch must be a valid year"),
     branch: z.string().min(1, "Branch is required"),
 
@@ -51,17 +51,17 @@ export const ResultSchema = z
       .number()
       .int()
       .min(1)
-      .max(4, "Attempt number must be between 1 and 4"),
+      .max(3, "Attempt number must be between 1 and 3"),
     exam_session: z.enum(["Apr-May", "Nov-Dec"]),
     exam_year: z.number().int().positive(),
 
     // Table: subject_review
-    review_type: z.enum(["RTRV", "RRV"]).nullable(),
+    review_type: z.enum(["VALIDATION", "RTRV", "RRV"]),
 
     // Table: overall_result
     spi: z.number().min(0).max(10, "SPI must be between 0 and 10").nullable(),
-    max_total_marks: z.number().int(),
-    obt_total_marks: z.number().int(),
+    overall_max: z.number().int(),
+    overall_obt: z.number().int(),
 
     overall_status: z.string().min(1),
 

@@ -13,7 +13,7 @@ export function parseResultPage(html) {
 
   const semester = parseInt($("#sem").text().match(/\d+/)?.[0]) ?? null;
 
-  const examSessionRaw = $("#ext").text().trim(); 
+  const examSessionRaw = $("#ext").text().trim();
   const exam_year = parseInt(examSessionRaw.match(/\d{4}/)?.[0]) ?? null;
   let exam_session = examSessionRaw;
   if (examSessionRaw.toLowerCase().includes("apr")) exam_session = "Apr-May";
@@ -23,8 +23,8 @@ export function parseResultPage(html) {
   const overall_status = normalizeRegularOverallStatus(
     $("#Result").text().trim(),
   );
-  const obt_total_marks = parseInt($("#obtmarks").text().trim()) || 0;
-  const max_total_marks = parseInt($("#mxmarks").text().trim()) || 0;
+  const overall_obt = parseInt($("#obtmarks").text().trim()) || 0;
+  const overall_max = parseInt($("#mxmarks").text().trim()) || 0;
 
   const spiRaw = $("#spi").text().trim() || null;
   const spi = spiRaw ? parseFloat(spiRaw) : null;
@@ -90,8 +90,8 @@ export function parseResultPage(html) {
     exam_session,
     exam_year,
     spi,
-    max_total_marks,
-    obt_total_marks,
+    overall_max,
+    overall_obt,
     overall_status,
     subjects,
   };

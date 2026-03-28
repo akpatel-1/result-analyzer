@@ -26,7 +26,7 @@ export async function prompt() {
   const type = params.get("T");
 
   // Regular pipeline
-  let review_type = null;
+  let review_type = 'VALIDATION';
   let attempt_no = 1;
   if (type === "Regular") {
     let base = params.get("R").slice(0, -4);

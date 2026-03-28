@@ -44,10 +44,9 @@ export function jsonParser(html) {
   if (sessionRaw.toLowerCase().includes("apr")) exam_session = "Apr-May";
   else if (sessionRaw.toLowerCase().includes("nov")) exam_session = "Nov-Dec";
 
-
   const overall_status = $("#Result").text().trim();
-  const max_total_marks = num($("#mxmarks")) || 0;
-  const obt_total_marks = num($("#obtmarks")) || 0;
+  const overall_max = num($("#mxmarks")) || 0;
+  const overall_obt = num($("#obtmarks")) || 0;
   const spiRaw = $("#spi").text().trim();
   const spi = spiRaw ? parseFloat(spiRaw) : null;
 
@@ -93,9 +92,9 @@ export function jsonParser(html) {
     exam_session,
     exam_year,
     spi,
-    max_total_marks,
-    obt_total_marks,
-    overall_status, 
+    overall_max,
+    overall_obt,
+    overall_status,
     subjects,
   };
 }

@@ -50,7 +50,7 @@ export async function jsonPipeline(inputUrl, batch, attempt_no, review_type, fil
         batch,
         attempt_no,
         exam_type:   rawData.exam_type,   // from HTML: "Regular" | "Backlog"
-        review_type: review_type,          // from prompt: "RTRV" | "RRV" | null
+        review_type: review_type,          // from prompt: "RTRV" | "RRV" | "VALIDATION"
       });
 
       const file_roll_no = roll_no.toString().slice(-4);
