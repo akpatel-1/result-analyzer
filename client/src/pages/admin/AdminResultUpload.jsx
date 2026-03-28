@@ -22,10 +22,7 @@ export default function AdminResultUpload() {
 
   return (
     <DashboardLayout navItems={adminNavigationLinks} onLogout={handleLogout}>
-      <UploadStudentResults
-        onUpload={handleUpload}
-        title={'Upload Regular or Backlog results'}
-      />
+      <UploadStudentResults onUpload={handleUpload} title={'Upload Results'} />
     </DashboardLayout>
   );
 }

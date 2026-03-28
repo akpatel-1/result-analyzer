@@ -5,7 +5,6 @@ import AdminDashboardPage from '../pages/admin/AdminDashboarPage';
 import AdminLoginPage from '../pages/admin/AdminLoginPage';
 import AdminProfileUpload from '../pages/admin/AdminProfileUpload';
 import AdminResultUpload from '../pages/admin/AdminResultUpload';
-import AdminReviewUpload from '../pages/admin/AdminReviewUpload';
 import AdminSubjectUpload from '../pages/admin/AdminSubjectsUpload';
 
 export const adminRoutes = [
@@ -25,7 +24,6 @@ export const adminRoutes = [
       { index: true, element: <Navigate to="profile" replace /> },
       { path: 'profiles', element: <AdminProfileUpload /> },
       { path: 'results', element: <AdminResultUpload /> },
-      { path: 'reviews', element: <AdminReviewUpload /> },
       { path: 'subjects', element: <AdminSubjectUpload /> },
     ],
   },

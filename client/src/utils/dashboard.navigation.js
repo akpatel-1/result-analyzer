@@ -103,12 +103,6 @@ export const adminNavigationLinks = [
         color: '#22C55E',
       },
       {
-        to: '/admin/upload/reviews',
-        label: 'Review Upload',
-        icon: TbReportAnalytics,
-        color: '#22C55E',
-      },
-      {
         to: '/admin/upload/subjects',
         label: 'Subjects Upload',
         icon: MdOutlineMenuBook,
