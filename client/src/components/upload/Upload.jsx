@@ -275,7 +275,7 @@ export default function UploadStudentResults({
 
         {/* ── SELECTED: File list ── */}
         {status === 'selected' && files.length > 0 && (
-          <div className="grid grid-cols-5 gap-2.5">
+          <div className="grid grid-cols-3 gap-2.5">
             {files.map((file) => (
               <div
                 key={file.name}

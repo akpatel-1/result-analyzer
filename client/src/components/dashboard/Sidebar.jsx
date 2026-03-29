@@ -68,7 +68,7 @@ function NavButton({
         title={collapsed ? label : ''}
         style={isActive ? { color: resolvedActiveColor } : {}}
         className={`
-          w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
+          w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-200
           ${depth > 0 ? 'pl-8' : ''}
           ${
             isActive
@@ -146,7 +146,7 @@ export default function Sidebar({
         ${collapsed ? 'w-16' : 'w-60'}
         flex flex-col h-full border-r
         ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}
-        transition-all duration-300 ease-in-out shrink-0
+        transition-[width,background-color,border-color,color] duration-200 ease-in-out shrink-0
       `}
     >
       {/* ── Main Nav Items ── */}
@@ -194,7 +194,7 @@ export default function Sidebar({
 
         {/* Logout — always at the bottom */}
         <button
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-200 hover:text-red-500 transition-all"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-200 hover:text-red-500 transition-colors duration-200"
           title={collapsed ? 'Logout' : ''}
           onClick={onLogout}
         >

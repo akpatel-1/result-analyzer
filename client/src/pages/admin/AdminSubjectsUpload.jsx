@@ -12,7 +12,7 @@ export default function AdminSubjectUpload() {
   const handleUpload = async (files) => {
     const payload = await parseJsonFiles(files);
 
-    return adminApi.upload('subjects-info', payload, {});
+    return adminApi.upload('subjects', payload, {});
   };
 
   const handleLogout = async () => {

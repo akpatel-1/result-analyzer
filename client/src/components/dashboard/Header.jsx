@@ -14,7 +14,7 @@ export default function Header({
   setDarkMode,
 }) {
   return (
-    <header className="h-14 flex items-center justify-between px-4 border-b border-border bg-surface sticky top-0 z-30 shrink-0">
+    <header className="h-14 flex items-center justify-between px-4 border-b border-border bg-surface sticky top-0 z-30 shrink-0 transition-colors duration-200">
       {/* Left */}
       <div className="flex items-center gap-3">
         <button
@@ -29,7 +29,7 @@ export default function Header({
           )}
         </button>
         <span
-          className={`font-sans font-extrabold text-[25px] tracking-[-0.02em] select-none ${
+          className={`font-sans font-extrabold text-[25px] tracking-[-0.02em] select-none transition-colors duration-200 ${
             darkMode ? 'text-white' : 'text-black'
           }`}
         >
@@ -38,7 +38,7 @@ export default function Header({
       </div>
 
       {/* Center: Search */}
-      <div className="hidden md:flex items-center gap-2 bg-surface-raised border border-border rounded-lg px-3 py-1.5 w-56">
+      <div className="hidden md:flex items-center gap-2 bg-surface-raised border border-border rounded-lg px-3 py-1.5 w-56 transition-colors duration-200">
         <RiSearchLine size={14} className="text-text-muted shrink-0" />
         <input
           type="text"

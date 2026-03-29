@@ -8,7 +8,7 @@ export default function AdminDashboardPage() {
   const navigate = useNavigate();
   const handleLogout = async () => {
     await adminApi.logout();
-    navigate('/login', { replace: true });
+    navigate('/admin/login', { replace: true });
   };
   return (
     <DashboardLayout navItems={adminNavigationLinks} onLogout={handleLogout} />

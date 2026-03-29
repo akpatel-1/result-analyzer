@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
-import { adminApi } from '../../api/admin.api';
 import Header from './Header';
 import Sidebar from './Sidebar';
 
@@ -23,8 +22,6 @@ export default function DashboardLayout({
   children,
 }) {
   const location = useLocation();
-  const navigate = useNavigate();
-  const didVerifyRef = useRef(false);
 
   const currentRoute = `${location.pathname}${location.search}`;
 
@@ -43,28 +40,6 @@ export default function DashboardLayout({
     navItems[0]?.to ||
     '';
 
-  // ── Auth check ──
-  useEffect(() => {
-    if (didVerifyRef.current) return;
-    didVerifyRef.current = true;
-
-    let cancelled = false;
-    adminApi
-      .me()
-      .then((res) => {
-        const role = res?.data?.user?.role;
-        if (!cancelled && role !== 'admin')
-          navigate('/error/403', { replace: true });
-      })
-      .catch(() => {
-        if (!cancelled) navigate('/admin/login', { replace: true });
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [navigate]);
-
   // ── Sync dark mode to <html> class + localStorage ──
   useEffect(() => {
     const root = document.documentElement;
@@ -78,7 +53,7 @@ export default function DashboardLayout({
   }, [darkMode]);
 
   return (
-    <div className="flex flex-col h-screen bg-surface font-sans">
+    <div className="flex flex-col h-screen bg-surface font-sans transition-colors duration-200">
       <Header
         collapsed={collapsed}
         setCollapsed={setCollapsed}
@@ -86,7 +61,7 @@ export default function DashboardLayout({
         setDarkMode={setDarkMode}
       />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden transition-colors duration-200">
         <Sidebar
           collapsed={collapsed}
           activeSection={activeSection}
@@ -97,7 +72,9 @@ export default function DashboardLayout({
           darkMode={darkMode}
         />
 
-        <main className="flex-1 overflow-y-auto p-6 bg-canvas">{children}</main>
+        <main className="flex-1 overflow-y-auto p-6 bg-canvas transition-colors duration-200">
+          {children}
+        </main>
       </div>
     </div>
   );
