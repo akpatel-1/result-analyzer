@@ -24,6 +24,8 @@ export async function prompt() {
 
   const params = new URL(url).searchParams;
   const type = params.get("T");
+  const rawSem = params.get("S");
+  const semester = "S" + rawSem.match(/\d+/)[0];
 
   // Regular pipeline
   let review_type = "VALUATION";
@@ -40,14 +42,38 @@ export async function prompt() {
       endRollNo,
       attempt_no,
       review_type,
+      "Regular",
+      semester,
     );
   }
 
   // Backlog, RTRV, RRV pipeline
-  attempt_no = await ask("Attempt number:→ ");
+  let exam_type = "Backlog";
+  if (type != "Backlog") {
+    const input = await ask("Exam type (1 → Regular & 2 → Backlog): ");
+    const examMap = {
+      1: "Regular",
+      2: "Backlog",
+    };
+    exam_type = examMap[input];
+  }
+
+  
+  if (exam_type === "Backlog") {
+    attempt_no = await ask("Attempt number:→ ");
+  }
+
   if (type !== "Backlog") {
     review_type = type;
   }
 
-  return await jsonPipeline(url, batch, attempt_no, review_type, filePath);
+  return await jsonPipeline(
+    url,
+    batch,
+    attempt_no,
+    review_type,
+    filePath,
+    exam_type,
+    semester,
+  );
 }

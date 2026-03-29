@@ -7,15 +7,26 @@ import { utils } from "./utils.js";
 
 const BASE_URL = process.env.BASE_URL;
 
-export async function jsonPipeline(inputUrl, batch, attempt_no, review_type, filepath) {
+export async function jsonPipeline(
+  inputUrl,
+  batch,
+  attempt_no,
+  review_type,
+  filepath,
+  exam_type,
+  semester,
+) {
   const sourceData = JSON.parse(fs.readFileSync(filepath, "utf-8"));
 
-  const outputDir = path.join("results", batch);
+  const filename = `${batch} ${semester} ${exam_type}-${attempt_no} ${review_type}`;
+  const outputDir = path.join("results", filename);
   fs.mkdirSync(outputDir, { recursive: true });
 
   const allResults = [];
 
-  console.log(`\n🚀 Processing ${sourceData.length} records to ./${outputDir}/ ...\n`);
+  console.log(
+    `\n🚀 Processing ${sourceData.length} records to ./${outputDir}/ ...\n`,
+  );
 
   for (const item of sourceData) {
     const roll_no = item.roll_no;
@@ -29,15 +40,15 @@ export async function jsonPipeline(inputUrl, batch, attempt_no, review_type, fil
 
       const rawData = jsonParser(response.data);
 
-      if (!rawData || !Array.isArray(rawData.subjects)) {
-        console.log(`⚠️  [${roll_no}] Page not found.`);
+      if (!rawData) {
+        console.log(`⚠️  [${roll_no}] No result found.`);
         continue;
       }
 
-      const failedSubjects = item.failed_subjects || item.failed_subject_codes || [];
+      const failedSubjects = item.failed_subjects;
       if (failedSubjects.length > 0) {
         rawData.subjects = rawData.subjects.filter((subj) =>
-          failedSubjects.includes(subj.code)
+          failedSubjects.includes(subj.code),
         );
       }
 
@@ -49,8 +60,8 @@ export async function jsonPipeline(inputUrl, batch, attempt_no, review_type, fil
       const validated = createJson(rawData, {
         batch,
         attempt_no,
-        exam_type:   rawData.exam_type,   // from HTML: "Regular" | "Backlog"
-        review_type: review_type,          // from prompt: "RTRV" | "RRV" | "VALIDATION"
+        exam_type: rawData.exam_type, // from HTML: "Regular" | "Backlog"
+        review_type: review_type, // from prompt: "RTRV" | "RRV" | "VALUATION"
       });
 
       const file_roll_no = roll_no.toString().slice(-4);
@@ -58,18 +69,24 @@ export async function jsonPipeline(inputUrl, batch, attempt_no, review_type, fil
       fs.writeFileSync(filename, JSON.stringify([validated], null, 2));
 
       allResults.push(validated);
-      console.log(`✅ [${roll_no}] ${validated.name} | ${validated.exam_type} | review=${validated.review_type} | subjects=${validated.subjects.length}`);
-
+      console.log(
+        `✅ [${roll_no}] ${validated.name} | ${validated.exam_type} | review=${validated.review_type} | subjects=${validated.subjects.length}`,
+      );
     } catch (err) {
       console.log(`❌ [${roll_no}] Error: ${err.message}`);
     }
   }
 
   if (allResults.length > 0) {
-    const combinedPath = path.join(outputDir, "1-allResults.json");
+    const finalFilename = `${batch}_${semester}_${exam_type}-${attempt_no}_${review_type}.json`;
+    const combinedPath = path.join(outputDir, finalFilename);
     fs.writeFileSync(combinedPath, JSON.stringify(allResults, null, 2));
-    console.log(`\n📦 Combined: ${combinedPath} (${allResults.length} records)`);
+    console.log(
+      `\n📦 Combined: ${combinedPath} (${allResults.length} records)`,
+    );
   }
 
-  console.log(`\n🎉 Done. Check '/${outputDir}'.`);
+  console.log(
+    `\n🎉 ${batch} | ${semester} | ${exam_type}-${attempt_no} | ${review_type} ---> saved at '/${outputDir}'.`,
+  );
 }

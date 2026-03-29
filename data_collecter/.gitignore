@@ -39,3 +39,5 @@ tmp/
 .temp/
 .cache/
 
+#results folder
+results

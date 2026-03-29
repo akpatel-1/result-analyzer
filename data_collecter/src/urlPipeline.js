@@ -15,9 +15,13 @@ export async function urlPipeline(
   endRollNo,
   attempt_no,
   review_type,
+  exam_type,
+  semester,
 ) {
   const rollNumbers = utils.generateRollNumbers(startRollNo, endRollNo);
-  const outputDir = path.join("results", batch);
+
+  const filename = `${batch} ${semester} ${exam_type}-${attempt_no} ${review_type}`;
+  const outputDir = path.join("results", filename);
   fs.mkdirSync(outputDir, { recursive: true });
 
   console.log(
@@ -85,12 +89,15 @@ export async function urlPipeline(
   }
 
   if (allResults.length > 0) {
-    const combinedFilename = path.join(outputDir, "1-allResuts.json");
+    const finalFilename = `${batch}_${semester}_${exam_type}-${attempt_no}_${review_type}`;
+    const combinedFilename = path.join(outputDir, finalFilename);
     fs.writeFileSync(combinedFilename, JSON.stringify(allResults, null, 2));
     console.log(
       `\n📦 Saved combined file: ${combinedFilename} (${allResults.length} records)`,
     );
   }
 
-  console.log(`\n🎉 Scraping complete. Check the '/${outputDir}' folder.`);
+  console.log(
+    `\n🎉 ${batch} | ${semester} | ${exam_type}-${attempt_no} | ${review_type} ---> saved at '/${outputDir}'.`,
+  );
 }
