@@ -12,7 +12,7 @@ export const controller = {
   },
 
   async createSubjectInfo(req, res) {
-    const status = await service.uploadSubjectInfo(req.data);
+    const status = await service.uploadSubjects(req.data);
     res.status(201).json({
       success: true,
       message: 'Subject information upload completed',
@@ -28,5 +28,4 @@ export const controller = {
       status,
     });
   },
-
 };

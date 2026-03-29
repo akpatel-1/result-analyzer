@@ -13,7 +13,7 @@ create table if not exists students (
   name citext not null,
   email citext unique not null,
   roll_no text unique not null,
-  abc_id text unique not null,
+  abc_id text not null,
   enroll_id text not null,
   batch smallint not null,
   branch citext not null,
@@ -37,7 +37,7 @@ create table if not exists attempts (
   unique (student_id, semester, exam_type, attempt_no, review_type)
 );
 
-create table if not exists subjects_info (
+create table if not exists subjects (
   id uuid primary key default gen_random_uuid (),
   code text not null unique,
   name citext not null,
@@ -48,7 +48,7 @@ create table if not exists subjects_info (
   created_at timestamp default now()
 );
 
-create table if not exists overall_result (
+create table if not exists overall_results (
   id uuid primary key default gen_random_uuid (),
   attempt_id uuid not null unique references attempts (id) on delete cascade,
   spi numeric(4, 2),
@@ -70,10 +70,10 @@ create table if not exists overall_result (
   created_at timestamp default now()
 );
 
-create table if not exists subject_result (
+create table if not exists subject_results (
   id uuid primary key default gen_random_uuid (),
   attempt_id uuid not null references attempts (id) on delete cascade,
-  subject_id uuid not null references subjects_info (id),
+  subject_id uuid not null references subjects (id),
   obt_ese smallint,
   obt_ct smallint,
   obt_ta smallint,

@@ -12,6 +12,6 @@ uploadRoute.use(validateSession, validateRole('admin'), validateSchema(schema));
 
 uploadRoute.post('/upload/profile', controller.handleProfileUpload);
 
-uploadRoute.post('/upload/subjects-info', controller.createSubjectInfo);
+uploadRoute.post('/upload/subjects', controller.createSubjectInfo);
 
 uploadRoute.post('/upload/results', controller.createResults);

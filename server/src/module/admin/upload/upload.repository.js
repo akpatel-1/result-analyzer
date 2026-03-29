@@ -16,9 +16,9 @@ export const repository = {
     );
   },
 
-  async insertSubjectsInfo(client, subject) {
+  async insertIntoSubjects(client, subject) {
     await client.query(
-      `INSERT INTO subjects_info
+      `INSERT INTO subjects
       (code, name, max_ese, max_ct, max_ta, max_total)
       VALUES ($1, $2, $3, $4, $5, $6)`,
       [
@@ -32,7 +32,7 @@ export const repository = {
     );
   },
 
-  async getStudentId(client, student) {
+  async getStudentsId(client, student) {
     const result = await client.query(
       `SELECT id FROM students WHERE roll_no = $1 AND batch = $2`,
       [student.roll_no, student.batch]
@@ -40,7 +40,7 @@ export const repository = {
     return result.rows[0]?.id;
   },
 
-  async insertAttempts(client, data) {
+  async insertIntoAttempts(client, data) {
     const result = await client.query(
       `INSERT INTO attempts
       (student_id, semester, exam_type, attempt_no,review_type, exam_session, exam_year)
@@ -59,10 +59,10 @@ export const repository = {
     return result.rows[0]?.id;
   },
 
-  async insertOverallResult(client, attemptId, student) {
+  async insertIntoOverallResults(client, attemptId, student) {
     await client.query(
       `
-      INSERT INTO overall_result
+      INSERT INTO overall_results
       (attempt_id, spi, overall_max, overall_obt, overall_status)
       VALUES($1, $2, $3, $4, $5)`,
       [
@@ -75,11 +75,11 @@ export const repository = {
     );
   },
 
-  async getSubjectInfoId(client, subjects) {
+  async getSubjectsCode(client, subjects) {
     const codes = subjects.map((s) => s.code);
 
     const result = await client.query(
-      `SELECT id, code, name FROM subjects_info
+      `SELECT id, code, name FROM subjects
      WHERE code = ANY($1)`,
       [codes]
     );
@@ -88,17 +88,17 @@ export const repository = {
 
   async getSingleSubjectInfoId(client, code) {
     const result = await client.query(
-      `SELECT id FROM subjects_info
+      `SELECT id FROM subjects
      WHERE code = $1`,
       [code]
     );
     return result.rows[0]?.id;
   },
 
-  async insertSubjectResult(client, attemptId, subjectId, subject) {
+  async insertIntoSubjectResults(client, attemptId, subjectId, subject) {
     await client.query(
       `
-      INSERT INTO subject_result
+      INSERT INTO subject_results
       (attempt_id, subject_id, obt_ese, obt_ct, obt_ta, obt_total, status)
       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
       [
@@ -112,5 +112,4 @@ export const repository = {
       ]
     );
   },
-
 };

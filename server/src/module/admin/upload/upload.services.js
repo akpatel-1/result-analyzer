@@ -21,7 +21,7 @@ export const service = {
     return this._catchStudentError(results, students);
   },
 
-  async uploadSubjectInfo(students) {
+  async uploadSubjects(students) {
     const success = [];
     const failed = [];
     const { subjects } = students[0];
@@ -31,7 +31,7 @@ export const service = {
     }
 
     const promises = subjects.map((subject) =>
-      repository.insertSubjectsInfo(pool, subject)
+      repository.insertIntoSubjects(pool, subject)
     );
     const results = await Promise.allSettled(promises);
 
@@ -57,7 +57,7 @@ export const service = {
     const tasks = students.map((student) =>
       limit(() =>
         withTransaction(pool, async (client) => {
-          const studentId = await repository.getStudentId(client, {
+          const studentId = await repository.getStudentsId(client, {
             roll_no: student.roll_no,
             batch: student.batch,
           });
@@ -65,7 +65,7 @@ export const service = {
             throw new ApiError(ERROR_CONFIG.STUDENT_NOT_FOUND);
           }
 
-          const attemptId = await repository.insertAttempts(client, {
+          const attemptId = await repository.insertIntoAttempts(client, {
             student_id: studentId,
             semester: student.semester,
             exam_type: student.exam_type,
@@ -75,14 +75,14 @@ export const service = {
             exam_year: student.exam_year,
           });
 
-          await repository.insertOverallResult(client, attemptId, {
+          await repository.insertIntoOverallResults(client, attemptId, {
             spi: student.spi,
             overall_max: student.overall_max,
             overall_obt: student.overall_obt,
             overall_status: student.overall_status,
           });
 
-          const subjectRows = await repository.getSubjectInfoId(
+          const subjectRows = await repository.getSubjectsCode(
             client,
             student.subjects
           );
@@ -98,7 +98,7 @@ export const service = {
               throw new Error(`Subject not found for code ${subject.code}`);
             }
 
-            await repository.insertSubjectResult(
+            await repository.insertIntoSubjectResults(
               client,
               attemptId,
               subjectId,
