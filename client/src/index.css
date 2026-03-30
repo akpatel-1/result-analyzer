@@ -2,6 +2,11 @@
 
 /* ── Light theme (default) ── */
 :root {
+  --font-sans:
+    'Plus Jakarta Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-display:
+    'Instrument Serif', Georgia, Cambria, 'Times New Roman', Times, serif;
+
   --surface: #ffffff;
   --surface-raised: #f8fafc;
   --canvas: #f1f5f9;
@@ -13,20 +18,34 @@
   --accent-hover: #4f46e5;
 }
 
+body {
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input,
+textarea,
+button,
+select {
+  font: inherit;
+}
+
 /* ── Dark theme ── */
 .dark {
   /* Base surfaces */
-  --canvas: #0b1220;           /* main background (slightly deeper) */
-  --surface: #111827;          /* primary panels */
-  --surface-raised: #1f2937;   /* cards / modals */
-  --surface-hover: #273449;    /* hover state */
+  --canvas: #0b1220; /* main background (slightly deeper) */
+  --surface: #111827; /* primary panels */
+  --surface-raised: #1f2937; /* cards / modals */
+  --surface-hover: #273449; /* hover state */
 
   /* Borders & dividers */
   --border: #2d3748;
   --border-subtle: #1f2937;
 
   /* Text */
-  --text-primary: #e5e7eb;     /* softer than pure white */
+  --text-primary: #e5e7eb; /* softer than pure white */
   --text-secondary: #9ca3af;
   --text-muted: #6b7280;
   --text-inverse: #0b1220;
@@ -49,26 +68,64 @@
 }
 
 @layer utilities {
-  .bg-surface        { background-color: var(--surface); }
-  .bg-surface-raised { background-color: var(--surface-raised); }
-  .bg-canvas         { background-color: var(--canvas); }
-  .border-border     { border-color: var(--border); }
-  .text-text-primary   { color: var(--text-primary); }
-  .text-text-secondary { color: var(--text-secondary); }
-  .text-text-muted     { color: var(--text-muted); }
-  .text-accent         { color: var(--accent); }
+  .bg-surface {
+    background-color: var(--surface);
+  }
+  .bg-surface-raised {
+    background-color: var(--surface-raised);
+  }
+  .bg-canvas {
+    background-color: var(--canvas);
+  }
+  .border-border {
+    border-color: var(--border);
+  }
+  .text-text-primary {
+    color: var(--text-primary);
+  }
+  .text-text-secondary {
+    color: var(--text-secondary);
+  }
+  .text-text-muted {
+    color: var(--text-muted);
+  }
+  .text-accent {
+    color: var(--accent);
+  }
+  .font-display {
+    font-family: var(--font-display);
+  }
 
-  .bg-accent\/10 { background-color: color-mix(in srgb, var(--accent) 10%, transparent); }
-  .bg-accent\/5  { background-color: color-mix(in srgb, var(--accent) 5%,  transparent); }
-  .border-accent\/30 { border-color: color-mix(in srgb, var(--accent) 30%, transparent); }
-  .border-accent\/50 { border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+  .bg-accent\/10 {
+    background-color: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+  .bg-accent\/5 {
+    background-color: color-mix(in srgb, var(--accent) 5%, transparent);
+  }
+  .border-accent\/30 {
+    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  .border-accent\/50 {
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  }
 
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   .animate-fade-up {
     animation: fadeUp 180ms ease-out both;
@@ -86,13 +143,20 @@
     color: #ffffff;
     border-radius: 0.5rem;
     background-color: var(--accent);
-    transition: background-color 120ms ease, transform 80ms ease;
+    transition:
+      background-color 120ms ease,
+      transform 80ms ease;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent; /* removes mobile tap flash */
   }
-  .btn-primary:hover  { background-color: var(--accent-hover); }
-  .btn-primary:active { transform: scale(0.97); transition: transform 60ms ease; }
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+  }
+  .btn-primary:active {
+    transform: scale(0.97);
+    transition: transform 60ms ease;
+  }
 
   .btn-ghost {
     display: inline-flex;
@@ -105,13 +169,20 @@
     border: 1px solid var(--border);
     color: var(--text-secondary);
     background-color: transparent;
-    transition: background-color 120ms ease, transform 80ms ease;
+    transition:
+      background-color 120ms ease,
+      transform 80ms ease;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
-  .btn-ghost:hover  { background-color: var(--surface-raised); }
-  .btn-ghost:active { transform: scale(0.97); transition: transform 60ms ease; }
+  .btn-ghost:hover {
+    background-color: var(--surface-raised);
+  }
+  .btn-ghost:active {
+    transform: scale(0.97);
+    transition: transform 60ms ease;
+  }
 
   .icon-btn {
     display: inline-flex;
@@ -121,10 +192,18 @@
     border-radius: 0.5rem;
     color: var(--text-muted);
     background-color: transparent;
-    transition: background-color 120ms ease, color 120ms ease;
+    transition:
+      background-color 120ms ease,
+      color 120ms ease;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
-  .icon-btn:hover { background-color: var(--surface-raised); color: var(--accent); }
-  .icon-btn:active { opacity: 0.7; transition: opacity 60ms ease; }
+  .icon-btn:hover {
+    background-color: var(--surface-raised);
+    color: var(--accent);
+  }
+  .icon-btn:active {
+    opacity: 0.7;
+    transition: opacity 60ms ease;
+  }
 }

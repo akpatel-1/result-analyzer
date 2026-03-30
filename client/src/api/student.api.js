@@ -5,4 +5,5 @@ export const studentApi = {
   verifyOtp: (data) => studentClient.post('/students/otp/verify', data),
   logout: () => studentClient.post('/students/auth/logout'),
   me: () => studentClient.get('/students/me'),
+  profile: () => studentClient.get('/students/profile'),
 };
