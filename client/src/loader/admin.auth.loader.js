@@ -2,7 +2,7 @@ import { redirect } from 'react-router-dom';
 
 import { adminApi } from '../api/admin.api';
 
-export const loader = {
+export const adminLoader = {
   async protectedRoute() {
     try {
       const res = await adminApi.me();
@@ -21,7 +21,7 @@ export const loader = {
       if (res.data.user.role !== 'admin') {
         return redirect('/error/403');
       }
-      return redirect('/admin/dashboard');
+      return redirect('/admin/overview');
     } catch {
       return null;
     }

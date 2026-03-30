@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 
-import { loader } from '../loader/admin.auth.loader';
-import AdminDashboardPage from '../pages/admin/AdminDashboarPage';
+import { adminLoader } from '../loader/admin.auth.loader';
+import AdminOverviewPage from '../pages/admin/AdminOverviewPage';
 import AdminLoginPage from '../pages/admin/AdminLoginPage';
 import AdminProfileUpload from '../pages/admin/AdminProfileUpload';
 import AdminResultUpload from '../pages/admin/AdminResultUpload';
@@ -9,14 +9,14 @@ import AdminSubjectUpload from '../pages/admin/AdminSubjectsUpload';
 
 export const adminRoutes = [
   {
-    loader: loader.publicRoute,
+    loader: adminLoader.publicRoute,
     path: '/admin/login',
     element: <AdminLoginPage />,
   },
   {
-    loader: loader.protectedRoute,
+    loader: adminLoader.protectedRoute,
     path: '/admin/dashboard',
-    element: <AdminDashboardPage />,
+    element: <AdminOverviewPage />,
   },
   {
     path: '/admin/upload',

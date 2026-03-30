@@ -2,7 +2,7 @@ import { redirect } from 'react-router-dom';
 
 import { studentApi } from '../api/student.api';
 
-export const loader = {
+export const studentLoader = {
   async protectedRoute() {
     try {
       await studentApi.me();
@@ -15,7 +15,7 @@ export const loader = {
   async publicRoute() {
     try {
       await studentApi.me();
-      return redirect('/student/dashboard');
+      return redirect('/student/overview');
     } catch {
       return null;
     }

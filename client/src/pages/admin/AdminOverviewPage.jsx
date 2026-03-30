@@ -4,7 +4,7 @@ import { adminApi } from '../../api/admin.api';
 import DashboardLayout from '../../components/dashboard/Layout';
 import { adminNavigationLinks } from '../../utils/dashboard.navigation';
 
-export default function AdminDashboardPage() {
+export default function AdminOverviewPage() {
   const navigate = useNavigate();
   const handleLogout = async () => {
     await adminApi.logout();

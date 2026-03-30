@@ -15,7 +15,7 @@ export const loader = {
   async publicRoute() {
     try {
       await deptApi.me();
-      return redirect('/dept/dashboard');
+      return redirect('/dept/overview');
     } catch {
       return null;
     }

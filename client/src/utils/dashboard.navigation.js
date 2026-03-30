@@ -16,8 +16,8 @@ import { TbChartBar, TbReportAnalytics } from 'react-icons/tb';
 
 export const adminNavigationLinks = [
   {
-    to: '/admin/dashboard',
-    label: 'Dashboard',
+    to: '/admin/overview',
+    label: 'Overview',
     icon: IoHomeOutline,
     color: '#6777F1',
   },
@@ -114,8 +114,8 @@ export const adminNavigationLinks = [
 
 export const deptNavigationLinks = [
   {
-    to: '/dept/dashboard',
-    label: 'Dashboard',
+    to: '/dept/overview',
+    label: 'Overview',
     icon: IoHomeOutline,
     color: '#6777F1',
   },
@@ -185,8 +185,8 @@ export const deptNavigationLinks = [
 
 export const studentNavigationLinks = [
   {
-    to: '/student/dashboard',
-    label: 'Dashboard',
+    to: '/student/overview',
+    label: 'Overview',
     icon: IoHomeOutline,
     color: '#6777F1',
   },
