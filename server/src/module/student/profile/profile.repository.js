@@ -30,7 +30,7 @@ export const repository = {
           WHEN 'Regular' THEN 1
         END DESC,
         a.attempt_no DESC,
-        CASE a.review_type
+        CASE a.view_type
           WHEN 'RRV' THEN 3
           WHEN 'RTRV' THEN 2
           WHEN 'VALUATION' THEN 1
@@ -66,7 +66,7 @@ export const repository = {
           WHEN 'Regular' THEN 1
         END DESC,
         a.attempt_no DESC,
-        CASE a.review_type
+        CASE a.view_type
           WHEN 'RRV' THEN 3
           WHEN 'RTRV' THEN 2
           WHEN 'VALUATION' THEN 1

@@ -69,10 +69,11 @@ export const service = {
             student_id: studentId,
             semester: student.semester,
             exam_type: student.exam_type,
-            review_type: student.review_type,
+            view_type: student.view_type,
             attempt_no: student.attempt_no,
             exam_session: student.exam_session,
             exam_year: student.exam_year,
+            result_date: student.result_date,
           });
 
           await repository.insertIntoOverallResults(client, attemptId, {

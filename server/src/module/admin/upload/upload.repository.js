@@ -43,17 +43,18 @@ export const repository = {
   async insertIntoAttempts(client, data) {
     const result = await client.query(
       `INSERT INTO attempts
-      (student_id, semester, exam_type, attempt_no,review_type, exam_session, exam_year)
-      VALUES($1, $2, $3, $4, $5, $6, $7)
+      (student_id, semester, exam_type, attempt_no, view_type, exam_session, exam_year, result_date)
+      VALUES($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING id`,
       [
         data.student_id,
         data.semester,
         data.exam_type,
         data.attempt_no,
-        data.review_type,
+        data.view_type,
         data.exam_session,
         data.exam_year,
+        data.result_date,
       ]
     );
     return result.rows[0]?.id;

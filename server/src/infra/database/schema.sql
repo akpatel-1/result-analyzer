@@ -26,15 +26,16 @@ create table if not exists attempts (
   semester smallint not null check (semester between 1 and 8),
   exam_type citext not null check (exam_type in ('Regular', 'Backlog')),
   attempt_no smallint not null check (attempt_no between 1 and 4),
-  review_type citext not null check (review_type in ('VALUATION', 'RTRV', 'RRV')),
+  view_type citext not null check (view_type in ('VALUATION', 'RTRV', 'RRV')),
   exam_session citext not null check (exam_session in ('Apr-May', 'Nov-Dec')),
   exam_year smallint not null,
+  result_date date not null,
   created_at timestamp default now(),
   constraint regular_is_always_attempt_1 check (
     exam_type != 'Regular'
     or attempt_no = 1
   ),
-  unique (student_id, semester, exam_type, attempt_no, review_type)
+  unique (student_id, semester, exam_type, attempt_no, view_type)
 );
 
 create table if not exists subjects (
@@ -78,7 +79,7 @@ create table if not exists subject_results (
   obt_ct smallint,
   obt_ta smallint,
   obt_total smallint not null,
-  status citext not null check (status in ('Pass', 'Pass By Grace', 'Fail')),
+  status citext not null check (status in ('Pass', 'Fail')),
   created_at timestamp default now(),
   unique (attempt_id, subject_id)
 );
