@@ -11,5 +11,5 @@ export const schema = z.object({
   password: z
     .string()
     .min(1, 'Password is required')
-    .min(12, 'Password must be at least 12 characters'),
+    .max(128, 'Password cannot exceed 128 characters'),
 });

@@ -161,7 +161,7 @@ export default function LoginForm({ onSubmit, userType }) {
                 name="password"
                 placeholder="Enter your password"
                 required
-                minLength={12}
+                minLength={1}
                 maxLength={128}
                 value={formData.password}
                 onChange={handleChange}

@@ -12,9 +12,5 @@ export const loginSchema = z.object({
     .refine((value) => value.trim().length > 0, {
       message: 'Password cannot be empty or spaces only.',
     })
-    .refine((value) => !value.startsWith(' ') && !value.endsWith(' '), {
-      message: 'Password cannot start or end with a space.',
-    })
-    .min(12, 'Password must be at least 12 characters long.')
     .max(128, 'Password cannot exceed 128 characters.'),
 });
