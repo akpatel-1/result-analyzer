@@ -15,7 +15,7 @@ export const adminRoutes = [
   },
   {
     loader: adminLoader.protectedRoute,
-    path: '/admin/dashboard',
+    path: '/admin/overview',
     element: <AdminOverviewPage />,
   },
   {

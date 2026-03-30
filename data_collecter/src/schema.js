@@ -56,7 +56,7 @@ export const ResultSchema = z
     exam_year: z.number().int().positive(),
 
     // Table: subject_review
-    review_type: z.enum(["VALUATION", "RTRV", "RRV"]),
+    view_type: z.enum(["VALUATION", "RTRV", "RRV"]),
 
     // Table: overall_result
     spi: z.number().min(0).max(10, "SPI must be between 0 and 10").nullable(),
@@ -64,6 +64,7 @@ export const ResultSchema = z
     overall_obt: z.number().int(),
 
     overall_status: z.string().min(1),
+    result_date: z.string(),
 
     subjects: z.array(SubjectSchema).min(1, "At least one subject is required"),
   })

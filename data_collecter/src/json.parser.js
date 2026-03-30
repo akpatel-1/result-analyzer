@@ -47,6 +47,7 @@ export function jsonParser(html) {
   const overall_status = $("#Result").text().trim();
   const overall_max = num($("#mxmarks")) || 0;
   const overall_obt = num($("#obtmarks")) || 0;
+   const result_date = str($("#rcreateona"));
   const spiRaw = $("#spi").text().trim();
   const spi = spiRaw ? parseFloat(spiRaw) : null;
 
@@ -92,6 +93,7 @@ export function jsonParser(html) {
     exam_session,
     exam_year,
     spi,
+    result_date,
     overall_max,
     overall_obt,
     overall_status,

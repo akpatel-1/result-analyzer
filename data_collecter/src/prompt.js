@@ -28,7 +28,7 @@ export async function prompt() {
   const semester = "S" + rawSem.match(/\d+/)[0];
 
   // Regular pipeline
-  let review_type = "VALUATION";
+  let view_type = "VALUATION";
   let attempt_no = 1;
   if (type === "Regular") {
     let base = params.get("R").slice(0, -4);
@@ -41,7 +41,7 @@ export async function prompt() {
       startRollNo,
       endRollNo,
       attempt_no,
-      review_type,
+      view_type,
       "Regular",
       semester,
     );
@@ -64,14 +64,14 @@ export async function prompt() {
   }
 
   if (type !== "Backlog") {
-    review_type = type;
+    view_type = type;
   }
 
   return await jsonPipeline(
     url,
     batch,
     attempt_no,
-    review_type,
+    view_type,
     filePath,
     exam_type,
     semester,

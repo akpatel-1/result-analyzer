@@ -25,7 +25,11 @@ export function parseResultPage(html) {
   );
   const overall_obt = parseInt($("#obtmarks").text().trim()) || 0;
   const overall_max = parseInt($("#mxmarks").text().trim()) || 0;
-
+  const result_date =
+    $("#rcreateona")
+      .text()
+      .replace(/\u00a0/g, " ")
+      .trim() || null;
   const spiRaw = $("#spi").text().trim() || null;
   const spi = spiRaw ? parseFloat(spiRaw) : null;
 
@@ -90,6 +94,7 @@ export function parseResultPage(html) {
     exam_session,
     exam_year,
     spi,
+    result_date,
     overall_max,
     overall_obt,
     overall_status,

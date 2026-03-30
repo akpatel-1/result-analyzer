@@ -19,11 +19,12 @@ export function createJson(rawData, input) {
     exam_year: rawData.exam_year,
     exam_type: input.exam_type,
     attempt_no: parseInt(input.attempt_no) || 1,
-    review_type: input.review_type,
+    view_type: input.view_type,
     spi: rawData.spi,
     overall_max: rawData.overall_max,
     overall_obt: rawData.overall_obt,
     overall_status: rawData.overall_status,
+    result_date: rawData.result_date,
     subjects: rawData.subjects,
   };
 
