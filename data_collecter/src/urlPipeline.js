@@ -14,13 +14,13 @@ export async function urlPipeline(
   startRollNo,
   endRollNo,
   attempt_no,
-  review_type,
+  view_type,
   exam_type,
   semester,
 ) {
   const rollNumbers = utils.generateRollNumbers(startRollNo, endRollNo);
 
-  const filename = `${batch} ${semester} ${exam_type}-${attempt_no} ${review_type}`;
+  const filename = `${batch} ${semester} ${exam_type}-${attempt_no} ${view_type}.json`;
   const outputDir = path.join("results", filename);
   fs.mkdirSync(outputDir, { recursive: true });
 
@@ -55,7 +55,7 @@ export async function urlPipeline(
         batch,
         exam_type: "Regular",
         attempt_no,
-        review_type,
+        view_type,
       });
 
       let file_roll_no = roll.toString().slice(-4);
@@ -89,7 +89,7 @@ export async function urlPipeline(
   }
 
   if (allResults.length > 0) {
-    const finalFilename = `${batch}_${semester}_${exam_type}-${attempt_no}_${review_type}`;
+    const finalFilename = `${batch}_${semester}_${exam_type}-${attempt_no}_${view_type}`;
     const combinedFilename = path.join(outputDir, finalFilename);
     fs.writeFileSync(combinedFilename, JSON.stringify(allResults, null, 2));
     console.log(
@@ -98,6 +98,6 @@ export async function urlPipeline(
   }
 
   console.log(
-    `\n🎉 ${batch} | ${semester} | ${exam_type}-${attempt_no} | ${review_type} ---> saved at '/${outputDir}'.`,
+    `\n🎉 ${batch} | ${semester} | ${exam_type}-${attempt_no} | ${view_type} ---> saved at '/${outputDir}'.`,
   );
 }

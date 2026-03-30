@@ -1,5 +1,46 @@
 import { z } from "zod";
 
+const resultDateSchema = z
+  .string()
+  .trim()
+  .transform((value, ctx) => {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return value;
+    }
+
+    const normalized = value.replace(/\s+/g, " ");
+    const parsed = new Date(normalized);
+
+    if (Number.isNaN(parsed.getTime())) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Invalid result_date format",
+      });
+      return z.NEVER;
+    }
+
+    const year = parsed.getFullYear();
+    const month = String(parsed.getMonth() + 1).padStart(2, "0");
+    const day = String(parsed.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  });
+
+const overallStatusSchema = z.enum([
+  "Pass",
+  "Pass By Grace",
+  "RV-Pass",
+  "RV-Pass By Grace",
+  "RRV-PASS",
+  "RRV-Pass By Grace",
+  "Fail",
+  "RV-Fail",
+  "RRV-Fail",
+  "RV-PASS",
+  "RV-PASS BY GRACE",
+  "RRV-PASS BY GRACE",
+]);
+
 const SubjectSchema = z.object({
   code: z.string().min(1, "Subject code is required"),
   name: z.string().min(1, "Subject name is required"),
@@ -13,19 +54,7 @@ const SubjectSchema = z.object({
   obt_total: z.number().int(),
 
   // Scraper derives this from letter grade (Pass/Fail)
-  status: z
-    .enum([
-      "Pass",
-      "Pass By Grace",
-      "Fail",
-      "RV-Pass",
-      "RV-Pass By Grace",
-      "RRV-Pass",
-      "RRV-Pass By Grace",
-      "RV-Fail",
-      "RRV-Fail",
-    ])
-    .nullable(),
+  status: z.enum(["Pass", "Fail"]),
 });
 
 // 2. Full Result Schema (Maps to `students`, `attempts`, and `overall_result`)
@@ -56,15 +85,16 @@ export const ResultSchema = z
     exam_year: z.number().int().positive(),
 
     // Table: subject_review
-    review_type: z.enum(["VALUATION", "RTRV", "RRV"]),
+    view_type: z.enum(["VALUATION", "RTRV", "RRV"]),
 
     // Table: overall_result
     spi: z.number().min(0).max(10, "SPI must be between 0 and 10").nullable(),
     overall_max: z.number().int(),
     overall_obt: z.number().int(),
 
-    overall_status: z.string().min(1),
+    overall_status: overallStatusSchema,
 
+    result_date: resultDateSchema,
     subjects: z.array(SubjectSchema).min(1, "At least one subject is required"),
   })
   .refine(

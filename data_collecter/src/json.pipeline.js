@@ -11,14 +11,14 @@ export async function jsonPipeline(
   inputUrl,
   batch,
   attempt_no,
-  review_type,
+  view_type,
   filepath,
   exam_type,
   semester,
 ) {
   const sourceData = JSON.parse(fs.readFileSync(filepath, "utf-8"));
 
-  const filename = `${batch} ${semester} ${exam_type}-${attempt_no} ${review_type}`;
+  const filename = `${batch} ${semester} ${exam_type}-${attempt_no} ${view_type}`;
   const outputDir = path.join("results", filename);
   fs.mkdirSync(outputDir, { recursive: true });
 
@@ -61,7 +61,7 @@ export async function jsonPipeline(
         batch,
         attempt_no,
         exam_type: rawData.exam_type, // from HTML: "Regular" | "Backlog"
-        review_type: review_type, // from prompt: "RTRV" | "RRV" | "VALUATION"
+        view_type: view_type, // from prompt: "RTRV" | "RRV" | "VALUATION"
       });
 
       const file_roll_no = roll_no.toString().slice(-4);
@@ -70,7 +70,7 @@ export async function jsonPipeline(
 
       allResults.push(validated);
       console.log(
-        `✅ [${roll_no}] ${validated.name} | ${validated.exam_type} | review=${validated.review_type} | subjects=${validated.subjects.length}`,
+        `✅ [${roll_no}] ${validated.name} | ${validated.exam_type} | review=${validated.view_type} | subjects=${validated.subjects.length}`,
       );
     } catch (err) {
       console.log(`❌ [${roll_no}] Error: ${err.message}`);
@@ -78,7 +78,7 @@ export async function jsonPipeline(
   }
 
   if (allResults.length > 0) {
-    const finalFilename = `${batch}_${semester}_${exam_type}-${attempt_no}_${review_type}.json`;
+    const finalFilename = `${batch}_${semester}_${exam_type}-${attempt_no}_${view_type}.json`;
     const combinedPath = path.join(outputDir, finalFilename);
     fs.writeFileSync(combinedPath, JSON.stringify(allResults, null, 2));
     console.log(
@@ -87,6 +87,6 @@ export async function jsonPipeline(
   }
 
   console.log(
-    `\n🎉 ${batch} | ${semester} | ${exam_type}-${attempt_no} | ${review_type} ---> saved at '/${outputDir}'.`,
+    `\n🎉 ${batch} | ${semester} | ${exam_type}-${attempt_no} | ${view_type} ---> saved at '/${outputDir}'.`,
   );
 }
