@@ -7,4 +7,5 @@ export const studentApi = {
   me: () => studentClient.get('/students/me'),
   profile: () => studentClient.get('/students/profile'),
   latestResult: () => studentClient.get('/students/latest-result'),
+  semesterResult: (sem) => studentClient.get(`/students/result?sem=${sem}`),
 };

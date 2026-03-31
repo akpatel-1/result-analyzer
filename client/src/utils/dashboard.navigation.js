@@ -188,10 +188,10 @@ function buildSemesterChildren(semesters = []) {
     .filter((sem) => Number.isInteger(sem) && sem > 0)
     .sort((a, b) => a - b);
 
-  const effectiveSemesters = normalized.length ? normalized : [1, 2, 3, 4, 5];
+  const effectiveSemesters = normalized.length ? normalized : [1, 2, 3, 4, 5, 6, 7, 8];
 
   return effectiveSemesters.map((sem) => ({
-    to: `/student/semester?sem=${sem}`,
+    to: `/student/result?sem=${sem}`,
     label: `Semester ${sem}`,
     icon: IoListOutline,
     color: '#6B7280',
