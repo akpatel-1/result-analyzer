@@ -103,6 +103,10 @@ export const service = {
     return rawToken;
   },
 
+  async processMe(id) {
+    return await repository.getMe(pool, id);
+  },
+
   async logoutStudent(studentId) {
     return await repository.revokeRefreshToken(pool, studentId);
   },

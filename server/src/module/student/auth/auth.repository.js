@@ -38,6 +38,18 @@ export const repository = {
 
     return result.rows[0];
   },
+  async getMe(client, id) {
+    const result = await client.query(
+      `SELECT s.name, a.semester
+      FROM students s
+      join attempts a on s.id = a.student_id
+      WHERE s.id = $1
+      ORDER BY a.semester DESC
+      LIMIT 1`,
+      [id]
+    );
+    return result.rows[0];
+  },
   async revokeRefreshToken(client, studentId) {
     const result = await client.query(
       `UPDATE refresh_tokens

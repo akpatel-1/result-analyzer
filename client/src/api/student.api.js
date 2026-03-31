@@ -6,4 +6,5 @@ export const studentApi = {
   logout: () => studentClient.post('/students/auth/logout'),
   me: () => studentClient.get('/students/me'),
   profile: () => studentClient.get('/students/profile'),
+  latestResult: () => studentClient.get('/students/latest-result'),
 };

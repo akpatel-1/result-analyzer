@@ -183,79 +183,68 @@ export const deptNavigationLinks = [
   },
 ];
 
-export const studentNavigationLinks = [
-  {
-    to: '/student/overview',
-    label: 'Overview',
-    icon: IoHomeOutline,
-    color: '#6777F1',
-  },
-  {
-    to: '/student/profile',
-    label: 'My Profile',
-    icon: IoPersonOutline,
-    color: '#8B5CF6',
-  },
-  {
-    to: '/student/semester',
-    label: 'Semester',
-    icon: MdOutlineSchool,
-    color: '#F59E0B',
-    children: [
-      {
-        to: '/student/semester?sem=1',
-        label: 'Semester 1',
-        icon: IoListOutline,
-        color: '#6B7280',
-      },
-      {
-        to: '/student/semester?sem=2',
-        label: 'Semester 2',
-        icon: IoListOutline,
-        color: '#6B7280',
-      },
-      {
-        to: '/student/semester?sem=3',
-        label: 'Semester 3',
-        icon: IoListOutline,
-        color: '#6B7280',
-      },
-      {
-        to: '/student/semester?sem=4',
-        label: 'Semester 4',
-        icon: IoListOutline,
-        color: '#6B7280',
-      },
-      {
-        to: '/student/semester?sem=5',
-        label: 'Semester 5',
-        icon: IoListOutline,
-        color: '#6B7280',
-      },
-    ],
-  },
-  {
-    to: '/student/results',
-    label: 'Results',
-    icon: HiOutlineDocumentReport,
-    color: '#22C55E',
-  },
-  {
-    to: '/student/subjects',
-    label: 'Subjects',
-    icon: MdOutlineMenuBook,
-    color: '#0EA5E9',
-  },
-  {
-    to: '/student/rankings',
-    label: 'Rankings',
-    icon: IoTrophyOutline,
-    color: '#EAB308',
-  },
-  {
-    to: '/student/settings',
-    label: 'Settings',
-    icon: IoSettingsOutline,
-    color: '#f97316',
-  },
-];
+function buildSemesterChildren(semesters = []) {
+  const normalized = [...new Set(semesters.map(Number))]
+    .filter((sem) => Number.isInteger(sem) && sem > 0)
+    .sort((a, b) => a - b);
+
+  const effectiveSemesters = normalized.length ? normalized : [1, 2, 3, 4, 5];
+
+  return effectiveSemesters.map((sem) => ({
+    to: `/student/semester?sem=${sem}`,
+    label: `Semester ${sem}`,
+    icon: IoListOutline,
+    color: '#6B7280',
+  }));
+}
+
+export function getStudentNavigationLinks(semesters = []) {
+  return [
+    {
+      to: '/student/overview',
+      label: 'Overview',
+      icon: IoHomeOutline,
+      color: '#6777F1',
+    },
+    {
+      to: '/student/latest-result',
+      label: 'Latest Results',
+      icon: HiOutlineDocumentReport,
+      color: '#22C55E',
+    },
+    {
+      to: '/student/profile',
+      label: 'My Profile',
+      icon: IoPersonOutline,
+      color: '#8B5CF6',
+    },
+    {
+      to: '/student/semester',
+      label: 'Semester',
+      icon: MdOutlineSchool,
+      color: '#F59E0B',
+      children: buildSemesterChildren(semesters),
+    },
+
+    {
+      to: '/student/subjects',
+      label: 'Subjects',
+      icon: MdOutlineMenuBook,
+      color: '#0EA5E9',
+    },
+    {
+      to: '/student/rankings',
+      label: 'Rankings',
+      icon: IoTrophyOutline,
+      color: '#EAB308',
+    },
+    {
+      to: '/student/settings',
+      label: 'Settings',
+      icon: IoSettingsOutline,
+      color: '#f97316',
+    },
+  ];
+}
+
+export const studentNavigationLinks = getStudentNavigationLinks();
