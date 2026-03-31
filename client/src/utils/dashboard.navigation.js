@@ -191,6 +191,12 @@ export const studentNavigationLinks = [
     color: '#6777F1',
   },
   {
+    to: '/student/latest-result',
+    label: 'Latest Results',
+    icon: HiOutlineDocumentReport,
+    color: '#22C55E',
+  },
+  {
     to: '/student/profile',
     label: 'My Profile',
     icon: IoPersonOutline,
@@ -234,12 +240,7 @@ export const studentNavigationLinks = [
       },
     ],
   },
-  {
-    to: '/student/results',
-    label: 'Results',
-    icon: HiOutlineDocumentReport,
-    color: '#22C55E',
-  },
+
   {
     to: '/student/subjects',
     label: 'Subjects',
