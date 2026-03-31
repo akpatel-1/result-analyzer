@@ -49,12 +49,16 @@ export default function BarChartComponent({
   chartData,
   yAxisMax,
   tooltipStyle,
+  barKey = 'obt_ese',
+  maxKey = 'max_ese',
+  title = 'Subject-wise Obtained Marks',
 }) {
+  // Pick color based on barKey
+  const barColor = barKey === 'obt_ct' ? '#f59e42' : '#22c55e';
+  const maxBarColor = barKey === 'obt_ct' ? '#f3e8ff' : '#60a5fa';
   return (
     <div className="bg-surface-raised border border-border rounded-xl p-4 md:p-6">
-      <h3 className="text-lg font-semibold text-text-primary mb-4">
-        Subject-wise Obtained Marks
-      </h3>
+      <h3 className="text-lg font-semibold text-text-primary mb-4">{title}</h3>
       {chartData.length > 0 ? (
         <div className="h-108 w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -74,14 +78,19 @@ export default function BarChartComponent({
                 tick={{ fill: 'var(--text-muted)', fontSize: 14 }}
               />
               <Tooltip contentStyle={tooltipStyle} />
-              <Bar dataKey="obt_ese" fill="#22c55e" barSize={70} />
+              {/* Show both obtained and max bars for context */}
+              <Bar
+                dataKey={maxKey}
+                fill={maxBarColor}
+                barSize={70}
+                opacity={0.3}
+              />
+              <Bar dataKey={barKey} fill={barColor} barSize={40} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       ) : (
-        <p className="text-sm text-text-muted">
-          No subjects found with max ESE of 100.
-        </p>
+        <p className="text-sm text-text-muted">No data found for this chart.</p>
       )}
     </div>
   );

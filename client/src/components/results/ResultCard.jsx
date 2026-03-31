@@ -107,6 +107,20 @@ export default function ResultCard({ data }) {
     { label: 'Overall Status', value: status },
   ];
 
+  // Prepare CT chart data (where max_ct is 20)
+  const ctChartData = allSubjects
+    .filter((item) => Number(item.max_ct ?? 0) === 20)
+    .map((item) => ({
+      subject: item.subject,
+      max_ct: Number(item.max_ct ?? 0),
+      obt_ct: Number(item.obt_ct ?? 0),
+    }));
+
+  const yAxisMaxCt = Math.max(
+    0,
+    ...ctChartData.map((item) => Math.max(item.max_ct, item.obt_ct))
+  );
+
   return (
     <div className="p-6 space-y-6">
       <StatCards stats={statCards} />
@@ -115,6 +129,23 @@ export default function ResultCard({ data }) {
         yAxisMax={yAxisMax}
         tooltipStyle={tooltipStyle}
       />
+
+      {/* CT MARKS BAR CHART: OBTAINED CT WHERE MAX_CT IS 20 */}
+      {ctChartData.length > 0 && (
+        <BarChartComponent
+          chartData={ctChartData.map(({ subject, max_ct, obt_ct }) => ({
+            subject,
+            max_ct,
+            obt_ct,
+          }))}
+          yAxisMax={yAxisMaxCt}
+          tooltipStyle={tooltipStyle}
+          barKey="obt_ct"
+          maxKey="max_ct"
+          title="CT Marks (where Max CT = 20)"
+        />
+      )}
+
       <PieCharts
         pieConfigs={pieConfigs}
         pieColors={pieColors}
