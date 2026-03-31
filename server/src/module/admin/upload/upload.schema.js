@@ -63,9 +63,9 @@ const studentResultSchema = studentProfileSchema
     view_type: z.enum(['VALUATION', 'RTRV', 'RRV']),
     result_date: resultDateSchema,
     spi: z.number().nullable(),
-    overall_max: z.number().int(),
-    overall_obt: z.number().int(),
-    overall_status: z.enum([
+    max_marks: z.number().int(),
+    obt_marks: z.number().int(),
+    status: z.enum([
       'Pass',
       'Pass By Grace',
       'RV-Pass',

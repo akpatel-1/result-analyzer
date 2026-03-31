@@ -92,7 +92,7 @@ export const ResultSchema = z
     max_marks: z.number().int(),
     obt_marks: z.number().int(),
 
-    overall_status: overallStatusSchema,
+    status: overallStatusSchema,
 
     result_date: resultDateSchema,
     subjects: z.array(SubjectSchema).min(1, "At least one subject is required"),
