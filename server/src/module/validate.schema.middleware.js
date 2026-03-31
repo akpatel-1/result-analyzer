@@ -18,7 +18,6 @@ export function validateSchema(schema, source = 'body') {
     }
 
     req.data = Object.assign(req.data || {}, result.data);
-
     next();
   };
 }

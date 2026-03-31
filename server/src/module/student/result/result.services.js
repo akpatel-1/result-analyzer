@@ -5,4 +5,8 @@ export const service = {
   async processRecentResult(id) {
     return await repository.getRecentResult(pool, id);
   },
+
+  async processSemesterResult(id, sem) {
+    return await repository.getSemesterResult(pool, id, sem);
+  },
 };
