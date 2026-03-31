@@ -20,11 +20,9 @@ export function parseResultPage(html) {
   else if (examSessionRaw.toLowerCase().includes("nov"))
     exam_session = "Nov-Dec";
 
-  const overall_status = normalizeRegularOverallStatus(
-    $("#Result").text().trim(),
-  );
-  const overall_obt = parseInt($("#obtmarks").text().trim()) || 0;
-  const overall_max = parseInt($("#mxmarks").text().trim()) || 0;
+  const status = normalizeRegularOverallStatus($("#Result").text().trim());
+  const obt_marks = parseInt($("#obtmarks").text().trim()) || 0;
+  const max_marks = parseInt($("#mxmarks").text().trim()) || 0;
   const result_date =
     $("#rcreateona")
       .text()
@@ -45,8 +43,9 @@ export function parseResultPage(html) {
         .text()
         .replace(/\u00a0/g, "")
         .trim();
-      if (txt === "" || isNaN(txt)) return null;
-      return parseInt(txt);
+      if (!txt || txt.toUpperCase() === "ABS") return null;
+      const match = txt.match(/-?\d+/);
+      return match ? parseInt(match[0], 10) : null;
     };
 
     const str = (el) => {
@@ -95,9 +94,9 @@ export function parseResultPage(html) {
     exam_year,
     spi,
     result_date,
-    overall_max,
-    overall_obt,
-    overall_status,
+    max_marks,
+    obt_marks,
+    status,
     subjects,
   };
 }
