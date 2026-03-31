@@ -63,6 +63,7 @@ export const controller = {
   },
 
   async handleMe(req, res) {
-    res.status(200).json({ success: true, message: 'Authenticated' });
+    const user = await service.processMe(req.studentId);
+    res.status(200).json({ success: true, message: 'Authenticated', user });
   },
 };
