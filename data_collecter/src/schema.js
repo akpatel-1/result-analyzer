@@ -48,8 +48,8 @@ const SubjectSchema = z.object({
   obt_ese: z.number().int().nullable(),
   max_ct: z.number().int().nullable(),
   obt_ct: z.number().int().nullable(),
-  max_ta: z.number().int().nullable(),
-  obt_ta: z.number().int().nullable(),
+  max_ta: z.number().int(),
+  obt_ta: z.number().int(),
   max_total: z.number().int(),
   obt_total: z.number().int(),
 
@@ -89,8 +89,8 @@ export const ResultSchema = z
 
     // Table: overall_result
     spi: z.number().min(0).max(10, "SPI must be between 0 and 10").nullable(),
-    overall_max: z.number().int(),
-    overall_obt: z.number().int(),
+    max_marks: z.number().int(),
+    obt_marks: z.number().int(),
 
     overall_status: overallStatusSchema,
 

@@ -78,9 +78,9 @@ export const service = {
 
           await repository.insertIntoOverallResults(client, attemptId, {
             spi: student.spi,
-            overall_max: student.overall_max,
-            overall_obt: student.overall_obt,
-            overall_status: student.overall_status,
+            max_marks: student.max_marks,
+            obt_marks: student.obt_marks,
+            status: student.status,
           });
 
           const subjectRows = await repository.getSubjectsCode(

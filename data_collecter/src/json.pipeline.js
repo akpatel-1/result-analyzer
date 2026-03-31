@@ -18,7 +18,7 @@ export async function jsonPipeline(
 ) {
   const sourceData = JSON.parse(fs.readFileSync(filepath, "utf-8"));
 
-  const filename = `${batch} ${semester} ${exam_type}-${attempt_no} ${view_type}`;
+  const filename = `${batch} ${semester} ${exam_type}-${attempt_no} ${view_type}.json`;
   const outputDir = path.join("results", filename);
   fs.mkdirSync(outputDir, { recursive: true });
 

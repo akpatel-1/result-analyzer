@@ -63,7 +63,7 @@ export async function urlPipeline(
       fs.writeFileSync(filename, JSON.stringify([finalJson], null, 2));
 
       console.log(
-        `✅ [${roll}] Saved: ${finalJson.name} (${finalJson.overall_obt}/${finalJson.overall_max})`,
+        `✅ [${roll}] Saved: ${finalJson.name} (${finalJson.obt_marks}/${finalJson.max_marks})`,
       );
       return finalJson;
     } catch (err) {
@@ -89,7 +89,7 @@ export async function urlPipeline(
   }
 
   if (allResults.length > 0) {
-    const finalFilename = `${batch}_${semester}_${exam_type}-${attempt_no}_${view_type}`;
+    const finalFilename = `${batch}_${semester}_${exam_type}-${attempt_no}_${view_type}.json`;
     const combinedFilename = path.join(outputDir, finalFilename);
     fs.writeFileSync(combinedFilename, JSON.stringify(allResults, null, 2));
     console.log(

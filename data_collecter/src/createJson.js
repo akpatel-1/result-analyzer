@@ -21,9 +21,9 @@ export function createJson(rawData, input) {
     attempt_no: parseInt(input.attempt_no) || 1,
     view_type: input.view_type,
     spi: rawData.spi,
-    overall_max: rawData.overall_max,
-    overall_obt: rawData.overall_obt,
-    overall_status: rawData.overall_status,
+    max_marks: rawData.max_marks,
+    obt_marks: rawData.obt_marks,
+    status: rawData.status,
     result_date: rawData.result_date,
     subjects: rawData.subjects,
   };

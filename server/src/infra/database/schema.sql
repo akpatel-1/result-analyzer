@@ -53,10 +53,10 @@ create table if not exists overall_results (
   id uuid primary key default gen_random_uuid (),
   attempt_id uuid not null unique references attempts (id) on delete cascade,
   spi numeric(4, 2),
-  overall_max smallint not null,
-  overall_obt smallint not null,
-  overall_status citext not null check (
-    overall_status in (
+  max_marks smallint not null,
+  obt_marks smallint not null,
+  status citext not null check (
+    status in (
       'Pass',
       'Pass By Grace',
       'RV-Pass',
