@@ -53,7 +53,7 @@ export const repository = {
         s.id,
         a.semester,
         ov.spi,
-        ov.overall_status
+        ov.status
       FROM students s
       JOIN attempts a ON s.id = a.student_id
       JOIN overall_results ov ON a.id = ov.attempt_id
@@ -76,7 +76,7 @@ export const repository = {
       semester,
       spi
     FROM latest_overall_spi
-    WHERE overall_status NOT IN ('Fail', 'RV-Fail', 'RRV-Fail')
+    WHERE status NOT IN ('Fail', 'RV-Fail', 'RRV-Fail')
     ORDER BY semester ASC`,
       [id]
     );

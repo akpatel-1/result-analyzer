@@ -64,14 +64,14 @@ export const repository = {
     await client.query(
       `
       INSERT INTO overall_results
-      (attempt_id, spi, overall_max, overall_obt, overall_status)
+      (attempt_id, spi, max_marks, obt_marks, status)
       VALUES($1, $2, $3, $4, $5)`,
       [
         attemptId,
         student.spi,
-        student.overall_max,
-        student.overall_obt,
-        student.overall_status,
+        student.max_marks,
+        student.obt_marks,
+        student.status,
       ]
     );
   },

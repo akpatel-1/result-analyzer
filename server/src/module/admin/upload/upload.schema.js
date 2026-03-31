@@ -27,12 +27,11 @@ const studentResultSchema = z.object({
   exam_year: z.number(),
   exam_type: z.enum(['Regular', 'Backlog']),
   attempt_no: z.number(),
-  view_type: z.string().nullable(),
-  result_date: z.string(),
+  view_type: z.string(),
   spi: z.number().nullable(),
-  overall_max: z.number(),
-  overall_obt: z.number(),
-  overall_status: z.string(),
+  max_marks: z.number(),
+  obt_marks: z.number(),
+  status: z.string(),
   subjects: z.array(subjectSchema),
 });
 
