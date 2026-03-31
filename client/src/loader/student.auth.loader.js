@@ -15,7 +15,7 @@ export const studentLoader = {
   async publicRoute() {
     try {
       await studentApi.me();
-      return redirect('/student/overview');
+      return redirect('/student/profile');
     } catch {
       return null;
     }

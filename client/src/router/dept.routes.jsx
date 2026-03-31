@@ -1,4 +1,4 @@
-import { loader as deptAuthLoader } from '../loader/dept.auth.loader';
+import { deptLoader } from '../loader/dept.auth.loader';
 import DeptDashboardPage from '../pages/department/DeptDasbhoardPage';
 import DeptLoginPage from '../pages/department/DeptLoginPage';
 
@@ -6,11 +6,11 @@ export const deptRoutes = [
   {
     path: '/dept/login',
     element: <DeptLoginPage />,
-    loader: deptAuthLoader.publicRoute,
+    loader: deptLoader.publicRoute,
   },
   {
     path: '/dept/dashboard',
     element: <DeptDashboardPage />,
-    loader: deptAuthLoader.protectedRoute,
+    loader: deptLoader.protectedRoute,
   },
 ];

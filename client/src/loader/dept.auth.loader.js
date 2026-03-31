@@ -2,7 +2,7 @@ import { redirect } from 'react-router-dom';
 
 import { deptApi } from '../api/dept.api';
 
-export const loader = {
+export const deptLoader = {
   async protectedRoute() {
     try {
       await deptApi.me();

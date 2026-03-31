@@ -1,8 +1,8 @@
 import { Navigate } from 'react-router-dom';
 
 import { adminLoader } from '../loader/admin.auth.loader';
-import AdminOverviewPage from '../pages/admin/AdminOverviewPage';
 import AdminLoginPage from '../pages/admin/AdminLoginPage';
+import AdminOverviewPage from '../pages/admin/AdminOverviewPage';
 import AdminProfileUpload from '../pages/admin/AdminProfileUpload';
 import AdminResultUpload from '../pages/admin/AdminResultUpload';
 import AdminSubjectUpload from '../pages/admin/AdminSubjectsUpload';
@@ -20,6 +20,7 @@ export const adminRoutes = [
   },
   {
     path: '/admin/upload',
+    loader: adminLoader.protectedRoute,
     children: [
       { index: true, element: <Navigate to="profile" replace /> },
       { path: 'profiles', element: <AdminProfileUpload /> },
