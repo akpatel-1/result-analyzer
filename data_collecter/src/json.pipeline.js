@@ -46,9 +46,11 @@ export async function jsonPipeline(
       }
 
       const failedSubjects = item.failed_subjects;
+      const jsonCodes = failedSubjects.map(s => s.code);
+
       if (failedSubjects.length > 0) {
         rawData.subjects = rawData.subjects.filter((subj) =>
-          failedSubjects.includes(subj.code),
+          jsonCodes.includes(subj.code),
         );
       }
 
