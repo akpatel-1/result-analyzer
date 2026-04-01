@@ -203,12 +203,6 @@ function buildSemesterChildren(semesters = []) {
 export function getStudentNavigationLinks(semesters = []) {
   return [
     {
-      to: '/student/overview',
-      label: 'Overview',
-      icon: IoHomeOutline,
-      color: '#6777F1',
-    },
-    {
       to: '/student/latest-result',
       label: 'Latest Results',
       icon: HiOutlineDocumentReport,
@@ -226,13 +220,6 @@ export function getStudentNavigationLinks(semesters = []) {
       icon: MdOutlineSchool,
       color: '#F59E0B',
       children: buildSemesterChildren(semesters),
-    },
-
-    {
-      to: '/student/rankings',
-      label: 'Rankings',
-      icon: IoTrophyOutline,
-      color: '#EAB308',
     },
   ];
 }

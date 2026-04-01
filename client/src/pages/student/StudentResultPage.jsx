@@ -1,49 +1,43 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { studentApi } from '../../api/student.api';
 import ResultCard from '../../components/results/ResultCard';
+import { useResultStore } from '../../store/student.result.store';
 
 export default function StudentSemesterResult() {
-  const [result, setResult] = useState(null);
+  const { semesterResults, fetchSemesterResult } = useResultStore();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   const [searchParams] = useSearchParams();
 
   const semParam = searchParams.get('sem');
-  const semester = semParam ? Number(semParam) : 1;
+  const parsedSemester = Number(semParam);
+  const semester =
+    semParam && Number.isInteger(parsedSemester) && parsedSemester > 0
+      ? parsedSemester
+      : 1;
+  const semesterPayload = semesterResults[semester] || null;
+  const result = semesterPayload?.result || semesterPayload || null;
 
-  const loadResult = useCallback(async (semValue) => {
-    let isMounted = true;
-
-    try {
-      setIsLoading(true);
-      setError('');
-
-      const response = await studentApi.semesterResult(semValue);
-
-      if (isMounted) {
-        setResult(response?.data?.result || null);
-      }
-    } catch (err) {
-      if (isMounted) {
+  const loadResult = useCallback(
+    async (semValue) => {
+      try {
+        setIsLoading(true);
+        setError('');
+        await fetchSemesterResult(semValue);
+      } catch (err) {
         setError(
           err?.response?.data?.message ||
             `Unable to fetch result for Semester ${semValue}.`
         );
-      }
-    } finally {
-      if (isMounted) {
+      } finally {
         setIsLoading(false);
       }
-    }
+    },
+    [fetchSemesterResult]
+  );
 
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-  
   useEffect(() => {
     loadResult(semester);
   }, [semester, loadResult]);
@@ -68,7 +62,7 @@ export default function StudentSemesterResult() {
         <button
           type="button"
           className="btn-primary mt-4"
-          onClick={() => loadResult(semester)} 
+          onClick={() => loadResult(semester)}
         >
           Retry
         </button>

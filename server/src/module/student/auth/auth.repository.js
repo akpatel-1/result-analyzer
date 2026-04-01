@@ -40,7 +40,7 @@ export const repository = {
   },
   async getMe(client, id) {
     const result = await client.query(
-      `SELECT s.name, a.semester
+      `SELECT s.id, s.name, a.semester
       FROM students s
       join attempts a on s.id = a.student_id
       WHERE s.id = $1

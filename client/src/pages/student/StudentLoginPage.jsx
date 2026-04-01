@@ -6,9 +6,11 @@ import { PiWarningCircle } from 'react-icons/pi';
 import { useNavigate } from 'react-router-dom';
 
 import { studentApi } from '../../api/student.api';
+import { useAuthStore } from '../../store/user.auth.store';
 
 export default function StudentLoginForm() {
   const navigate = useNavigate();
+  const fetchMe = useAuthStore((state) => state.fetchMe);
 
   // --- State ---
   const [email, setEmail] = useState('');
@@ -86,6 +88,7 @@ export default function StudentLoginForm() {
     try {
       setLoading(true);
       await studentApi.verifyOtp({ email, otp });
+      await fetchMe();
       navigate('/student/profile');
     } catch (err) {
       const status = err.response?.status;

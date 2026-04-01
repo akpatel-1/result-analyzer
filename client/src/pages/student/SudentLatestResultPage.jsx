@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 
-import { studentApi } from '../../api/student.api';
 import ResultCard from '../../components/results/ResultCard';
+import { useResultStore } from '../../store/student.result.store';
 
 export default function StudentLatestResult() {
-  const [result, setResult] = useState(null);
+  const { latestResult, fetchLatestResult } = useResultStore();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const result = latestResult?.result || latestResult || null;
 
   const loadLatestResult = async () => {
     try {
       setIsLoading(true);
       setError('');
-      const response = await studentApi.latestResult();
-      setResult(response?.data?.result || null);
+      await fetchLatestResult();
     } catch (err) {
       setError(
         err?.response?.data?.message || 'Unable to fetch latest result.'

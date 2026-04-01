@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   FiAward,
   FiBookOpen,
@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fi';
 
 import { studentApi } from '../../api/student.api';
+import { useAuthStore } from '../../store/user.auth.store';
 
 const FIELD_ICONS = {
   Email: FiMail,
@@ -126,47 +127,67 @@ function CgpaRing({ value }) {
 }
 
 export default function StudentProfilePage() {
+  const { student, isLoading: isAuthLoading, fetchMe } = useAuthStore();
   const [profile, setProfile] = useState(null);
   const [backlogs, setBacklogs] = useState([]);
   const [cgpa, setCgpa] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isProfileLoading, setIsProfileLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const loadProfile = async () => {
+  const studentData = student?.user || student;
+
+  const loadProfile = useCallback(async () => {
+    const baseProfile = {
+      name: studentData?.name,
+      email: studentData?.email,
+      roll_no: studentData?.roll_no,
+      branch: studentData?.branch,
+      enroll_id: studentData?.enroll_id,
+      abc_id: studentData?.abc_id,
+      batch: studentData?.batch,
+    };
+
     try {
-      setIsLoading(true);
+      setIsProfileLoading(true);
       setError('');
       const response = await studentApi.profile();
       const payload = response?.data?.profile || {};
-      setProfile(payload?.profile || null);
+      setProfile(payload?.profile || baseProfile || null);
       setBacklogs(Array.isArray(payload?.backlogs) ? payload.backlogs : []);
       setCgpa(payload?.cgpa || null);
     } catch (err) {
+      setProfile((prev) => prev || baseProfile || null);
       setError(err?.response?.data?.message || 'Unable to fetch profile data.');
     } finally {
-      setIsLoading(false);
+      setIsProfileLoading(false);
     }
-  };
+  }, [studentData]);
+
+  useEffect(() => {
+    if (!student) {
+      fetchMe();
+    }
+  }, [student, fetchMe]);
 
   useEffect(() => {
     loadProfile();
-  }, []);
+  }, [student, loadProfile]);
+
+  const isLoading = isAuthLoading || isProfileLoading;
 
   if (isLoading) {
     return (
       <div className="rounded-2xl border border-border bg-surface p-10 text-center">
         <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-        <p className="text-sm text-text-muted">Loading profile…</p>
+        <p className="text-sm text-text-muted">Loading profile...</p>
       </div>
     );
   }
 
-  if (error || !profile) {
+  if (error && !profile) {
     return (
       <div className="rounded-2xl border border-border bg-surface p-10 text-center">
-        <p className="text-sm text-text-primary">
-          {error || 'Profile not found.'}
-        </p>
+        <p className="text-sm text-text-primary">{error}</p>
         <button
           type="button"
           className="btn-primary mt-4"
@@ -179,7 +200,7 @@ export default function StudentProfilePage() {
     );
   }
 
-  const initials = profile.name
+  const initials = profile?.name
     ?.split(' ')
     .map((p) => p[0])
     .join('')
@@ -191,7 +212,6 @@ export default function StudentProfilePage() {
 
   return (
     <section className="mx-auto animate-fade-up space-y-4">
-      {/* ── Header card ── */}
       <div className="rounded-2xl border border-border bg-surface p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
@@ -200,7 +220,7 @@ export default function StudentProfilePage() {
             </div>
             <div>
               <h1 className="text-xl font-extrabold tracking-tight text-text-primary">
-                {profile.name}
+                {profile?.name}
               </h1>
               <p className="mt-0.5 max-w-xs text-xs text-text-muted leading-relaxed">
                 Shri Shankaracharya Institute Of Professional Management &amp;
@@ -209,7 +229,6 @@ export default function StudentProfilePage() {
             </div>
           </div>
 
-          {/* Batch pill — solves the "short value looks empty" problem for batch */}
           <div className="flex items-center gap-2 self-start sm:self-auto">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 text-xs font-semibold text-accent">
               <FiBookOpen size={11} />
@@ -233,20 +252,19 @@ export default function StudentProfilePage() {
         </div>
       </div>
 
-      {/* ── Info grid ── */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <Field label="Email" value={profile.email} copyable />
-        <Field label="Roll Number" value={profile.roll_no} copyable />
-        <Field label="Course / Branch" value={profile.branch} />
-        <Field label="Enrollment ID" value={profile.enroll_id} copyable />
-        <Field label="ABC ID" value={profile.abc_id} copyable />
-        {/* Batch already shown as pill in header, but still listed here for completeness */}
-        <Field label="Batch" value={String(profile.batch)} />
+        <Field label="Email" value={profile?.email} copyable />
+        <Field label="Roll Number" value={profile?.roll_no} copyable />
+        <Field label="Course / Branch" value={profile?.branch} />
+        <Field label="Enrollment ID" value={profile?.enroll_id} copyable />
+        <Field label="ABC ID" value={profile?.abc_id} copyable />
+        <Field
+          label="Batch"
+          value={profile?.batch ? String(profile.batch) : ''}
+        />
       </div>
 
-      {/* ── CGPA + Backlogs row ── */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {/* CGPA */}
         <div className="rounded-xl border border-border bg-surface-raised p-5">
           <p className="mb-4 text-[10px] font-semibold uppercase tracking-widest text-text-muted">
             Cumulative GPA
@@ -256,7 +274,7 @@ export default function StudentProfilePage() {
               <CgpaRing value={cgpa.value} />
             ) : (
               <span className="text-2xl font-extrabold text-text-primary">
-                —
+                -
               </span>
             )}
             <div className="space-y-1">
@@ -279,7 +297,6 @@ export default function StudentProfilePage() {
           </div>
         </div>
 
-        {/* Backlogs */}
         <div className="rounded-xl border border-border bg-surface-raised p-5">
           <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-text-muted">
             Backlog Status
@@ -300,7 +317,7 @@ export default function StudentProfilePage() {
             <div className="flex items-center gap-2">
               <FiCheckCircle size={18} className="text-green-500" />
               <p className="text-lg font-bold text-green-700 dark:text-green-400">
-                All clear — no backlogs!
+                All clear - no backlogs!
               </p>
             </div>
           )}

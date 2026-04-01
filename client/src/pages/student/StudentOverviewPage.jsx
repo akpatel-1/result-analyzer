@@ -1,35 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-import { studentApi } from '../../api/student.api';
 import DashboardLayout from '../../components/dashboard/Layout';
+import { useAuthStore } from '../../store/user.auth.store';
 import { getStudentNavigationLinks } from '../../utils/dashboard.navigation';
 
 export default function StudentOverviewPage() {
   const navigate = useNavigate();
-  const [navItems, setNavItems] = useState(getStudentNavigationLinks());
-  const [userName, setUserName] = useState('');
+  const { student, fetchMe, logout } = useAuthStore();
 
   useEffect(() => {
-    async function fetchSemester() {
-      const res = await studentApi.me();
-      const semester = res?.data?.user?.semester;
-      const name = res?.data?.user?.name;
-      setUserName(name || '');
-
-      if (semester && Number.isInteger(semester) && semester > 0) {
-        setNavItems(
-          getStudentNavigationLinks(
-            Array.from({ length: semester }, (_, i) => i + 1)
-          )
-        );
+    async function ensureStudent() {
+      if (!student) {
+        await fetchMe();
       }
     }
-    fetchSemester();
-  }, []);
+
+    ensureStudent();
+  }, [student, fetchMe]);
+
+  const studentData = student?.user || student;
+  const semester = studentData?.semester;
+  const userName = studentData?.name || '';
+  const navItems =
+    semester && Number.isInteger(semester) && semester > 0
+      ? getStudentNavigationLinks(
+          Array.from({ length: semester }, (_, i) => i + 1)
+        )
+      : getStudentNavigationLinks();
 
   const handleLogout = async () => {
-    await studentApi.logout();
+    await logout();
     navigate('/student/login', { replace: true });
   };
 
