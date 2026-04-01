@@ -188,7 +188,9 @@ function buildSemesterChildren(semesters = []) {
     .filter((sem) => Number.isInteger(sem) && sem > 0)
     .sort((a, b) => a - b);
 
-  const effectiveSemesters = normalized.length ? normalized : [1, 2, 3, 4, 5, 6, 7, 8];
+  const effectiveSemesters = normalized.length
+    ? normalized
+    : [1, 2, 3, 4, 5, 6, 7, 8];
 
   return effectiveSemesters.map((sem) => ({
     to: `/student/result?sem=${sem}`,
@@ -227,22 +229,10 @@ export function getStudentNavigationLinks(semesters = []) {
     },
 
     {
-      to: '/student/subjects',
-      label: 'Subjects',
-      icon: MdOutlineMenuBook,
-      color: '#0EA5E9',
-    },
-    {
       to: '/student/rankings',
       label: 'Rankings',
       icon: IoTrophyOutline,
       color: '#EAB308',
-    },
-    {
-      to: '/student/settings',
-      label: 'Settings',
-      icon: IoSettingsOutline,
-      color: '#f97316',
     },
   ];
 }

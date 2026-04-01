@@ -218,7 +218,7 @@ export default function StudentProfilePage() {
             <span
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${
                 hasBacklogs
-                  ? 'border-red-200 bg-red-50 text-red-600 dark:border-red-800 dark:bg-red-950/40 dark:text-red-400'
+                  ? ' text-red-600  dark:text-red-400'
                   : 'border-accent/30 bg-accent/10 text-accent dark:border-accent/40 dark:bg-accent/20 dark:text-accent'
               }`}
             >
