@@ -16,6 +16,14 @@ export async function jsonPipeline(
   exam_type,
   semester,
 ) {
+  const normalizeCode = (value) =>
+    String(value ?? "")
+      .toUpperCase()
+      .replace(/\s+/g, "")
+      .trim();
+
+  const shortCode = (value) => normalizeCode(value).split("(")[0];
+
   const sourceData = JSON.parse(fs.readFileSync(filepath, "utf-8"));
 
   const filename = `${batch} ${semester} ${exam_type}-${attempt_no} ${view_type}.json`;
@@ -45,13 +53,25 @@ export async function jsonPipeline(
         continue;
       }
 
-      const failedSubjects = item.failed_subjects;
-      const jsonCodes = failedSubjects.map(s => s.code);
+      const failedSubjects = Array.isArray(item.failed_subjects)
+        ? item.failed_subjects
+        : [];
+
+      const jsonCodes = failedSubjects
+        .map((subject) =>
+          typeof subject === "string" ? subject : subject?.code,
+        )
+        .map(normalizeCode)
+        .filter(Boolean);
+
+      const jsonShortCodes = new Set(jsonCodes.map(shortCode));
+      const jsonCodeSet = new Set(jsonCodes);
 
       if (failedSubjects.length > 0) {
-        rawData.subjects = rawData.subjects.filter((subj) =>
-          jsonCodes.includes(subj.code),
-        );
+        rawData.subjects = rawData.subjects.filter((subj) => {
+          const code = normalizeCode(subj.code);
+          return jsonCodeSet.has(code) || jsonShortCodes.has(shortCode(code));
+        });
       }
 
       if (rawData.subjects.length === 0) {
@@ -62,8 +82,8 @@ export async function jsonPipeline(
       const validated = createJson(rawData, {
         batch,
         attempt_no,
-        exam_type: rawData.exam_type, // from HTML: "Regular" | "Backlog"
-        view_type: view_type, // from prompt: "RTRV" | "RRV" | "VALUATION"
+        exam_type: rawData.exam_type,
+        view_type: view_type,
       });
 
       const file_roll_no = roll_no.toString().slice(-4);
