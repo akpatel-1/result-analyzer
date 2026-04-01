@@ -9,6 +9,7 @@ export default function DashboardLayout({
   bottomItems = [],
   onLogout,
   role = '',
+  userName = '',
   children,
 }) {
   const location = useLocation();
@@ -43,13 +44,14 @@ export default function DashboardLayout({
         darkMode={darkMode}
         setDarkMode={setDarkMode}
         role={role}
+        userName={userName}
       />
 
       <div className="flex flex-1 overflow-hidden transition-colors duration-200">
         <Sidebar
           collapsed={collapsed}
           activeSection={activeSection}
-          setActiveSection={() => {}} 
+          setActiveSection={() => {}}
           navItems={navItems}
           bottomItems={bottomItems}
           onLogout={onLogout}

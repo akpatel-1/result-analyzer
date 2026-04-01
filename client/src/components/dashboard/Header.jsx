@@ -5,6 +5,7 @@ import {
   RiMoonClearLine,
   RiSearchLine,
   RiSunLine,
+  RiUser3Line,
 } from 'react-icons/ri';
 
 export default function Header({
@@ -13,6 +14,7 @@ export default function Header({
   darkMode,
   setDarkMode,
   role,
+  userName,
 }) {
   return (
     <header className="h-14 flex items-center justify-between px-4 border-b border-border bg-surface sticky top-0 z-30 shrink-0 transition-colors duration-200">
@@ -70,6 +72,16 @@ export default function Header({
         >
           <FaGithub size={18} />
         </a>
+
+        {userName ? (
+          <span
+            className="hidden sm:inline-flex items-center gap-1.5 ml-1 rounded-md border border-border bg-surface-raised px-2.5 py-1.5 text-xs font-semibold text-text-primary max-w-48"
+            title={userName}
+          >
+            <RiUser3Line size={13} className="shrink-0 text-text-muted" />
+            <span className="truncate">{userName}</span>
+          </span>
+        ) : null}
       </div>
     </header>
   );

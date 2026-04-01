@@ -8,19 +8,22 @@ import { getStudentNavigationLinks } from '../../utils/dashboard.navigation';
 export default function StudentOverviewPage() {
   const navigate = useNavigate();
   const [navItems, setNavItems] = useState(getStudentNavigationLinks());
+  const [userName, setUserName] = useState('');
 
   useEffect(() => {
     async function fetchSemester() {
+      const res = await studentApi.me();
+      const semester = res?.data?.user?.semester;
+      const name = res?.data?.user?.name;
+      setUserName(name || '');
 
-        const res = await studentApi.me();
-        const semester = res?.data?.user?.semester;
-        if (semester && Number.isInteger(semester) && semester > 0) {
-          setNavItems(
-            getStudentNavigationLinks(
-              Array.from({ length: semester }, (_, i) => i + 1)
-            )
-          );
-        }
+      if (semester && Number.isInteger(semester) && semester > 0) {
+        setNavItems(
+          getStudentNavigationLinks(
+            Array.from({ length: semester }, (_, i) => i + 1)
+          )
+        );
+      }
     }
     fetchSemester();
   }, []);
@@ -31,7 +34,11 @@ export default function StudentOverviewPage() {
   };
 
   return (
-    <DashboardLayout navItems={navItems} onLogout={handleLogout}>
+    <DashboardLayout
+      navItems={navItems}
+      onLogout={handleLogout}
+      userName={userName}
+    >
       <Outlet />
     </DashboardLayout>
   );
