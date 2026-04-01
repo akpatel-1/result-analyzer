@@ -9,6 +9,11 @@ import StudentLatestResult from '../pages/student/SudentLatestResultPage';
 
 export const studentRoutes = [
   {
+    path: '/',
+    element: <Navigate to="/student/login" replace />,
+    loader: studentLoader.protectedRoute,
+  },
+  {
     path: '/student/login',
     element: <StudentLoginPage />,
     loader: studentLoader.publicRoute,
