@@ -99,10 +99,10 @@ export default function ResultCard({ data }) {
   );
 
   const statCards = [
-    { label: 'Semester', value: `Sem ${semester}` },
+    { label: 'Semester', value: `Semester ${semester}` },
     { label: 'Exam Type', value: exam_type },
     { label: 'Attempt', value: attempt_no },
-    { label: 'view Type', value: view_type },
+    { label: 'View Type', value: view_type },
     { label: 'SPI', value: spi },
     { label: 'Overall Status', value: status },
   ];
@@ -119,6 +119,19 @@ export default function ResultCard({ data }) {
   const yAxisMaxCt = Math.max(
     0,
     ...ctChartData.map((item) => Math.max(item.max_ct, item.obt_ct))
+  );
+
+  const taChartData = allSubjects
+    .filter((item) => Number(item.max_ta ?? 0) === 30)
+    .map((item) => ({
+      subject: item.subject,
+      max_ta: Number(item.max_ta ?? 0),
+      obt_ta: Number(item.obt_ta ?? 0),
+    }));
+
+  const yAxisMaxTa = Math.max(
+    0,
+    ...taChartData.map((item) => Math.max(item.max_ta, item.obt_ta))
   );
 
   return (
@@ -142,7 +155,22 @@ export default function ResultCard({ data }) {
           tooltipStyle={tooltipStyle}
           barKey="obt_ct"
           maxKey="max_ct"
-          title="CT Marks (where Max CT = 20)"
+          title="CT Obtained Marks"
+        />
+      )}
+
+      {taChartData.length > 0 && (
+        <BarChartComponent
+          chartData={taChartData.map(({ subject, max_ta, obt_ta }) => ({
+            subject,
+            max_ta,
+            obt_ta,
+          }))}
+          yAxisMax={yAxisMaxTa}
+          tooltipStyle={tooltipStyle}
+          barKey="obt_ta"
+          maxKey="max_ta"
+          title="TA Obtained Marks"
         />
       )}
 

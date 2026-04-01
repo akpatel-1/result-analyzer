@@ -51,11 +51,31 @@ export default function BarChartComponent({
   tooltipStyle,
   barKey = 'obt_ese',
   maxKey = 'max_ese',
-  title = 'Subject-wise Obtained Marks',
+  title = 'Theory Obtained Marks',
 }) {
+  const labelMap = {
+    obt_ese: 'Theory (ESE)',
+    max_ese: 'Max marks',
+    obt_ct: 'Class Test (CT)',
+    max_ct: 'Max marks',
+    obt_ta: 'TA',
+    max_ta: 'Max marks',
+  };
+
+  const tooltipFormatter = (value, name) => [value, labelMap[name] ?? name];
   // Pick color based on barKey
-  const barColor = barKey === 'obt_ct' ? '#f59e42' : '#22c55e';
-  const maxBarColor = barKey === 'obt_ct' ? '#f3e8ff' : '#60a5fa';
+  const barColorMap = {
+    obt_ese: '#22c55e',
+    obt_ct: '#f97316',
+    obt_ta: '#06b6d4',
+  };
+  const maxBarColorMap = {
+    max_ese: '#3b82f6',
+    max_ct: '#64748b',
+    max_ta: '#64748b',
+  };
+  const barColor = barColorMap[barKey] || '#22c55e';
+  const maxBarColor = maxBarColorMap[maxKey] || '#93c5fd';
   return (
     <div className="bg-surface-raised border border-border rounded-xl p-4 md:p-6">
       <h3 className="text-lg font-semibold text-text-primary mb-4">{title}</h3>
@@ -77,13 +97,16 @@ export default function BarChartComponent({
                 domain={[0, yAxisMax || 100]}
                 tick={{ fill: 'var(--text-muted)', fontSize: 14 }}
               />
-              <Tooltip contentStyle={tooltipStyle} />
+              <Tooltip
+                contentStyle={tooltipStyle}
+                formatter={tooltipFormatter}
+              />
               {/* Show both obtained and max bars for context */}
               <Bar
                 dataKey={maxKey}
                 fill={maxBarColor}
                 barSize={70}
-                opacity={0.3}
+                opacity={0.6}
               />
               <Bar dataKey={barKey} fill={barColor} barSize={40} />
             </BarChart>

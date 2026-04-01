@@ -11,6 +11,6 @@ export default function AdminOverviewPage() {
     navigate('/admin/login', { replace: true });
   };
   return (
-    <DashboardLayout navItems={adminNavigationLinks} onLogout={handleLogout} />
+    <DashboardLayout navItems={adminNavigationLinks} onLogout={handleLogout} role='admin' />
   );
 }
