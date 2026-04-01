@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import Header from './Header';
@@ -17,6 +17,7 @@ export default function DashboardLayout({
   const [collapsed, setCollapsed] = useState(false);
 
   const [darkMode, setDarkMode] = useState(() => {
+    if (document.documentElement.classList.contains('dark')) return true;
     const saved = localStorage.getItem('theme');
     if (saved) return saved === 'dark';
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -25,7 +26,7 @@ export default function DashboardLayout({
   // Simplified: use pathname as activeSection; findItemLabelByTo returns the actual route
   const activeSection = location.pathname;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = document.documentElement;
     if (darkMode) {
       root.classList.add('dark');

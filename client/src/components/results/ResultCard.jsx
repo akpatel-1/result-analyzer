@@ -1,4 +1,3 @@
-// ResultCard.jsx
 import BarChartComponent from './BarCharts';
 import PieCharts from './PieCharts';
 import StatCards from './StatCards';
@@ -29,6 +28,9 @@ export default function ResultCard({ data }) {
 
   const allSubjects = subject_results.length ? subject_results : subjects;
 
+  const subjectStatuses = Object.fromEntries(
+    allSubjects.map((item) => [item.subject, item.status])
+  );
   const chartData = allSubjects
     .filter((item) => Number(item.max_ese ?? 0) === 100)
     .map((item) => ({
@@ -141,6 +143,7 @@ export default function ResultCard({ data }) {
         chartData={chartData}
         yAxisMax={yAxisMax}
         tooltipStyle={tooltipStyle}
+        subjectStatuses={subjectStatuses}
       />
 
       {/* CT MARKS BAR CHART: OBTAINED CT WHERE MAX_CT IS 20 */}

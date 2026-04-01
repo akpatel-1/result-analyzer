@@ -2,6 +2,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -52,6 +53,7 @@ export default function BarChartComponent({
   barKey = 'obt_ese',
   maxKey = 'max_ese',
   title = 'Theory Obtained Marks',
+  subjectStatuses = {},
 }) {
   const labelMap = {
     obt_ese: 'Theory (ESE)',
@@ -62,7 +64,6 @@ export default function BarChartComponent({
     max_ta: 'Max marks',
   };
 
-  const tooltipFormatter = (value, name) => [value, labelMap[name] ?? name];
   // Pick color based on barKey
   const barColorMap = {
     obt_ese: '#22c55e',
@@ -76,6 +77,23 @@ export default function BarChartComponent({
   };
   const barColor = barColorMap[barKey] || '#22c55e';
   const maxBarColor = maxBarColorMap[maxKey] || '#93c5fd';
+
+  const tooltipFormatter = (value, name, item) => {
+    const isObtainedSeries = name === barKey;
+    const subjectName = item?.payload?.subject;
+    const isFail = subjectStatuses?.[subjectName] === 'Fail';
+    const valueColor = isObtainedSeries
+      ? isFail
+        ? '#ef4444'
+        : barColor
+      : maxBarColor;
+
+    return [
+      <span style={{ color: valueColor, fontWeight: 700 }}>{value}</span>,
+      labelMap[name] ?? name,
+    ];
+  };
+
   return (
     <div className="bg-surface-raised border border-border rounded-xl p-4 md:p-6">
       <h3 className="text-lg font-semibold text-text-primary mb-4">{title}</h3>
@@ -100,6 +118,8 @@ export default function BarChartComponent({
               <Tooltip
                 contentStyle={tooltipStyle}
                 formatter={tooltipFormatter}
+                itemStyle={{ color: 'var(--text-primary)' }}
+                labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
               />
               {/* Show both obtained and max bars for context */}
               <Bar
@@ -108,7 +128,17 @@ export default function BarChartComponent({
                 barSize={70}
                 opacity={0.6}
               />
-              <Bar dataKey={barKey} fill={barColor} barSize={40} />
+              <Bar dataKey={barKey} barSize={40}>
+                {chartData.map((entry, index) => {
+                  const isFail = subjectStatuses[entry.subject] === 'Fail';
+                  return (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={isFail ? '#ef4444' : barColor}
+                    />
+                  );
+                })}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
