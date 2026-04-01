@@ -35,11 +35,11 @@ export function jsonParser(html) {
     return null;
   }
 
-  const exam_type = str($("#lblstat")) || "Regular";
+  const exam_type = str($("#lblstat"));
 
-  const semester = parseInt($("#sem").text().match(/\d+/)?.[0]) ?? null;
+  const semester = parseInt($("#sem").text().match(/\d+/)?.[0]);
   const sessionRaw = $("#ext").text().trim();
-  const exam_year = parseInt(sessionRaw.match(/\d{4}/)?.[0]) ?? null;
+  const exam_year = parseInt(sessionRaw.match(/\d{4}/)?.[0]) ;
   let exam_session = sessionRaw;
   if (sessionRaw.toLowerCase().includes("apr")) exam_session = "Apr-May";
   else if (sessionRaw.toLowerCase().includes("nov")) exam_session = "Nov-Dec";
@@ -50,8 +50,6 @@ export function jsonParser(html) {
   const result_date = str($("#rcreateona"));
   const spiRaw = $("#spi").text().trim();
   const spi = spiRaw ? parseFloat(spiRaw) : null;
-
-  const FAIL_GRADES = new Set(["F", "FF"]);
 
   const subjects = [];
   $("#GdUnReport tbody tr").each((_, row) => {
@@ -67,6 +65,7 @@ export function jsonParser(html) {
       .trim()
       .toUpperCase();
 
+    const FAIL_GRADES = new Set(["F", "FF"]);
     subjects.push({
       code,
       name: str(cells.eq(2)),
@@ -78,7 +77,7 @@ export function jsonParser(html) {
       obt_ta: num(cells.eq(8)),
       max_total: num(cells.eq(9)),
       obt_total: num(cells.eq(10)),
-      status: grade ? (FAIL_GRADES.has(grade) ? "Fail" : "Pass") : null,
+      status: grade ? (FAIL_GRADES.has(grade) ? "Fail" : "Pass") : "",
     });
   });
 
