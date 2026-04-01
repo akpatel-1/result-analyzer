@@ -89,7 +89,11 @@ function NavButton({
         />
 
         {/* Label — hidden when collapsed */}
-        {!collapsed && <span className="flex-1 text-left">{label}</span>}
+        {!collapsed && (
+          <span className="flex-1 text-left whitespace-nowrap overflow-hidden">
+            {label}
+          </span>
+        )}
 
         {/* Chevron for items with children */}
         {!collapsed && hasChildren && (
@@ -194,12 +198,12 @@ export default function Sidebar({
 
         {/* Logout — always at the bottom */}
         <button
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-200 hover:text-red-500 transition-colors duration-200"
+          className="h-10 flex items-center gap-3 px-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-200 hover:text-red-500 transition-colors duration-200"
           title={collapsed ? 'Logout' : ''}
           onClick={onLogout}
         >
           <RiLogoutBoxLine size={20} className="shrink-0" />
-          {!collapsed && <span>Logout</span>}
+          {!collapsed && <span className="whitespace-nowrap">Logout</span>}
         </button>
       </div>
     </aside>

@@ -4,43 +4,26 @@ import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
 
-function findItemLabelByTo(items = [], to) {
-  for (const item of items) {
-    if (item.to === to) return item.label;
-    if (item.children?.length) {
-      const found = findItemLabelByTo(item.children, to);
-      if (found) return found;
-    }
-  }
-  return null;
-}
-
 export default function DashboardLayout({
   navItems = [],
   bottomItems = [],
   onLogout,
+  role = '',
   children,
 }) {
   const location = useLocation();
 
-  const currentRoute = `${location.pathname}${location.search}`;
-
   const [collapsed, setCollapsed] = useState(false);
 
-  // ── Dark mode: read once from localStorage/system, no flicker ──
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('theme');
     if (saved) return saved === 'dark';
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
-  const activeSection =
-    (findItemLabelByTo(navItems, currentRoute) && currentRoute) ||
-    (findItemLabelByTo(navItems, location.pathname) && location.pathname) ||
-    navItems[0]?.to ||
-    '';
+  // Simplified: use pathname as activeSection; findItemLabelByTo returns the actual route
+  const activeSection = location.pathname;
 
-  // ── Sync dark mode to <html> class + localStorage ──
   useEffect(() => {
     const root = document.documentElement;
     if (darkMode) {
@@ -59,13 +42,14 @@ export default function DashboardLayout({
         setCollapsed={setCollapsed}
         darkMode={darkMode}
         setDarkMode={setDarkMode}
+        role={role}
       />
 
       <div className="flex flex-1 overflow-hidden transition-colors duration-200">
         <Sidebar
           collapsed={collapsed}
           activeSection={activeSection}
-          setActiveSection={() => {}}
+          setActiveSection={() => {}} 
           navItems={navItems}
           bottomItems={bottomItems}
           onLogout={onLogout}
