@@ -7,7 +7,7 @@ export default function AdminLoginPage() {
   const navigate = useNavigate();
   const handleLogin = async (data) => {
     await adminApi.login(data);
-    navigate('/admin/dashboard', { replace: true });
+    navigate('/admin/overview', { replace: true });
   };
   return <LoginForm onSubmit={handleLogin} userType={'Admin'} />;
 }

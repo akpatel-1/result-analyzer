@@ -31,6 +31,7 @@ const overallStatusSchema = z.enum([
   "Pass By Grace",
   "RV-Pass",
   "RV-Pass By Grace",
+  "RRV-Pass",
   "RRV-PASS",
   "RRV-Pass By Grace",
   "RV-PASS",
@@ -38,6 +39,7 @@ const overallStatusSchema = z.enum([
   "RRV-PASS BY GRACE",
   "Fail",
   "RV-Fail",
+  "RV-FAIL",
   "RRV-Fail",
 ]);
 
