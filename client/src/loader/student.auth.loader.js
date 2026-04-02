@@ -1,13 +1,17 @@
 import { redirect } from 'react-router-dom';
 
-import { studentApi } from '../api/student.api';
 import { useAuthStore } from '../store/user.auth.store';
 
 export const studentLoader = {
   async protectedRoute() {
+    const authState = useAuthStore.getState();
+
+    if (authState.student || authState.isAuthenticated) {
+      return null;
+    }
+
     try {
-      const res = await studentApi.me();
-      useAuthStore.getState().setStudent(res.data);
+      await authState.fetchMe();
       return null;
     } catch {
       return redirect('/student/login');
@@ -15,8 +19,14 @@ export const studentLoader = {
   },
 
   async publicRoute() {
+    const authState = useAuthStore.getState();
+
+    if (authState.student || authState.isAuthenticated) {
+      return redirect('/student/profile');
+    }
+
     try {
-      await studentApi.me();
+      await authState.fetchMe();
       return redirect('/student/profile');
     } catch {
       return null;
