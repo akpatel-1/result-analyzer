@@ -127,7 +127,7 @@ function CgpaRing({ value }) {
 }
 
 export default function StudentProfilePage() {
-  const { student, isLoading: isAuthLoading, fetchMe } = useAuthStore();
+  const { student, isLoading: isAuthLoading } = useAuthStore();
   const [profile, setProfile] = useState(null);
   const [backlogs, setBacklogs] = useState([]);
   const [cgpa, setCgpa] = useState(null);
@@ -162,12 +162,6 @@ export default function StudentProfilePage() {
       setIsProfileLoading(false);
     }
   }, [studentData]);
-
-  useEffect(() => {
-    if (!student) {
-      fetchMe();
-    }
-  }, [student, fetchMe]);
 
   useEffect(() => {
     loadProfile();
