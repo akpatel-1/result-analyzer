@@ -1,5 +1,24 @@
 import { z } from 'zod';
 
+const ciEnum = (values) =>
+  z
+    .string()
+    .trim()
+    .transform((value, ctx) => {
+      const normalized = value.toLowerCase();
+      const matched = values.find((item) => item.toLowerCase() === normalized);
+
+      if (!matched) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Invalid value. Expected one of: ${values.join(', ')}`,
+        });
+        return z.NEVER;
+      }
+
+      return matched;
+    });
+
 const resultDateSchema = z
   .string()
   .trim()
@@ -40,7 +59,7 @@ const subjectResultSchema = subjectInfoSchema.extend({
   obt_ct: z.number().int().nullable(),
   obt_ta: z.number().int().nullable(),
   obt_total: z.number().int(),
-  status: z.enum(['Pass', 'Fail']),
+  status: ciEnum(['Pass', 'Fail']),
 });
 
 const studentProfileSchema = z.object({
@@ -56,16 +75,16 @@ const studentProfileSchema = z.object({
 const studentResultSchema = studentProfileSchema
   .extend({
     semester: z.number().min(1).max(8),
-    exam_session: z.enum(['Apr-May', 'Nov-Dec']),
+    exam_session: ciEnum(['Apr-May', 'Nov-Dec']),
     exam_year: z.number().int(),
-    exam_type: z.enum(['Regular', 'Backlog']),
+    exam_type: ciEnum(['Regular', 'Backlog']),
     attempt_no: z.number().int().min(1).max(3),
-    view_type: z.enum(['VALUATION', 'RTRV', 'RRV']),
+    view_type: ciEnum(['VALUATION', 'RTRV', 'RRV']),
     result_date: resultDateSchema,
     spi: z.number().nullable(),
     max_marks: z.number().int(),
     obt_marks: z.number().int(),
-    status: z.enum([
+    status: ciEnum([
       'Pass',
       'Pass By Grace',
       'RV-Pass',

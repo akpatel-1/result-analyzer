@@ -1,5 +1,24 @@
 import { z } from "zod";
 
+const ciEnum = (values) =>
+  z
+    .string()
+    .trim()
+    .transform((value, ctx) => {
+      const normalized = value.toLowerCase();
+      const matched = values.find((item) => item.toLowerCase() === normalized);
+
+      if (!matched) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Invalid value. Expected one of: ${values.join(", ")}`,
+        });
+        return z.NEVER;
+      }
+
+      return matched;
+    });
+
 const resultDateSchema = z
   .string()
   .trim()
@@ -26,8 +45,9 @@ const resultDateSchema = z
     return `${year}-${month}-${day}`;
   });
 
-const overallStatusSchema = z.enum([
+const overallStatusSchema = ciEnum([
   "Pass",
+  "PASS",
   "Pass By Grace",
   "RV-Pass",
   "RV-Pass By Grace",
@@ -56,7 +76,7 @@ const SubjectSchema = z.object({
   obt_total: z.number().int(),
 
   // Scraper derives this from letter grade (Pass/Fail)
-  status: z.enum(["Pass", "Fail"]),
+  status: ciEnum(["Pass", "Fail"]),
 });
 
 // 2. Full Result Schema (Maps to `students`, `attempts`, and `overall_result`)
@@ -77,17 +97,17 @@ export const ResultSchema = z
       .int()
       .min(1)
       .max(8, "Semester must be between 1 and 8"),
-    exam_type: z.enum(["Regular", "Backlog"]),
+    exam_type: ciEnum(["Regular", "Backlog"]),
     attempt_no: z
       .number()
       .int()
       .min(1)
       .max(3, "Attempt number must be between 1 and 3"),
-    exam_session: z.enum(["Apr-May", "Nov-Dec"]),
+    exam_session: ciEnum(["Apr-May", "Nov-Dec"]),
     exam_year: z.number().int().positive(),
 
     // Table: subject_review
-    view_type: z.enum(["VALUATION", "RTRV", "RRV"]),
+    view_type: ciEnum(["VALUATION", "RTRV", "RRV"]),
 
     // Table: overall_result
     spi: z.number().min(0).max(10, "SPI must be between 0 and 10").nullable(),
