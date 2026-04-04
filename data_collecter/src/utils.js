@@ -24,8 +24,9 @@ export const utils = {
     if (!fullName) return null;
     const parts = fullName.trim().toLowerCase().split(/\s+/);
     const first = parts[0];
-    const last = parts[parts.length - 1];
+    const remainingNames = parts.slice(1).join("");
     const year = batch ? batch : "";
-    return `${first}.${last}${year}@ssipmt.com`;
+    const localPart = remainingNames ? `${first}.${remainingNames}` : first;
+    return `${localPart}${year}@ssipmt.com`;
   },
 };
