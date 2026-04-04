@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { useEffect, useRef, useState } from 'react';
 import { BiLoaderAlt } from 'react-icons/bi';
 import { MdErrorOutline, MdOutlineEmail } from 'react-icons/md';
 import { PiWarningCircle } from 'react-icons/pi';
@@ -17,11 +16,11 @@ export default function StudentLoginForm() {
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [showOtpStep, setShowOtpStep] = useState(false);
-  const [showOtp, setShowOtp] = useState(false); // toggle OTP visibility
   const [emailError, setEmailError] = useState('');
   const [otpError, setOtpError] = useState('');
   const [serverError, setServerError] = useState('');
   const [resendTimer, setResendTimer] = useState(0);
+  const otpInputRefs = useRef([]);
 
   // --- Resend countdown timer ---
   useEffect(() => {
@@ -29,6 +28,11 @@ export default function StudentLoginForm() {
     const interval = setInterval(() => setResendTimer((t) => t - 1), 1000);
     return () => clearInterval(interval);
   }, [resendTimer]);
+
+  useEffect(() => {
+    if (!showOtpStep) return;
+    otpInputRefs.current[0]?.focus();
+  }, [showOtpStep]);
 
   // --- Validation ---
   const validateEmail = (value) => {
@@ -42,6 +46,63 @@ export default function StudentLoginForm() {
     if (!value) return 'OTP is required';
     if (value.length !== 6) return 'OTP must be 6 digits';
     return '';
+  };
+
+  const updateOtpAtIndex = (index, digit) => {
+    const next = otp.split('');
+    while (next.length < 6) next.push('');
+    next[index] = digit;
+    const updatedOtp = next.join('');
+    setOtp(updatedOtp);
+    setOtpError('');
+    setServerError('');
+    return updatedOtp;
+  };
+
+  const handleOtpDigitChange = (index, value) => {
+    const digit = value.replace(/\D/g, '').slice(-1);
+    updateOtpAtIndex(index, digit);
+
+    if (digit && index < 5) {
+      otpInputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === 'Backspace') {
+      if (otp[index]) {
+        updateOtpAtIndex(index, '');
+        return;
+      }
+
+      if (index > 0) {
+        updateOtpAtIndex(index - 1, '');
+        otpInputRefs.current[index - 1]?.focus();
+      }
+    }
+  };
+
+  const handleOtpPaste = (e) => {
+    e.preventDefault();
+    const digits = e.clipboardData
+      .getData('text')
+      .replace(/\D/g, '')
+      .slice(0, 6)
+      .split('');
+
+    if (digits.length === 0) return;
+
+    const next = Array(6).fill('');
+    digits.forEach((digit, idx) => {
+      next[idx] = digit;
+    });
+
+    setOtp(next.join(''));
+    setOtpError('');
+    setServerError('');
+
+    const focusIndex = Math.min(digits.length, 5);
+    otpInputRefs.current[focusIndex]?.focus();
   };
 
   // --- Step 1: Send OTP ---
@@ -237,46 +298,39 @@ export default function StudentLoginForm() {
           >
             <div className="flex flex-col gap-1.5">
               <label
-                htmlFor="otp"
+                htmlFor="otp-0"
                 className="text-[0.8rem] font-semibold text-stone-700 tracking-tight"
               >
                 6-digit verification code
               </label>
-              <div className="relative flex items-center">
-                {/* Reuse the eye toggle for OTP visibility — same UX pattern as password */}
-                <input
-                  id="otp"
-                  type={showOtp ? 'text' : 'password'}
-                  inputMode="numeric"
-                  name="otp"
-                  placeholder="••••••"
-                  maxLength={6}
-                  value={otp}
-                  disabled={loading}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, '').slice(0, 6);
-                    setOtp(val);
-                    setOtpError('');
-                    setServerError('');
-                  }}
-                  onBlur={(e) => setOtpError(validateOtp(e.target.value))}
-                  className={`w-full pl-4 pr-10 py-2.5 rounded-xl border text-sm text-stone-800 bg-stone-50 outline-none transition-all duration-200 tracking-[0.35em] font-bold
-                    placeholder:text-stone-300 placeholder:tracking-normal placeholder:font-normal
+              <div className="grid grid-cols-6 gap-2 sm:gap-3">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <input
+                    key={index}
+                    id={`otp-${index}`}
+                    ref={(el) => {
+                      otpInputRefs.current[index] = el;
+                    }}
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    maxLength={1}
+                    value={otp[index] || ''}
+                    disabled={loading}
+                    onChange={(e) =>
+                      handleOtpDigitChange(index, e.target.value)
+                    }
+                    onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                    onPaste={handleOtpPaste}
+                    className={`h-12 w-full rounded-xl border text-center text-lg font-bold text-stone-800 bg-stone-50 outline-none transition-all duration-200
                     focus:bg-white focus:ring-2 focus:ring-indigo-500/20
                     ${
                       otpError
                         ? 'border-red-400 bg-red-50 focus:border-red-400 focus:ring-red-500/15'
                         : 'border-stone-200 focus:border-indigo-500'
                     }`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowOtp((p) => !p)}
-                  aria-label={showOtp ? 'Hide code' : 'Show code'}
-                  className="absolute right-3 text-stone-400 text-[1.1rem] flex items-center hover:text-indigo-500 transition-colors duration-200"
-                >
-                  {showOtp ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-                </button>
+                  />
+                ))}
               </div>
               {otpError && (
                 <p className="flex items-center gap-1 text-[0.775rem] text-red-600 font-medium animate-[fadeUp_0.18s_ease_both]">

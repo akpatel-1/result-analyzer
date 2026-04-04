@@ -90,7 +90,7 @@ async function sendViaBrevoApi({ to, subject, text, html }) {
 }
 
 export async function sendEmail({ to, subject, text, html }) {
-  const provider = process.env.EMAIL_PROVIDER || 'smtp';
+  const provider = process.env.EMAIL_PROVIDER 
 
   if (provider === 'api') {
     return sendViaBrevoApi({ to, subject, text, html });

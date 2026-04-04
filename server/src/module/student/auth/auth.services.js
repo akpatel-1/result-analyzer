@@ -31,8 +31,9 @@ export const service = {
   },
 
   async processOtpVerification({ email, otp }) {
-    await this._authenticate(email, otp);
+    const hashedEmail = await this._authenticate(email, otp);
     const { studentId, rawToken } = await this._createSession(email);
+    await otpRepository.delete(hashedEmail);
     const accessToken = token.generateAccessToken(studentId);
     return { accessToken, refreshToken: rawToken };
   },
@@ -49,7 +50,7 @@ export const service = {
       throw new ApiError(ERROR_CONFIG.INVALID_OR_EXPIRED_OTP);
     }
 
-    await otpRepository.delete(hashedEmail);
+    return hashedEmail;
   },
 
   async _createSession(email) {
