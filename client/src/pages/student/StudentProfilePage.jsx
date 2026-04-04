@@ -12,7 +12,6 @@ import {
   FiUser,
 } from 'react-icons/fi';
 
-import { studentApi } from '../../api/student.api';
 import { useAuthStore } from '../../store/user.auth.store';
 
 const FIELD_ICONS = {
@@ -127,47 +126,36 @@ function CgpaRing({ value }) {
 }
 
 export default function StudentProfilePage() {
-  const { student, isLoading: isAuthLoading } = useAuthStore();
-  const [profile, setProfile] = useState(null);
-  const [backlogs, setBacklogs] = useState([]);
-  const [cgpa, setCgpa] = useState(null);
-  const [isProfileLoading, setIsProfileLoading] = useState(true);
-  const [error, setError] = useState('');
+  const {
+    profile,
+    backlogs,
+    cgpa,
+    isLoading: isAuthLoading,
+    isProfileLoading,
+    profileError,
+    fetchProfile,
+  } = useAuthStore();
 
-  const studentData = student?.user || student;
+  const [hasTriedLoad, setHasTriedLoad] = useState(false);
 
-  const loadProfile = useCallback(async () => {
-    const baseProfile = {
-      name: studentData?.name,
-      email: studentData?.email,
-      roll_no: studentData?.roll_no,
-      branch: studentData?.branch,
-      enroll_id: studentData?.enroll_id,
-      abc_id: studentData?.abc_id,
-      batch: studentData?.batch,
-    };
-
-    try {
-      setIsProfileLoading(true);
-      setError('');
-      const response = await studentApi.profile();
-      const payload = response?.data?.profile || {};
-      setProfile(payload?.profile || baseProfile || null);
-      setBacklogs(Array.isArray(payload?.backlogs) ? payload.backlogs : []);
-      setCgpa(payload?.cgpa || null);
-    } catch (err) {
-      setProfile((prev) => prev || baseProfile || null);
-      setError(err?.response?.data?.message || 'Unable to fetch profile data.');
-    } finally {
-      setIsProfileLoading(false);
-    }
-  }, [studentData]);
+  const loadProfile = useCallback(
+    async ({ force = false } = {}) => {
+      try {
+        await fetchProfile({ force });
+      } catch {
+        // Error state is managed in zustand store.
+      } finally {
+        setHasTriedLoad(true);
+      }
+    },
+    [fetchProfile]
+  );
 
   useEffect(() => {
     loadProfile();
-  }, [student, loadProfile]);
+  }, [loadProfile]);
 
-  const isLoading = isAuthLoading || isProfileLoading;
+  const isLoading = (isAuthLoading || isProfileLoading) && !hasTriedLoad;
 
   if (isLoading) {
     return (
@@ -178,14 +166,14 @@ export default function StudentProfilePage() {
     );
   }
 
-  if (error && !profile) {
+  if (profileError && !profile) {
     return (
       <div className="rounded-2xl border border-border bg-surface p-10 text-center">
-        <p className="text-sm text-text-primary">{error}</p>
+        <p className="text-sm text-text-primary">{profileError}</p>
         <button
           type="button"
           className="btn-primary mt-4"
-          onClick={loadProfile}
+          onClick={() => loadProfile({ force: true })}
         >
           <FiRefreshCw size={14} />
           <span className="ml-2">Retry</span>
