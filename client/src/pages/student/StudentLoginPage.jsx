@@ -166,6 +166,7 @@ export default function StudentLoginForm() {
   // --- Resend OTP ---
   const handleResendOtp = async () => {
     if (resendTimer > 0 || loading) return;
+    setOtp('');
     setServerError('');
     setOtpError('');
 
@@ -173,6 +174,7 @@ export default function StudentLoginForm() {
       setLoading(true);
       await studentApi.requestOtp({ email });
       setResendTimer(30);
+      otpInputRefs.current[0]?.focus();
     } catch (err) {
       setServerError(
         err.response?.data?.message || 'Failed to resend OTP. Try again.'
