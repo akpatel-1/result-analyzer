@@ -7,12 +7,22 @@ function isRouteMatch(activeSection = '', route = '') {
 
   const cleanActive = String(activeSection).split('#')[0];
   const cleanRoute = String(route).split('#')[0];
+  const [activePath, activeQuery = ''] = cleanActive.split('?');
+  const [routePath, routeQuery = ''] = cleanRoute.split('?');
+  const routeParams = new URLSearchParams(routeQuery);
+  const activeParams = new URLSearchParams(activeQuery);
 
-  return (
-    cleanActive === cleanRoute ||
-    cleanActive.startsWith(`${cleanRoute}/`) ||
-    cleanActive.startsWith(`${cleanRoute}?`)
-  );
+  const pathMatch =
+    activePath === routePath || activePath.startsWith(`${routePath}/`);
+
+  if (!pathMatch) return false;
+
+  // For query-based menu items, all route params must exist and match.
+  for (const [key, value] of routeParams.entries()) {
+    if (activeParams.get(key) !== value) return false;
+  }
+
+  return true;
 }
 
 function findActiveChildColor(children = [], activeSection = '') {
@@ -24,6 +34,13 @@ function findActiveChildColor(children = [], activeSection = '') {
     }
   }
   return null;
+}
+
+function withAlpha(hexColor = '', alphaHex = '14') {
+  if (/^#[0-9a-fA-F]{6}$/.test(hexColor)) {
+    return `${hexColor}${alphaHex}`;
+  }
+  return undefined;
 }
 
 function NavButton({
@@ -44,6 +61,12 @@ function NavButton({
   const isDirectActive = isRouteMatch(activeSection, to);
   const isActive = isDirectActive || Boolean(activeChildColor);
   const resolvedActiveColor = activeChildColor || color;
+  const activeStyle = isActive
+    ? {
+        color: resolvedActiveColor,
+        backgroundColor: withAlpha(resolvedActiveColor, darkMode ? '24' : '1A'),
+      }
+    : {};
 
   const [manualOpen, setManualOpen] = useState(false);
   const open = !collapsed && (manualOpen || Boolean(activeChildColor));
@@ -66,7 +89,7 @@ function NavButton({
       <button
         onClick={handleClick}
         title={collapsed ? label : ''}
-        style={isActive ? { color: resolvedActiveColor } : {}}
+        style={activeStyle}
         className={`
           w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-200
           ${depth > 0 ? 'pl-8' : ''}

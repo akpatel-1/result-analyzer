@@ -23,8 +23,7 @@ export default function DashboardLayout({
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
-  // Simplified: use pathname as activeSection; findItemLabelByTo returns the actual route
-  const activeSection = location.pathname;
+  const activeSection = `${location.pathname}${location.search}`;
 
   useLayoutEffect(() => {
     const root = document.documentElement;

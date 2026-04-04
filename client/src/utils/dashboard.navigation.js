@@ -140,7 +140,7 @@ function buildSemesterChildren(semesters = []) {
     to: `/student/result?sem=${sem}`,
     label: `Semester ${sem}`,
     icon: IoListOutline,
-    color: '#6B7280',
+    color: '#F97316',
   }));
 }
 
