@@ -14,6 +14,13 @@ export async function sendOtp(email, otp) {
 
     return response;
   } catch (error) {
+    console.error('Error while sending OTP email', {
+      code: error?.code,
+      command: error?.command,
+      responseCode: error?.responseCode,
+      response: error?.response,
+      message: error?.message,
+    });
     throw new ApiError(ERROR_CONFIG.EMAIL_SEND_FAILED);
   }
 }
