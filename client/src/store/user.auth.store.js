@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import { studentApi } from '../api/student.api';
+import { useResultStore } from './student.result.store';
 
 let meRequestPromise = null;
 let profileRequestPromise = null;
@@ -15,8 +16,8 @@ export const useAuthStore = create((set, get) => ({
   isProfileLoading: false,
   profileError: '',
 
-  fetchMe: async () => {
-    if (get().student) return get().student;
+  fetchMe: async ({ force = false } = {}) => {
+    if (!force && get().student) return get().student;
     if (meRequestPromise) return meRequestPromise;
 
     meRequestPromise = (async () => {
@@ -38,16 +39,23 @@ export const useAuthStore = create((set, get) => ({
   },
 
   logout: async () => {
-    await studentApi.logout();
-    set({
-      student: null,
-      isAuthenticated: false,
-      profile: null,
-      backlogs: [],
-      cgpa: null,
-      isProfileLoading: false,
-      profileError: '',
-    });
+    try {
+      await studentApi.logout();
+    } finally {
+      meRequestPromise = null;
+      profileRequestPromise = null;
+      set({
+        student: null,
+        isAuthenticated: false,
+        profile: null,
+        backlogs: [],
+        cgpa: null,
+        isLoading: false,
+        isProfileLoading: false,
+        profileError: '',
+      });
+      useResultStore.getState().clearResults();
+    }
   },
 
   setStudent: (student) =>

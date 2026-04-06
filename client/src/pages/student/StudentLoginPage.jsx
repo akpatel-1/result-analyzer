@@ -149,7 +149,7 @@ export default function StudentLoginForm() {
     try {
       setLoading(true);
       await studentApi.verifyOtp({ email, otp });
-      await fetchMe();
+      await fetchMe({ force: true });
       navigate('/student/profile');
     } catch (err) {
       const status = err.response?.status;
