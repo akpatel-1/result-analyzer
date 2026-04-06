@@ -137,7 +137,7 @@ export default function ResultCard({ data }) {
   );
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-4 p-3 sm:space-y-5 sm:p-4 md:space-y-6 md:p-6">
       <StatCards stats={statCards} />
       <BarChartComponent
         chartData={chartData}

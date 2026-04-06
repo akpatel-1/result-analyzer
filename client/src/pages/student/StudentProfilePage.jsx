@@ -211,7 +211,7 @@ export default function StudentProfilePage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-auto">
+          <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 text-xs font-semibold text-accent">
               <FiBookOpen size={11} />
               SSIPMT, Raipur
@@ -298,7 +298,7 @@ export default function StudentProfilePage() {
           ) : (
             <div className="flex items-center gap-2">
               <FiCheckCircle size={18} className="text-green-500" />
-              <p className="text-lg font-bold text-green-700 dark:text-green-400">
+              <p className="text-base font-bold text-green-700 sm:text-lg dark:text-green-400">
                 All clear - no backlogs!
               </p>
             </div>

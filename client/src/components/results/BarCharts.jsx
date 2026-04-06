@@ -94,53 +94,57 @@ export default function BarChartComponent({
     ];
   };
 
+  const minChartWidth = Math.max(520, chartData.length * 92);
+
   return (
     <div className="bg-surface-raised border border-border rounded-xl p-4 md:p-6">
       <h3 className="text-lg font-semibold text-text-primary mb-4">{title}</h3>
       {chartData.length > 0 ? (
-        <div className="h-108 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={chartData}
-              margin={{ top: 10, right: 20, left: 0, bottom: 50 }}
-            >
-              <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
-              <XAxis
-                dataKey="subject"
-                interval={0}
-                height={70}
-                tick={<SubjectTick />}
-              />
-              <YAxis
-                domain={[0, yAxisMax || 100]}
-                tick={{ fill: 'var(--text-muted)', fontSize: 14 }}
-              />
-              <Tooltip
-                contentStyle={tooltipStyle}
-                formatter={tooltipFormatter}
-                itemStyle={{ color: 'var(--text-primary)' }}
-                labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
-              />
-              {/* Show both obtained and max bars for context */}
-              <Bar
-                dataKey={maxKey}
-                fill={maxBarColor}
-                barSize={70}
-                opacity={0.6}
-              />
-              <Bar dataKey={barKey} barSize={40}>
-                {chartData.map((entry, index) => {
-                  const isFail = subjectStatuses[entry.subject] === 'Fail';
-                  return (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={isFail ? '#ef4444' : barColor}
-                    />
-                  );
-                })}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="h-80 w-full overflow-x-auto sm:h-96 md:h-108">
+          <div className="h-full" style={{ minWidth: `${minChartWidth}px` }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={chartData}
+                margin={{ top: 10, right: 20, left: 0, bottom: 50 }}
+              >
+                <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="subject"
+                  interval={0}
+                  height={70}
+                  tick={<SubjectTick />}
+                />
+                <YAxis
+                  domain={[0, yAxisMax || 100]}
+                  tick={{ fill: 'var(--text-muted)', fontSize: 14 }}
+                />
+                <Tooltip
+                  contentStyle={tooltipStyle}
+                  formatter={tooltipFormatter}
+                  itemStyle={{ color: 'var(--text-primary)' }}
+                  labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
+                />
+                {/* Show both obtained and max bars for context */}
+                <Bar
+                  dataKey={maxKey}
+                  fill={maxBarColor}
+                  barSize={56}
+                  opacity={0.6}
+                />
+                <Bar dataKey={barKey} barSize={34}>
+                  {chartData.map((entry, index) => {
+                    const isFail = subjectStatuses[entry.subject] === 'Fail';
+                    return (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={isFail ? '#ef4444' : barColor}
+                      />
+                    );
+                  })}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       ) : (
         <p className="text-sm text-text-muted">No data found for this chart.</p>

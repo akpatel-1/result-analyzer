@@ -44,7 +44,7 @@ export default function StudentSemesterResult() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-10 text-center">
+      <div className="rounded-2xl border border-border bg-surface p-6 text-center sm:p-10">
         <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
         <p className="text-sm text-text-muted">
           Loading Semester {semester} result...
@@ -55,7 +55,7 @@ export default function StudentSemesterResult() {
 
   if (error || !result) {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-10 text-center">
+      <div className="rounded-2xl border border-border bg-surface p-6 text-center sm:p-10">
         <p className="text-sm text-text-primary">
           {error || `No results found for Semester ${semester}.`}
         </p>

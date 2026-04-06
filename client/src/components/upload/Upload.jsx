@@ -275,7 +275,7 @@ export default function UploadStudentResults({
 
         {/* ── SELECTED: File list ── */}
         {status === 'selected' && files.length > 0 && (
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
             {files.map((file) => (
               <div
                 key={file.name}
@@ -310,7 +310,7 @@ export default function UploadStudentResults({
 
         {/* ── UPLOADING: Progress ── */}
         {status === 'uploading' && files.length > 0 && (
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
             {files.map((file) => (
               <div
                 key={file.name}
@@ -356,7 +356,7 @@ export default function UploadStudentResults({
                   <p className="text-sm font-semibold text-text-primary">
                     Upload Summary
                   </p>
-                  <div className="grid grid-cols-3 gap-4 mt-3">
+                  <div className="grid grid-cols-1 gap-3 mt-3 sm:grid-cols-3 sm:gap-4">
                     <div>
                       <p className="text-xs font-medium text-emerald-500 uppercase tracking-wide">
                         Successful
@@ -407,7 +407,7 @@ export default function UploadStudentResults({
             )}
 
             {/* Individual results */}
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
               {uploadResults.map((result) => {
                 const tone = result.success
                   ? {
@@ -475,7 +475,7 @@ export default function UploadStudentResults({
 
         {/* ── Action Buttons ── */}
         {status === 'selected' && (
-          <div className="flex gap-2 mt-4">
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
             <button onClick={handleReset} className="btn-ghost flex-1">
               Cancel
             </button>
@@ -486,7 +486,7 @@ export default function UploadStudentResults({
         )}
 
         {status === 'done' && (
-          <div className="flex gap-2 mt-4">
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
             {uploadResults.every((r) => !r.success && !r.skipped) ? (
               <>
                 <button

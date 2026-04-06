@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import ResultCard from '../../components/results/ResultCard';
 import { useResultStore } from '../../store/student.result.store';
@@ -9,7 +9,7 @@ export default function StudentLatestResult() {
   const [error, setError] = useState('');
   const result = latestResult?.result || latestResult || null;
 
-  const loadLatestResult = async () => {
+  const loadLatestResult = useCallback(async () => {
     try {
       setIsLoading(true);
       setError('');
@@ -21,15 +21,15 @@ export default function StudentLatestResult() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [fetchLatestResult]);
 
   useEffect(() => {
     loadLatestResult();
-  }, []);
+  }, [loadLatestResult]);
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-10 text-center">
+      <div className="rounded-2xl border border-border bg-surface p-6 text-center sm:p-10">
         <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
         <p className="text-sm text-text-muted">Loading latest result...</p>
       </div>
@@ -38,7 +38,7 @@ export default function StudentLatestResult() {
 
   if (error || !result) {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-10 text-center">
+      <div className="rounded-2xl border border-border bg-surface p-6 text-center sm:p-10">
         <p className="text-sm text-text-primary">
           {error || 'No latest result found.'}
         </p>

@@ -50,6 +50,7 @@ function NavButton({
   collapsed,
   navigate,
   darkMode,
+  onNavigateItem,
   depth = 0,
 }) {
   const { label, icon: Icon, to, color, children } = item;
@@ -80,6 +81,7 @@ function NavButton({
     } else {
       setActiveSection(to);
       if (to) navigate(to);
+      onNavigateItem?.();
     }
   }
 
@@ -147,6 +149,7 @@ function NavButton({
               collapsed={collapsed}
               navigate={navigate}
               darkMode={darkMode}
+              onNavigateItem={onNavigateItem}
               depth={depth + 1}
             />
           ))}
@@ -164,21 +167,36 @@ export default function Sidebar({
   bottomItems = [],
   onLogout,
   darkMode,
+  isMobile = false,
+  mobileMenuOpen = false,
+  onCloseMobileMenu,
 }) {
   const navigate = useNavigate();
+  const effectiveCollapsed = isMobile ? false : collapsed;
+
+  const asideSizing = isMobile
+    ? 'fixed left-0 top-14 z-40 h-[calc(100vh-3.5rem)] w-72 max-w-[85vw]'
+    : `${effectiveCollapsed ? 'w-16' : 'w-60'} h-full shrink-0`;
+
+  const asideMotion = isMobile
+    ? mobileMenuOpen
+      ? 'translate-x-0'
+      : '-translate-x-full'
+    : 'translate-x-0';
 
   return (
     <aside
       className={`
-        ${collapsed ? 'w-16' : 'w-60'}
-        flex flex-col h-full border-r
+        ${asideSizing}
+        ${asideMotion}
+        flex flex-col border-r
         ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}
-        transition-[width,background-color,border-color,color] duration-200 ease-in-out shrink-0
+        transition-[width,transform,background-color,border-color,color] duration-200 ease-in-out
       `}
     >
       {/* ── Main Nav Items ── */}
       <nav className="no-scrollbar flex-1 py-6 flex flex-col gap-1 px-2 overflow-y-auto">
-        {!collapsed && (
+        {!effectiveCollapsed && (
           <p
             className={`text-xs font-semibold uppercase px-3 mb-2 tracking-widest ${
               darkMode ? 'text-slate-500' : 'text-slate-400'
@@ -194,9 +212,10 @@ export default function Sidebar({
             item={item}
             activeSection={activeSection}
             setActiveSection={setActiveSection}
-            collapsed={collapsed}
+            collapsed={effectiveCollapsed}
             navigate={navigate}
             darkMode={darkMode}
+            onNavigateItem={onCloseMobileMenu}
           />
         ))}
       </nav>
@@ -213,20 +232,26 @@ export default function Sidebar({
             item={item}
             activeSection={activeSection}
             setActiveSection={setActiveSection}
-            collapsed={collapsed}
+            collapsed={effectiveCollapsed}
             navigate={navigate}
             darkMode={darkMode}
+            onNavigateItem={onCloseMobileMenu}
           />
         ))}
 
         {/* Logout — always at the bottom */}
         <button
           className="h-10 flex items-center gap-3 px-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-200 hover:text-red-500 transition-colors duration-200"
-          title={collapsed ? 'Logout' : ''}
-          onClick={onLogout}
+          title={effectiveCollapsed ? 'Logout' : ''}
+          onClick={() => {
+            onLogout?.();
+            onCloseMobileMenu?.();
+          }}
         >
           <RiLogoutBoxLine size={20} className="shrink-0" />
-          {!collapsed && <span className="whitespace-nowrap">Logout</span>}
+          {!effectiveCollapsed && (
+            <span className="whitespace-nowrap">Logout</span>
+          )}
         </button>
       </div>
     </aside>

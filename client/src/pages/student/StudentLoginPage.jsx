@@ -195,7 +195,7 @@ export default function StudentLoginForm() {
 
   return (
     <div className="min-h-screen grid place-items-center p-4 bg-stone-100 bg-[radial-gradient(ellipse_60%_50%_at_15%_10%,#e0e7ff,transparent),radial-gradient(ellipse_50%_40%_at_85%_90%,#fce7f3,transparent)]">
-      <div className="bg-white border border-stone-200 rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_24px_48px_-12px_rgba(79,70,229,0.10)] p-10 w-full max-w-md animate-[fadeUp_0.45s_cubic-bezier(0.22,1,0.36,1)_both]">
+      <div className="bg-white border border-stone-200 rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_24px_48px_-12px_rgba(79,70,229,0.10)] p-6 sm:p-10 w-full max-w-md animate-[fadeUp_0.45s_cubic-bezier(0.22,1,0.36,1)_both]">
         {/* Header */}
         <span className="inline-block bg-indigo-50 text-indigo-600 text-[0.7rem] font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
           Student

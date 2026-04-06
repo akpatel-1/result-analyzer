@@ -1,7 +1,7 @@
 // StatCards.jsx
 export default function StatCards({ stats }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
       {stats.map((s) => (
         <div
           key={s.label}
@@ -9,7 +9,7 @@ export default function StatCards({ stats }) {
         >
           <p className="text-xs text-text-muted mb-1">{s.label}</p>
           <p
-            className={`text-xl font-semibold ${
+            className={`text-lg font-semibold sm:text-xl ${
               s.value === 'Pass'
                 ? 'text-green-600'
                 : s.value === 'Fail'
