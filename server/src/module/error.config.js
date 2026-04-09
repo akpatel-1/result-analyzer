@@ -64,4 +64,9 @@ export const ERROR_CONFIG = {
     message: 'Subjects must be at least 10',
     code: 'SUBJECTS_LESS_THAN_10',
   },
+  RESULT_NOT_FOUND: {
+    statusCode: 404,
+    message: 'Result not found',
+    code: 'RESULT_NOT_FOUND',
+  },
 };
