@@ -4,6 +4,7 @@ import { adminLoader } from '../loader/admin.auth.loader';
 import AdminLoginPage from '../pages/admin/AdminLoginPage';
 import AdminOverviewPage from '../pages/admin/AdminOverviewPage';
 import AdminProfileUpload from '../pages/admin/AdminProfileUpload';
+import AdminResultPage from '../pages/admin/AdminResultPage';
 import AdminResultUpload from '../pages/admin/AdminResultUpload';
 import AdminSubjectUpload from '../pages/admin/AdminSubjectsUpload';
 
@@ -17,6 +18,11 @@ export const adminRoutes = [
     loader: adminLoader.protectedRoute,
     path: '/admin/overview',
     element: <AdminOverviewPage />,
+  },
+  {
+    loader: adminLoader.protectedRoute,
+    path: '/admin/results',
+    element: <AdminResultPage />,
   },
   {
     path: '/admin/upload',

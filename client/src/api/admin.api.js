@@ -6,4 +6,6 @@ export const adminApi = {
   me: () => axiosClient.get('/admin/me'),
 
   upload: (route, data) => axiosClient.post(`/admin/upload/${route}`, data),
+
+  result: (params) => axiosClient.get('/admin/student', { params }),
 };
