@@ -11,4 +11,19 @@ export const service = {
     }
     return result;
   },
+  async fetchStudentProfile(data) {
+    const [profile, backlogs, spi] = await Promise.all([
+      repository.getStudentProfile(pool, data),
+      repository.getStudentBacklogs(pool, data),
+      repository.getStudentSpi(pool, data),
+    ]);
+
+    let cgpa = {};
+    if (spi && spi.length > 0) {
+      const total = spi.reduce((sum, item) => sum + parseFloat(item.spi), 0);
+      cgpa.value = parseFloat((total / spi.length).toFixed(2));
+      cgpa.semesters = spi.map((item) => item.semester);
+    }
+    return { profile, backlogs, cgpa };
+  },
 };

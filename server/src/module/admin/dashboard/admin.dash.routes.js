@@ -8,6 +8,13 @@ import { schema } from './admin.dash.schema.js';
 export const admidDashRoutes = express.Router();
 
 admidDashRoutes.get(
+  '/student/profile',
+  validateSession,
+  validateSchema(schema.profile, 'query'),
+  controller.getStudentProfile
+);
+
+admidDashRoutes.get(
   '/student',
   validateSession,
   validateSchema(schema.result, 'query'),
