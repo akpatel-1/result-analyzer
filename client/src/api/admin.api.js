@@ -1,5 +1,11 @@
 import { axiosClient } from '../lib/axios.instance';
 
+
+
+
+
+
+
 export const adminApi = {
   login: (data) => axiosClient.post('/admin/login', data),
   logout: () => axiosClient.post('/admin/logout'),
@@ -8,4 +14,5 @@ export const adminApi = {
   upload: (route, data) => axiosClient.post(`/admin/upload/${route}`, data),
 
   result: (params) => axiosClient.get('/admin/student', { params }),
+  profile: (params) => axiosClient.get('/admin/student/profile', { params }),
 };

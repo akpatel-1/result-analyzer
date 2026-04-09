@@ -22,6 +22,12 @@ export const adminNavigationLinks = [
     color: '#6777F1',
   },
   {
+    to: '/admin/student/profile',
+    label: 'Student Profiles',
+    icon: IoPeopleOutline,
+    color: '#8B5CF6',
+  },
+  {
     to: '/admin/results',
     label: 'Results',
     icon: IoPeopleOutline,

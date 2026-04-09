@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { adminLoader } from '../loader/admin.auth.loader';
 import AdminLoginPage from '../pages/admin/AdminLoginPage';
 import AdminOverviewPage from '../pages/admin/AdminOverviewPage';
+import AdminProfilePage from '../pages/admin/AdminProfilePage';
 import AdminProfileUpload from '../pages/admin/AdminProfileUpload';
 import AdminResultPage from '../pages/admin/AdminResultPage';
 import AdminResultUpload from '../pages/admin/AdminResultUpload';
@@ -18,6 +19,11 @@ export const adminRoutes = [
     loader: adminLoader.protectedRoute,
     path: '/admin/overview',
     element: <AdminOverviewPage />,
+  },
+  {
+    loader: adminLoader.protectedRoute,
+    path: '/admin/student/profile',
+    element: <AdminProfilePage />,
   },
   {
     loader: adminLoader.protectedRoute,
