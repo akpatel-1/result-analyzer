@@ -239,20 +239,21 @@ export default function Sidebar({
           />
         ))}
 
-        {/* Logout — always at the bottom */}
-        <button
-          className="h-10 flex items-center gap-3 px-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-200 hover:text-red-500 transition-colors duration-200"
-          title={effectiveCollapsed ? 'Logout' : ''}
-          onClick={() => {
-            onLogout?.();
-            onCloseMobileMenu?.();
-          }}
-        >
-          <RiLogoutBoxLine size={20} className="shrink-0" />
-          {!effectiveCollapsed && (
-            <span className="whitespace-nowrap">Logout</span>
-          )}
-        </button>
+        {!isMobile && (
+          <button
+            className="h-10 flex items-center gap-3 px-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-200 hover:text-red-500 transition-colors duration-200"
+            title={effectiveCollapsed ? 'Logout' : ''}
+            onClick={() => {
+              onLogout?.();
+              onCloseMobileMenu?.();
+            }}
+          >
+            <RiLogoutBoxLine size={20} className="shrink-0" />
+            {!effectiveCollapsed && (
+              <span className="whitespace-nowrap">Logout</span>
+            )}
+          </button>
+        )}
       </div>
     </aside>
   );

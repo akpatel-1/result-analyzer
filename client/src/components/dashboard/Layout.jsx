@@ -83,6 +83,7 @@ export default function DashboardLayout({
         onToggleMobileMenu={() => setMobileMenuOpen((prev) => !prev)}
         darkMode={darkMode}
         setDarkMode={setDarkMode}
+        onLogout={onLogout}
         role={role}
         userName={userName}
       />

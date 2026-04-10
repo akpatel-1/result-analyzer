@@ -1,5 +1,6 @@
-import { FaGithub } from 'react-icons/fa';
 import {
+  RiLogoutBoxLine,
+  RiLogoutCircleRLine,
   RiMenuFoldLine,
   RiMenuUnfoldLine,
   RiMoonClearLine,
@@ -16,6 +17,7 @@ export default function Header({
   onToggleMobileMenu,
   darkMode,
   setDarkMode,
+  onLogout,
   role,
   userName,
 }) {
@@ -77,16 +79,18 @@ export default function Header({
           {darkMode ? <RiSunLine size={18} /> : <RiMoonClearLine size={18} />}
         </button>
 
-        {/* GitHub Link replacing Notification icon */}
-        <a
-          href="https://github.com/akpatel-1/result-analyzer"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
           className="icon-btn"
-          title="View GitHub Repository"
+          title="Logout"
+          onClick={() => onLogout?.()}
         >
-          <FaGithub size={18} />
-        </a>
+          {isMobile ? (
+            <RiLogoutCircleRLine size={18} color="red" />
+          ) : (
+            <RiLogoutBoxLine size={18} color="red" />
+          )}
+        </button>
 
         {userName ? (
           <span
